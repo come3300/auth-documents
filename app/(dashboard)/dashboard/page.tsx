@@ -2,8 +2,8 @@ import DashBoardHeader from "@/components/dashboard-header";
 import DashBoardShell from "@/components/dashboard-shell";
 import PostCreateButton from "@/components/post-create-button";
 import PostItem from "@/components/post-item";
-import { db } from "@/lib/db";
-import { getCurrentUser } from "@/lib/session";
+import { db } from "@/libs/db";
+import { getCurrentUser } from "@/libs/session";
 import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {

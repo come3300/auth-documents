@@ -1,6 +1,6 @@
 import { buttonVariants } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
-import { cn } from "@/lib/utils";
+import { cn } from "@/libs/utils";
 import Link from "next/link";
 
 export default function IndexPage() {

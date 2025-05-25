@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/libs/utils";
 import { ButtonProps, buttonVariants } from "./ui/button";
 import { useState } from "react";
 import { Icon } from "./icon";
