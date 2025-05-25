@@ -2,7 +2,7 @@ import { allPosts } from "@/.contentlayer/generated";
 import Mdx from "@/components/mdx-component";
 import { buttonVariants } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
-import { cn } from "@/lib/utils";
+import { cn } from "@/libs/utils";
 import { format } from "date-fns";
 import { Metadata } from "next";
 import Image from "next/image";

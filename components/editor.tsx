@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/libs/utils";
 import Link from "next/link";
 import { buttonVariants } from "./ui/button";
 import TextareaAutosize from "react-textarea-autosize";
@@ -13,7 +13,7 @@ import Code from "@editorjs/code";
 import { Post } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { postPatchSchema, postPatchSchemaType } from "@/lib/validations/post";
+import { postPatchSchema, postPatchSchemaType } from "@/libs/validations/post";
 import { toast } from "./ui/use-toast";
 import { useRouter } from "next/navigation";
 import { Icon } from "./icon";
