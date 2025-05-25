@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/libs/utils";
 import { siteConfig } from "@/config/site";
 import { Toaster } from "@/components/ui/toaster";
+//hoge
 
 const fontNotoSansJP = Noto_Sans_JP({ subsets: ["latin"] });
 
