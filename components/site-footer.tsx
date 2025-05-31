@@ -6,14 +6,14 @@ export default function SiteFooter() {
     <footer>
       <div className="container py-10 md:py-0 md:h-20">
         <p className="text-center text-sm md:text-left">
-          Built by {""}
-          <Link
+          {/* Built by {""} */}
+          {/* <Link
             href={siteConfig.links.x}
             className="underline underline-offset-4 font-medium"
             target="_blank"
             rel="noreferrer"
           >
-            ShinCode
+            Daisuke
           </Link>
           . Hosted on {""}
           <Link
@@ -23,7 +23,7 @@ export default function SiteFooter() {
             rel="noreferrer"
           >
             Vercel
-          </Link>
+          </Link> */}
         </p>
       </div>
     </footer>

@@ -12,7 +12,7 @@ export default withAuth(
 
     if (isAuthPage) {
       if (isAuth) {
-        return NextResponse.redirect(new URL("/dashboard", req.url));
+        return NextResponse.redirect(new URL("/phase-lists", req.url));
       }
 
       return null;
@@ -32,5 +32,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/dashboard/:path", "/editor/:path", "/login", "/register"],
+  matcher: ["/dashboard/:path", "/editor/:path", "/login", "/register","/phase-lists"],
 };
