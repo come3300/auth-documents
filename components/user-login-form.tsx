@@ -7,6 +7,7 @@ import { buttonVariants } from "./ui/button";
 import { Icon } from "./icon";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function UserAuthForm() {
   const [isGithubLoading, setIsGithubLoading] = useState<boolean>(false);
@@ -14,14 +15,25 @@ export default function UserAuthForm() {
 
   return (
     <div className="grid gap-6">
+      <Link
+        href={"/"}
+        className={cn(
+          buttonVariants({ variant: "ghost" }),
+          "absolute left-4 md:left-8 md:top-8"
+        )}
+      >
+        戻る
+      </Link>
       <form>
         <div className="grid gap-2">
           <div className="grid gap-1">
             <Label htmlFor="email">メールアドレス</Label>
             <Input id="email" placeholder="name@example.com" type="email" />
+            <Label htmlFor="email">パスワード</Label>
+            <Input id="email" placeholder="passowrd" type="email" />
           </div>
           <button className={cn(buttonVariants())}>
-            メールアドレスでログイン
+            ログイン
           </button>
         </div>
       </form>

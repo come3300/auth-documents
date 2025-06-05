@@ -1,4 +1,4 @@
-import UserAuthForm from "@/components/user-auth-form";
+import UserAuthForm from "@/components/user-login-form";
 import Link from "next/link";
 
 export default function Login() {
@@ -7,7 +7,7 @@ export default function Login() {
       <div className="mx-auto w-full sm:w-[350px] flex flex-col justify-center space-y-6">
         <div className="text-center space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight">
-            Welcome Back
+            ログイン
           </h1>
           <p className="text-sm text-muted-foreground">
             メールアドレスを入力してログインできます。
