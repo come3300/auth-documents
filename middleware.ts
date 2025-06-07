@@ -1,9 +1,19 @@
 import { getToken } from "next-auth/jwt";
 import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
+import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
+
+import type { NextRequest } from "next/server";
+import type { Database } from "@/libs/database.types";
 
 export default withAuth(
   async function middleware(req) {
+    const res = NextResponse.next();
+
+    // Supabase セッションの取得
+    const supabase = createMiddlewareClient<Database>({ req, res });
+    await supabase.auth.getSession();
+
     const token = await getToken({ req });
     const isAuth = !!token;
     const isAuthPage =
@@ -21,6 +31,8 @@ export default withAuth(
     if (!isAuth) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
+
+    return res;
   },
   {
     callbacks: {
@@ -32,5 +44,11 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/dashboard/:path", "/editor/:path", "/login", "/register","/phase-lists"],
+  matcher: [
+    "/dashboard/:path",
+    "/editor/:path",
+    "/login",
+    "/register",
+    "/phase-lists",
+  ],
 };

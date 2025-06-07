@@ -4,7 +4,9 @@ import "./globals.css";
 import { cn } from "@/libs/utils";
 import { siteConfig } from "@/config/site";
 import { Toaster } from "@/components/ui/toaster";
-//hoge
+import SupabaseListener from '@/components/supabase-listener'
+
+
 
 const fontNotoSansJP = Noto_Sans_JP({ subsets: ["latin"] });
 
@@ -52,6 +54,7 @@ export default function RootLayout({
           fontNotoSansJP.className
         )}
       >
+        <SupabaseListener />
         {children}
         <Toaster/>
       </body>
