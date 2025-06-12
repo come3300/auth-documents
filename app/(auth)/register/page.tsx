@@ -1,20 +1,27 @@
-import { buttonVariants } from "@/components/ui/button";
-import UserSignUpForm from "@/components/user-sign-up-form";
-import { cn } from "@/libs/utils";
-import Link from "next/link";
+import { cookies } from "next/headers";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { redirect } from "next/navigation";
+import Signupform from "@/components/user-sign-up-form"; 
+import Signup from '@/components/signup'// サインアップフォームコンポーネント
+import type { Database } from "@/libs/database.types";
 
-export default function Register() {
+const SignupPage = async () => {
+  const supabase = createServerComponentClient<Database>({
+    cookies,
+  });
+
+  // セッションの取得
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  // 認証している場合、リダイレクト
+  if (session) {
+    redirect("/");
+  }
+
   return (
-    <div className="container grid flex-col  h-screen w-screen items-center justify-center lg:max-w-none lg:px-0">
-      <Link
-        href={"/"}
-        className={cn(
-          buttonVariants({ variant: "ghost" }),
-          "absolute left-4 md:left-8 md:top-8"
-        )}
-      >
-        戻る
-      </Link>
+    <div className="container grid flex-col h-screen w-screen items-center justify-center lg:max-w-none lg:px-0">
       <div className="mx-auto w-full sm:w-[350px] flex flex-col justify-center space-y-6">
         <div className="text-center space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight">
@@ -25,20 +32,22 @@ export default function Register() {
           </p>
         </div>
 
-        <UserSignUpForm />
+        <Signup />
 
         <p className="text-muted-foreground px-8 text-center text-sm">
           続けてクリックすれば私たちの
-          <Link href={"/terms"} className="underline underline-offset-4">
+          <a href="/terms" className="underline underline-offset-4">
             利用規約
-          </Link>
+          </a>
           と
-          <Link href={"/privacy"} className="underline underline-offset-4">
+          <a href="/privacy" className="underline underline-offset-4">
             プライバシーポリシー
-          </Link>
+          </a>
           に同意したことになります。
         </p>
       </div>
     </div>
   );
-}
+};
+
+export default SignupPage;
