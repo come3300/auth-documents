@@ -1,11 +1,11 @@
 import { cookies } from 'next/headers'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { redirect } from 'next/navigation'
-import Profile from '@/components/profile'
-
+import ResetPassword from '@/components/reset-password'
 import type { Database } from '@/libs/database.types'
 
-const ProfilePage = async () => {
+// パスワードリセットページ
+const ResetPasswordPage = async () => {
   const supabase = createServerComponentClient<Database>({
     cookies,
   })
@@ -15,12 +15,12 @@ const ProfilePage = async () => {
     data: { session },
   } = await supabase.auth.getSession()
 
-  // 未認証の場合、リダイレクト
-  if (!session) {
-    redirect('/auth/login')
+  // 認証している場合、リダイレクト
+  if (session) {
+    redirect('/')
   }
 
-  return <Profile />
+  return <ResetPassword />
 }
 
-export default ProfilePage
+export default ResetPasswordPage

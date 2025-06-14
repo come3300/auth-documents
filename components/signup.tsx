@@ -141,7 +141,7 @@ const Signup = () => {
       {message && <div className="my-5 text-center text-sm text-red-500">{message}</div>}
 
       <div className="text-center text-sm">
-        <Link href="/auth/login" className="text-gray-500 font-bold">
+        <Link href="/login" className="text-gray-500 font-bold">
           ログインはこちら
         </Link>
       </div>
