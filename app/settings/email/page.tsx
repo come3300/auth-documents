@@ -4,6 +4,9 @@ import { redirect } from 'next/navigation'
 import Email from '@/components/email'
 import type { Database } from '@/libs/database.types'
 
+
+export const dynamic = "force-dynamic";
+
 // メールアドレス変更ページ
 const EmailPage = async () => {
   const supabase = createServerComponentClient<Database>({

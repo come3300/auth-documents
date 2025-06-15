@@ -5,6 +5,9 @@ import Signupform from "@/components/user-sign-up-form";
 import Signup from '@/components/signup'// サインアップフォームコンポーネント
 import type { Database } from "@/libs/database.types";
 
+
+export const dynamic = "force-dynamic";
+
 const SignupPage = async () => {
   const supabase = createServerComponentClient<Database>({
     cookies,

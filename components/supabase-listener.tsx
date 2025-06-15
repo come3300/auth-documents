@@ -5,6 +5,10 @@ import { cookies } from 'next/headers'
 import Navigation from './navigation'
 import type { Database } from '@/libs/database.types'
 
+// プロフィール型を定義
+type ProfileType = Database['public']['Tables']['profiles']['Row']
+
+// 認証状態の監視
 const SupabaseListener = async () => {
   const supabase = createServerComponentClient<Database>({ cookies })
 
@@ -14,7 +18,7 @@ const SupabaseListener = async () => {
   } = await supabase.auth.getSession()
 
   // プロフィールの取得
-  let profile: Database['public']['Tables']['profiles']['Row'] | null = null
+  let profile: ProfileType | null = null
   if (session) {
     const { data: currentProfile } = await supabase
       .from('profiles')
@@ -23,6 +27,18 @@ const SupabaseListener = async () => {
       .single()
 
     profile = currentProfile
+
+    // メールアドレスを変更した場合、プロフィールを更新
+    if (currentProfile && currentProfile.email !== session.user.email) {
+      const { data: updatedProfile } = await supabase
+        .from('profiles')
+        .update({ email: session.user.email })
+        .match({ id: session.user.id })
+        .select('*')
+        .single()
+
+      profile = updatedProfile
+    }
   }
 
   return <Navigation session={session} profile={profile} />

@@ -4,6 +4,9 @@ import { redirect } from 'next/navigation'
 import ResetPassword from '@/components/reset-password'
 import type { Database } from '@/libs/database.types'
 
+
+export const dynamic = "force-dynamic";
+
 // パスワードリセットページ
 const ResetPasswordPage = async () => {
   const supabase = createServerComponentClient<Database>({

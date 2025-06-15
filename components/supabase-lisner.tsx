@@ -8,6 +8,8 @@ import type { Database } from '@/libs/database.types'
 // プロフィール型を定義
 type ProfileType = Database['public']['Tables']['profiles']['Row']
 
+export const dynamic = "force-dynamic"; 
+
 // 認証状態の監視
 const SupabaseListener = async () => {
   const supabase = createServerComponentClient<Database>({ cookies })

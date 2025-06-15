@@ -6,7 +6,7 @@ import { siteConfig } from "@/config/site";
 import { Toaster } from "@/components/ui/toaster";
 import SupabaseListener from '@/components/supabase-listener'
 
-
+export const dynamic = "force-dynamic"; // 動的レンダリングを強制
 
 const fontNotoSansJP = Noto_Sans_JP({ subsets: ["latin"] });
 

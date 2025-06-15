@@ -6,6 +6,9 @@ import { redirect } from "next/navigation";
 import type { Database } from "@/libs/database.types";
 import Login from '@/components/login'
 
+
+export const dynamic = "force-dynamic";
+
 const LoginPage = async () => {
   const supabase = createServerComponentClient<Database>({
     cookies,

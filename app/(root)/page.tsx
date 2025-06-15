@@ -7,6 +7,9 @@ import { cookies } from "next/headers";
 import type { Database } from "@/libs/database.types";
 
 
+export const dynamic = "force-dynamic";
+
+
 // メインページ
 const Home = async () => {
   const supabase = createServerComponentClient<Database>({
