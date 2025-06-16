@@ -19,7 +19,7 @@ const PasswordPage = async () => {
 
   // 未認証の場合、リダイレクト
   if (!session) {
-    redirect('/login')
+    redirect('/')
   }
 
   return <Password />

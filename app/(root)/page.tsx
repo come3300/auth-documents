@@ -49,9 +49,9 @@ const Home = async () => {
           </div>
         </div>
       </section>
-      <div className="text-center text-xl mt-8">
+      {/* <div className="text-center text-xl mt-8">
         {session ? <div>ログイン済</div> : <div>未ログイン</div>}
-      </div>
+      </div> */}
     </>
   );
 };

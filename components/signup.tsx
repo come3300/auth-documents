@@ -70,10 +70,15 @@ const Signup = () => {
       }
 
       // 入力フォームクリア
-      reset()
-      setMessage(
-        '本登録用のURLを記載したメールを送信しました。メールをご確認の上、メール本文中のURLをクリックして、本登録を行ってください。'
-      )
+      if (!errorSignup && !updateError) {
+        reset();
+        setMessage(
+          '本登録用のURLを記載したメールを送信しました。メールをご確認の上、メール本文中のURLをクリックして、本登録を行ってください。'
+        );
+      
+        // リダイレクト処理を追加
+        router.push('/login');
+      }
     } catch (error) {
       setMessage('エラーが発生しました。' + error)
       return

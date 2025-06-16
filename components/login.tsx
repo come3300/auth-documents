@@ -53,7 +53,7 @@ const Login = () => {
       }
 
       // トップページに遷移
-      router.push('/')
+      router.push('/phase-lists')
     } catch (error) {
       setMessage('エラーが発生しました。' + error)
       return
