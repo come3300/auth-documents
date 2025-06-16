@@ -90,7 +90,6 @@ const Signup = () => {
 
   return (
     <div className="max-w-[400px] mx-auto">
-      <div className="text-center font-bold text-xl mb-10">サインアップ</div>
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* 名前 */}
         <div className="mb-3">

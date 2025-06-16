@@ -65,7 +65,6 @@ const Login = () => {
 
   return (
     <div className="max-w-[400px] mx-auto">
-      <div className="text-center font-bold text-xl mb-10">ログイン</div>
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* メールアドレス */}
         <div className="mb-3">
