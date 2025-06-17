@@ -77,7 +77,7 @@ const Signup = () => {
         );
       
         // リダイレクト処理を追加
-        router.push('/login');
+        // router.push('/login');
       }
     } catch (error) {
       setMessage('エラーが発生しました。' + error)
