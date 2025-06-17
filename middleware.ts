@@ -1,36 +1,35 @@
-import { getToken } from "next-auth/jwt";
-import { withAuth } from "next-auth/middleware";
-import { NextResponse } from "next/server";
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import type { Database } from '@/libs/database.types'
 
-export default withAuth(
-  async function middleware(req) {
-    const token = await getToken({ req });
-    const isAuth = !!token;
-    const isAuthPage =
-      req.nextUrl.pathname.startsWith("/login") ||
-      req.nextUrl.pathname.startsWith("/register");
+export async function middleware(req: NextRequest) {
+const res = NextResponse.next()
+const supabase = createMiddlewareClient<Database>({ req, res })
+await supabase.auth.getSession()
+const {
+data: { session },
+} = await supabase.auth.getSession();
 
-    if (isAuthPage) {
-      if (isAuth) {
-        return NextResponse.redirect(new URL("/phase-lists", req.url));
-      }
+if (req.url.includes('_next')) return;
 
-      return null;
-    }
+if (!session && !req.url.includes('/login')) {
+return NextResponse.redirect(new URL('/login', req.url));
+}
 
-    if (!isAuth) {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
-  },
-  {
-    callbacks: {
-      async authorized({ req, token }) {
-        return true;
-      },
-    },
-  }
-);
+if (session && req.url.includes('/login')) {
+return NextResponse.redirect(new URL('/', req.url));
+}
+return res
+}
 
+// matcherを使うことで記載しているコードのみこのmiddlwareが適用される
 export const config = {
-  matcher: ["/dashboard/:path", "/editor/:path", "/login", "/register","/phase-lists"],
+matcher: [
+"/dashboard/:path",
+"/editor/:path",
+"/phase-lists",
+"/phase",
+],
 };
+
