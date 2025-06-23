@@ -53,7 +53,7 @@ const Login = () => {
       }
 
       // トップページに遷移
-      router.push('/phase-lists')
+      router.push('/material')
     } catch (error) {
       setMessage('エラーが発生しました。' + error)
       return
