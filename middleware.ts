@@ -28,8 +28,8 @@ export const config = {
 matcher: [
 "/dashboard/:path",
 "/editor/:path",
-"/phase-lists",
-"/phase",
+"/material",
+"/material",
 ],
 };
 
