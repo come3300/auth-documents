@@ -35,16 +35,3 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 # post-writer-app
-
-## git branchの運用方法
-- main
-  - 本番環境
-- dev
-  - 検証環境
-
-### 実装後デプロイまでの流れ
-1. mainから派生したブランチで実装、作業を行う
-2. dev←作業ブランチでマージする
-3. devにデプロイして動作等問題ないか確認する
-4. 問題なければmain←作業ブランチにデプロイを行う
-5. 作業完了！
