@@ -29,7 +29,7 @@ matcher: [
 "/dashboard/:path",
 "/editor/:path",
 "/material-lists",
- "/material:path*",
+"/material:path*",
 ],
 };
 
