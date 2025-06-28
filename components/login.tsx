@@ -70,7 +70,7 @@ const Login = () => {
         <div className="mb-3">
           <input
             type="email"
-            className="border rounded-md w-full py-2 px-3 focus:outline-none focus:border-sky-500"
+            className="w-[300px] border rounded-md w-full py-2 px-3 focus:outline-none focus:border-sky-500"
             placeholder="メールアドレス"
             id="email"
             {...register('email', { required: true })}
@@ -82,7 +82,7 @@ const Login = () => {
         <div className="mb-5">
           <input
             type="password"
-            className="border rounded-md w-full py-2 px-3 focus:outline-none focus:border-sky-500"
+            className="w-[300px] border rounded-md w-full py-2 px-3 focus:outline-none focus:border-sky-500"
             placeholder="パスワード"
             id="password"
             {...register('password', { required: true })}
