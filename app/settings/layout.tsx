@@ -53,7 +53,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
           </Link>
         ))}
       </div>
-      <div className="col-span-2">{children}</div>
+      <div className="col-span-2 mt-10 mr-36">{children}</div>
     </div>
   )
 }

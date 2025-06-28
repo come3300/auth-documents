@@ -35,13 +35,3 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 # post-writer-app
-
-## 各ページの構成
-
-### 記事
-- materialの一覧画面
-  - http://localhost:3006/material-lists
-- 各materialのリスト
-  - http://localhost:3006/material1
-- 各記事
-  - http://localhost:3006/material1/まだ決めてない
