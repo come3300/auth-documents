@@ -24,14 +24,14 @@ const SignupPage = async () => {
   }
 
   return (
-    <div className="container grid flex-col h-screen w-screen items-center justify-center lg:max-w-none lg:px-0">
+    <div className="container grid flex-col  w-screen items-center justify-center mt-14 lg:max-w-none lg:px-0">
       <div className="mx-auto w-full sm:w-[350px] flex flex-col justify-center space-y-6">
         <div className="text-center space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight">
             アカウントの作成
           </h1>
           <p className="text-sm text-muted-foreground">
-            メールアドレスを入力してアカウント作成してください。
+            メールアドレスを入力して<br />アカウント作成してください。
           </p>
         </div>
 

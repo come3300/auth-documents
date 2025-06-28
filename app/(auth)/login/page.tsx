@@ -25,7 +25,7 @@ const LoginPage = async () => {
   }
 
   return (
-    <div className="container flex flex-col justify-center h-screen items-center w-screen">
+    <div className="container flex flex-col  h-screen items-center w-screen mt-14">
       <div className="mx-auto w-full sm:w-[350px] flex flex-col justify-center space-y-6">
         <div className="text-center space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight">ログイン</h1>
