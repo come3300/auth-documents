@@ -4,7 +4,8 @@ import "./globals.css";
 import { cn } from "@/libs/utils";
 import { siteConfig } from "@/config/site";
 import { Toaster } from "@/components/ui/toaster";
-import SupabaseListener from '@/components/supabase-listener'
+import SupabaseListener from '@/components/supabase-listener';
+import Head from "next/head";
 
 export const dynamic = "force-dynamic"; // 動的レンダリングを強制
 
@@ -48,10 +49,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.25.0/tocbot.css"
-      />
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.25.0/tocbot.css"
+        />
+      </head>
       <body
         className={cn(
           "bg-background antialiased min-h-screen",
