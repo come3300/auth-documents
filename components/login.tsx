@@ -51,9 +51,7 @@ const Login = () => {
         setMessage('エラーが発生しました。' + error.message)
         return
       }
-
-      // トップページに遷移
-      router.push('/material')
+      router.push('/material-lists')
     } catch (error) {
       setMessage('エラーが発生しました。' + error)
       return

@@ -4,7 +4,6 @@ import { redirect } from 'next/navigation'
 import Email from '@/components/email'
 import type { Database } from '@/libs/database.types'
 
-
 export const dynamic = "force-dynamic";
 
 // メールアドレス変更ページ
@@ -13,17 +12,17 @@ const EmailPage = async () => {
     cookies,
   })
 
-  // セッションの取得
+  // ユーザー情報の取得
   const {
-    data: { session },
-  } = await supabase.auth.getSession()
+    data: { user },
+  } = await supabase.auth.getUser()
 
   // 未認証の場合、リダイレクト
-  if (!session) {
+  if (!user) {
     redirect('/')
   }
 
-  return <Email email={session.user.email!} />
+  return <Email email={user.email!} />
 }
 
 export default EmailPage

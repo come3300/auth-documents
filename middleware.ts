@@ -4,32 +4,29 @@ import type { NextRequest } from 'next/server'
 import type { Database } from '@/libs/database.types'
 
 export async function middleware(req: NextRequest) {
-const res = NextResponse.next()
-const supabase = createMiddlewareClient<Database>({ req, res })
-await supabase.auth.getSession()
-const {
-data: { session },
-} = await supabase.auth.getSession();
+  const res = NextResponse.next()
+  const supabase = createMiddlewareClient<Database>({ req, res })
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-if (req.url.includes('_next')) return;
+  if (req.url.includes('_next')) return;
 
-if (!session && !req.url.includes('/login')) {
-return NextResponse.redirect(new URL('/login', req.url));
+  if (!user && !req.url.includes('/login')) {
+    return NextResponse.redirect(new URL('/login', req.url));
+  }
+
+  if (user && req.url.includes('/login')) {
+    return NextResponse.redirect(new URL('/', req.url));
+  }
+  return res
 }
 
-if (session && req.url.includes('/login')) {
-return NextResponse.redirect(new URL('/', req.url));
-}
-return res
-}
-
-// matcherを使うことで記載しているコードのみこのmiddlwareが適用される
 export const config = {
-matcher: [
-"/dashboard/:path",
-"/editor/:path",
-"/material-lists",
-"/material:path*",
-],
+  matcher: [
+    "/dashboard/:path",
+    "/editor/:path",
+    "/material-lists",
+    "/material:path*",
+  ],
 };
-

@@ -6,9 +6,7 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import type { Database } from "@/libs/database.types";
 
-
 export const dynamic = "force-dynamic";
-
 
 // メインページ
 const Home = async () => {
@@ -16,17 +14,17 @@ const Home = async () => {
     cookies,
   });
 
-  // セッションの取得
+  // ユーザー情報の取得
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
   return (
     <>
       <section className="pt-6 md:pt-10 lg:py-32 pb-8 md:pb-12">
         <div className="container text-center flex flex-col items-center gap-4 max-w-[64rem]">
           <h1 className="font-extrabold text-3xl sm:text-5xl md:text-6xl lg:text-7xl">
-            Programing Study
+            Programing Learning
           </h1>
           <p className="text-muted-foreground sm:text-xl leading-normal max-w-[42rem]">
             プログラミング学習を支援するためのリソースとツールを提供します。
@@ -50,7 +48,7 @@ const Home = async () => {
         </div>
       </section>
       {/* <div className="text-center text-xl mt-8">
-        {session ? <div>ログイン済</div> : <div>未ログイン</div>}
+        {user ? <div>ログイン済</div> : <div>未ログイン</div>}
       </div> */}
     </>
   );
