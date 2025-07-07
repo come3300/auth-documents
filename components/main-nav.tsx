@@ -18,7 +18,7 @@ export default function MainNav({ items, session }: MainNavProps) {
     <header className="shadow-lg shadow-gray-100">
       <div className="py-5 container px-5 mx-auto flex items-center justify-between">
         <Link href="/" className="font-bold text-xl cursor-pointer">
-          Programing Study
+          Programing Learning
         </Link>
         <nav className="hidden md:flex gap-6">
           {items?.map((item, index) => (

@@ -4,7 +4,6 @@ import { redirect } from 'next/navigation'
 import Profile from '@/components/profile'
 import type { Database } from '@/libs/database.types'
 
-
 export const dynamic = "force-dynamic";
 
 const ProfilePage = async () => {
@@ -12,13 +11,13 @@ const ProfilePage = async () => {
     cookies,
   })
 
-  // セッションの取得
+  // ユーザー情報の取得
   const {
-    data: { session },
-  } = await supabase.auth.getSession()
+    data: { user },
+  } = await supabase.auth.getUser()
 
   // 未認証の場合、リダイレクト
-  if (!session) {
+  if (!user) {
     redirect('/')
   }
 
