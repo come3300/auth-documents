@@ -30,6 +30,8 @@ matcher: [
 "/editor/:path",
 "/material-lists",
 "/material:path*",
+"/post/:path*",
+"/settings/:path*",
 ],
 };
 

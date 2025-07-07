@@ -26,11 +26,11 @@ export default async function PostPage({ params }: PostPageProps) {
 
   return (
     <div>
-      <div className="prose-xl flex justify-center mx-auto p-8">
+      <div className="prose-xl flex justify-center mx-auto p-8 bg-[#EDF2F7]">
         {/* proseではなくprose-xlを使用 */}
         <div className="w-9/12">
-          <h1 className="flex justify-center mt-8">{data.title}</h1>
-          <div className="post bg-gray-100 p-8">
+          <h1 className="flex justify-left mt-8">{data.title}</h1>
+          <div className="post bg-white p-8">
             <MDXRemote source={content} options={options} />
           </div>
         </div>

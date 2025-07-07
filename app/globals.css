@@ -110,7 +110,7 @@ h6.ce-header {
 }
 
 .toc-link:hover {
-  @apply text-gray-200 bg-gray-500;
+  @apply text-sky-700 bg-sky-100;
 }
 
 .toc-list-item {
@@ -118,5 +118,5 @@ h6.ce-header {
 }
 
 .is-active-link {
-  @apply text-gray-200 bg-gray-500 font-bold;
+  @apply text-white bg-sky-200 font-bold;
 }
