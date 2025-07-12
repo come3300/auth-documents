@@ -4,16 +4,16 @@ import Link from 'next/link'
 import useStore from '@/store'
 import Image from 'next/image'
 import { useEffect } from 'react'
-import type { Session } from '@supabase/auth-helpers-nextjs'
+import type { User } from '@supabase/auth-helpers-nextjs'
 import type { Database } from '@/libs/database.types'
 type ProfileType = Database['public']['Tables']['profiles']['Row']
 
 // ナビゲーション
 const Navigation = ({
-  session,
+  user,
   profile,
 }: {
-  session: Session | null
+  user: User | null
   profile: ProfileType | null
 }) => {
   const { setUser } = useStore()
@@ -21,23 +21,23 @@ const Navigation = ({
   // 状態管理にユーザー情報を保存
   useEffect(() => {
     setUser({
-      id: session ? session.user.id : '',
-      email: session ? session.user.email! : '',
-      name: session && profile ? profile.name : '',
-      introduce: session && profile ? profile.introduce : '',
-      avatar_url: session && profile ? profile.avatar_url : '',
+      id: user ? user.id : '',
+      email: user ? user.email! : '',
+      name: profile ? profile.name : '',
+      introduce: profile ? profile.introduce : '',
+      avatar_url: profile ? profile.avatar_url : '',
     })
-  }, [session, setUser, profile])
+  }, [user, setUser, profile])
 
   return (
     <header className="shadow-lg shadow-gray-100">
-      <div className="py-5 container max-w-screen-sm mx-auto flex items-center justify-between">
+      <div className="py-5 px-5 container max-w-5xl mx-auto flex items-center justify-between">
         <Link href="/" className="font-bold text-xl cursor-pointer">
           Programing Learning
         </Link>
 
         <div className="text-sm font-bold">
-          {session ? (
+          {user ? (
             <div className="flex items-center space-x-5">
               <Link href="/settings/profile">
                 <div className="relative w-10 h-10">
