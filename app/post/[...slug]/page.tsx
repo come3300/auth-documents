@@ -16,13 +16,16 @@ export async function generateStaticParams() {
 }
 
 export default async function PostPage({ params }: PostPageProps) {
+  // slugが配列の場合は結合
+  const slug = Array.isArray(params.slug) ? params.slug.join("/") : params.slug;
+
   const options = {
     mdxOptions: {
       remarkPlugins: [remarkGfm],
       rehypePlugins: [rehypeSlug],
     },
   };
-  const { content, data } = GetPostBySlug(params.slug);
+  const { content, data } = GetPostBySlug(slug);
 
   return (
     <div>
