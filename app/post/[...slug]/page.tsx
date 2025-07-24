@@ -50,7 +50,7 @@ export default async function PostPage({ params }: PostPageProps) {
             {prevSlug ? (
               <Link
                 href={`/post/${prevSlug}`}
-                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                className="px-4 py-2 bg-gray-200 font-bold rounded hover:bg-gray-300"
               >
                 戻る
               </Link>
@@ -58,7 +58,7 @@ export default async function PostPage({ params }: PostPageProps) {
             {nextSlug ? (
               <Link
                 href={`/post/${nextSlug}`}
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                className="px-4 py-2 bg-blue-500 font-bold text-white rounded hover:bg-blue-600"
               >
                 次へ
               </Link>
