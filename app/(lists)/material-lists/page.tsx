@@ -10,7 +10,7 @@ const HomePage = () => {
         <div className="flex flex-wrap -m-4">
           {materialLists.map((post) => (
             <div key={post.id} className="p-4 md:w-1/4">
-              <div className="h-full border-1 border-opacity-60 rounded-lg overflow-hidden">
+              <div className="h-full border border-opacity-60 rounded-lg overflow-hidden">
                 <Image
                   className="w-full object-cover object-center"
                   src={`/${post.imgSrc.replace(/^\//, "")}`}
