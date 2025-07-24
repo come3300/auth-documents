@@ -44,6 +44,7 @@
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "tocbot": "^4.36.4",
+    "utf-8-validate": "^6.0.5",
     "zod": "^3.23.8",
     "zustand": "^5.0.5"
   },
