@@ -6,7 +6,7 @@ const nextConfig = { reactStrictMode: true, swcMinify: true,
         serverActions: true,
       },
       images: {
-        domains: ['https://rzdookoxyvgtmhbobnab.supabase.co'], //todo ここの設定が必要
+        domains: ['rzdookoxyvgtmhbobnab.supabase.co'],
       },
  };
 
