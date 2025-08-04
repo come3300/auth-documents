@@ -58,7 +58,7 @@ export default async function PostPage({ params }: PostPageProps) {
       
       if (codeContent.trim()) {
         console.log('Using CodeBlock component');
-        return <CodeBlock>{codeContent}</CodeBlock>;
+        return <CodeBlock showCopyButton={true}>{codeContent}</CodeBlock>;
       }
       
       console.log('Using fallback pre');

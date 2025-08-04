@@ -13,7 +13,7 @@ const components = {
     const codeElement = children?.props;
     if (codeElement && codeElement.children && typeof codeElement.children === 'string') {
       return (
-        <CodeBlock className={codeElement.className}>
+        <CodeBlock className={codeElement.className} showCopyButton={true}>
           {codeElement.children}
         </CodeBlock>
       );
