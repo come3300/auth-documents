@@ -31,25 +31,24 @@ const Home = async () => {
             <br />
             初心者から上級者まで、誰でも利用できる学習コンテンツです。
           </p>
-          <div className="space-x-4">
-            <Link
-              href={"/login"}
-              className={cn(buttonVariants({ size: "lg" }))}
-            >
-              ログイン
-            </Link>
-            <Link
-              href={"/register"}
-              className={cn(buttonVariants({ size: "lg", variant: "outline" }))}
-            >
-              サインアップ
-            </Link>
-          </div>
+          {!user && (
+            <div className="space-x-4">
+              <Link
+                href={"/login"}
+                className={cn(buttonVariants({ size: "lg" }))}
+              >
+                ログイン
+              </Link>
+              <Link
+                href={"/register"}
+                className={cn(buttonVariants({ size: "lg", variant: "outline" }))}
+              >
+                サインアップ
+              </Link>
+            </div>
+          )}
         </div>
       </section>
-      {/* <div className="text-center text-xl mt-8">
-        {user ? <div>ログイン済</div> : <div>未ログイン</div>}
-      </div> */}
     </>
   );
 };

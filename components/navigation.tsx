@@ -39,6 +39,8 @@ const Navigation = ({
         <div className="text-sm font-bold">
           {user ? (
             <div className="flex items-center space-x-5">
+              <Link href="/material-lists">教材一覧</Link>
+              <Link href="/settings/profile">マイページ</Link>
               <Link href="/settings/profile">
                 <div className="relative w-10 h-10">
                   <Image
