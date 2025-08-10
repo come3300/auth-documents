@@ -6,8 +6,6 @@ export const materialLists = [
     title: 'TODOアプリを作ってみよう',
     description:
       'phpのみでメモアプリを開発してみましょう',
-    views: '1.2K',
-    comments: '6',
     linksrc: '/material1',
   },
   {
@@ -17,9 +15,25 @@ export const materialLists = [
     title: 'メモアプリを作ってみよう',
     description:
       'phpのみでメモアプリを開発してみましょう',
-    views: '1.2K',
-    comments: '6',
-    linksrc: '',
+    linksrc: '/material2',
+  },
+  {
+    id: 3,
+    imgSrc: 'images/home-imgs/js基礎_ホーム画像.png',
+    category: 'JS入門',
+    title: 'JS基礎',
+    description:
+      'JavaScriptの基礎的な知識をはじめ、基礎構文を学びJavaScriptの基礎力を培う内容になります',
+    linksrc: '/material3',
+  },
+  {
+    id: 4,
+    imgSrc: 'images/home-imgs/php基礎_ホーム画像.png',
+    category: 'PHP入門',
+    title: 'PHP基礎',
+    description:
+      'PHPの基礎的な知識をはじめ、基礎構文を学びPHPの基礎力を培う内容になります',
+    linksrc: '/material4',
   },
   // {
   //   id: 1,
