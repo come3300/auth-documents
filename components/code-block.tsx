@@ -102,30 +102,34 @@ export default function CodeBlock({ children, className, showCopyButton = true }
         </div>
       </div>
       <div className="relative">
-        <SyntaxHighlighter
-          language={language}
-          style={oneDark}
-          customStyle={{
-            margin: 0,
-            padding: '1.5rem',
-            fontSize: '0.95rem',
-            lineHeight: '1.6',
-            fontWeight: '500',
-            fontFamily: '"JetBrains Mono", "Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace',
-            background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-            borderRadius: '0',
-          }}
-          showLineNumbers={false}
-          wrapLines={true}
-          wrapLongLines={true}
-          codeTagProps={{
-            style: {
-              textShadow: '0 0 2px rgba(255, 255, 255, 0.1)',
-            }
-          }}
-        >
-          {children.trim()}
-        </SyntaxHighlighter>
+        <div className="overflow-x-auto">
+          <SyntaxHighlighter
+            language={language}
+            style={oneDark}
+            customStyle={{
+              margin: 0,
+              padding: '1.5rem',
+              fontSize: '0.95rem',
+              lineHeight: '1.6',
+              fontWeight: '500',
+              fontFamily: '"JetBrains Mono", "Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace',
+              background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+              borderRadius: '0',
+              minWidth: '100%',
+              whiteSpace: 'pre',
+            }}
+            showLineNumbers={false}
+            wrapLines={false}
+            wrapLongLines={false}
+            codeTagProps={{
+              style: {
+                textShadow: '0 0 2px rgba(255, 255, 255, 0.1)',
+              }
+            }}
+          >
+            {children.trim()}
+          </SyntaxHighlighter>
+        </div>
         {/* 装飾的なグラデーションオーバーレイ */}
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-blue-500/5 pointer-events-none rounded-b-xl"></div>
       </div>
