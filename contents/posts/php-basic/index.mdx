@@ -1,0 +1,1638 @@
+---
+title: 🧑‍🏫 第1回：PHPとは？&開発環境（Docker）の準備
+category: php
+---
+# 完全初心者向けPHPプログラミングチュートリアル
+
+## 第1章：PHPとは何か - プログラミングの基礎
+
+### PHPの基本概念
+
+**PHPとは**  
+PHP（PHP: Hypertext Preprocessor）は、Webサイト開発に特化したサーバーサイドプログラミング言語です。1994年にRasmus Lerdorfによって作られ、現在では**全世界のWebサイトの74%以上**で使用されている、Web開発において最も人気の高い言語の一つです。
+
+**PHPをレストランのシェフに例えると**  
+PHPは、Webサーバーの中で働くシェフのような存在です。お客様（Webブラウザ）が注文（リクエスト）を出すと、PHPシェフがデータベースから材料を取り出し、ユーザーの入力を処理して、完成した料理（Webページ）をお客様に提供します。そして重要なことは、お客様は最終的な料理だけを見て、キッチンでの調理過程（PHPコード）は見えないということです。
+
+### なぜ2025年にPHPを学ぶべきか
+
+**現代のPHPの強み：**
+- **パフォーマンス向上**：PHP 8+では従来の2-3倍の処理速度を実現
+- **型安全性**：厳密な型宣言によるバグ防止
+- **JITコンパイル**：さらなる高速化を実現
+- **豊富な求人市場**：日本国内でも継続的な需要
+- **学習コストの低さ**：初心者にも理解しやすい文法
+
+### 開発環境の構築
+
+**XAMPP を使用した環境構築（推奨）**
+
+1. **ダウンロードとインストール**
+   - https://www.apachefriends.org/ からダウンロード
+   - PHP 8.1以降のバージョンを選択
+   - インストーラーを実行してApache、MySQL、PHPを選択
+
+2. **動作確認**
+   ```bash
+   # XAMPPコントロールパネルでApacheを起動
+   # ブラウザで http://localhost にアクセス
+   ```
+
+3. **最初のPHPファイル作成**
+   ```php
+   <?php
+   echo "こんにちは、PHP の世界へようこそ！";
+   echo "今日は" . date("Y年m月d日") . "です";
+   ?>
+   ```
+
+## 第2章：PHP基本構文 - データ型、配列、定数、演算子
+
+### PHPの基本文法ルール
+
+**PHPタグと文の終了**
+```php
+<?php
+// PHPコードは<?phpタグで開始
+echo "Hello World"; // 文は必ずセミコロンで終了
+?>
+
+<?= "短縮echo構文" ?> // PHP 5.4以降
+```
+
+**コメントの書き方**
+```php
+<?php
+// 単行コメント
+# Unixスタイルコメント（あまり使わない）
+
+/* 複数行
+   コメント */
+
+/**
+ * 関数やクラス用のDocBlockコメント
+ * @param string $name 名前
+ * @return string 挨拶文
+ */
+?>
+```
+
+### 変数の基本概念
+
+**変数の宣言と命名規則**
+```php
+<?php
+$name = "田中太郎";        // 正しい変数名
+$age = 25;               // 数値も格納可能
+$_private = "アンダースコア開始OK";
+
+// 命名のベストプラクティス
+$user_name = "yamada@example.com";    // スネークケース
+$userName = "sato@example.com";       // キャメルケース
+
+// 避けるべき命名
+// $25age = 25;      // 数字で開始は禁止
+// $my-var = "test"; // ハイフンは使用不可
+?>
+```
+
+### データ型の理解
+
+**文字列（String）の操作**
+```php
+<?php
+$single_quoted = 'リテラル文字列';
+$double_quoted = "変数が展開される：$single_quoted";
+
+// 文字列の結合
+$full_name = "田中" . " " . "太郎";
+
+// PHP 8+ の文字列関数
+$text = "こんにちはPHP";
+echo strlen($text);                    // 文字列の長さ
+echo str_contains($text, "PHP");       // 文字列が含まれるか (true)
+echo str_starts_with($text, "こんにちは"); // 指定文字で始まるか (true)
+
+// 実用的な例：メールアドレスの検証
+$email = "user@example.com";
+if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo "有効なメールアドレスです";
+}
+?>
+```
+
+**数値型（Integer, Float）**
+```php
+<?php
+$integer = 123;
+$float = 123.45;
+$scientific = 1.2e3;    // 1200
+
+// PHP 8+ 数値セパレータ
+$large_number = 1_000_000;  // 1,000,000と同じ
+
+// 計算例：消費税計算
+$price = 1000;
+$tax_rate = 0.10;
+$total = $price * (1 + $tax_rate);
+echo "税込価格：" . number_format($total) . "円";
+?>
+```
+
+**ブール値（Boolean）と null**
+```php
+<?php
+$is_logged_in = true;
+$is_admin = false;
+$undefined_value = null;
+
+// falsy値（false と評価される値）
+$falsy_values = [false, 0, 0.0, '', '0', null, []];
+
+// 実用例：ユーザー認証チェック
+function checkAccess($user) {
+    if ($user && $user['is_active']) {
+        return "アクセス許可";
+    }
+    return "アクセス拒否";
+}
+?>
+```
+
+### 型宣言と厳密型指定（PHP 8+）
+
+**厳密型指定の使用**
+```php
+<?php declare(strict_types=1);
+
+// 型安全な関数の例
+function calculateCircleArea(float $radius): float {
+    return 3.14159 * $radius * $radius;
+}
+
+// Union型（PHP 8+）
+function processInput(int|string $value): string {
+    if (is_int($value)) {
+        return "数値：" . $value;
+    }
+    return "文字列：" . $value;
+}
+
+echo calculateCircleArea(5.0);        // 78.53975
+echo processInput(100);               // "数値：100"
+echo processInput("hello");           // "文字列：hello"
+?>
+```
+
+### 配列の理解と活用
+
+**インデックス配列**
+```php
+<?php
+// モダンな配列構文（PHP 5.4+）
+$fruits = ["りんご", "バナナ", "オレンジ"];
+$numbers = [1, 2, 3, 4, 5];
+
+// 要素へのアクセス
+echo $fruits[0];  // "りんご"
+echo count($fruits);  // 3
+
+// 要素の追加
+$fruits[] = "ぶどう";          // 末尾に追加
+array_push($fruits, "いちご");  // 同様に末尾に追加
+?>
+```
+
+**連想配列（実用例）**
+```php
+<?php
+// ユーザー情報の管理
+$user = [
+    "name" => "田中太郎",
+    "email" => "tanaka@example.com", 
+    "age" => 28,
+    "skills" => ["PHP", "MySQL", "JavaScript"]
+];
+
+// 連想配列の操作
+echo $user["name"];           // "田中太郎"
+echo $user["skills"][0];      // "PHP"
+
+// 配列の更新
+$user["last_login"] = date("Y-m-d H:i:s");
+
+// 実用的な関数：ユーザー情報表示
+function displayUserInfo($user) {
+    echo "名前：" . $user["name"] . "\n";
+    echo "メール：" . $user["email"] . "\n";
+    echo "スキル：" . implode(", ", $user["skills"]) . "\n";
+}
+?>
+```
+
+**多次元配列と実用的な処理**
+```php
+<?php
+$employees = [
+    [
+        "name" => "田中太郎",
+        "department" => "開発部",
+        "salary" => 500000,
+        "projects" => ["ECサイト", "API開発"]
+    ],
+    [
+        "name" => "佐藤花子", 
+        "department" => "営業部",
+        "salary" => 450000,
+        "projects" => ["新規開拓", "既存顧客対応"]
+    ]
+];
+
+// 部門別平均給与計算
+function calculateAverageSalary($employees, $department) {
+    $total = 0;
+    $count = 0;
+    
+    foreach ($employees as $employee) {
+        if ($employee["department"] === $department) {
+            $total += $employee["salary"];
+            $count++;
+        }
+    }
+    
+    return $count > 0 ? $total / $count : 0;
+}
+?>
+```
+
+### モダンな配列関数（PHP 8+）
+
+```php
+<?php
+$numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// アロー関数を使用した配列処理（PHP 7.4+）
+$evens = array_filter($numbers, fn($n) => $n % 2 === 0);      // [2, 4, 6, 8, 10]
+$squared = array_map(fn($n) => $n * $n, $numbers);           // [1, 4, 9, 16, ...]
+$sum = array_reduce($numbers, fn($carry, $item) => $carry + $item, 0); // 55
+
+// 実用例：商品リストの処理
+$products = [
+    ["name" => "ノートPC", "price" => 100000, "category" => "電子機器"],
+    ["name" => "マウス", "price" => 2000, "category" => "電子機器"],
+    ["name" => "本", "price" => 1500, "category" => "書籍"]
+];
+
+// 高額商品のフィルタリング
+$expensive_products = array_filter($products, fn($p) => $p["price"] > 5000);
+
+// カテゴリ別グルーピング
+$grouped = [];
+foreach ($products as $product) {
+    $grouped[$product["category"]][] = $product;
+}
+?>
+```
+
+### 定数の理解
+
+**const vs define() の使い分け**
+```php
+<?php
+// コンパイル時定数（推奨）
+const SITE_NAME = "私のWebサイト";
+const DEBUG_MODE = true;
+const SUPPORTED_LANGUAGES = ["ja", "en", "zh"];
+
+// 実行時定数
+define("API_VERSION", "v2.0");
+define("MAX_FILE_SIZE", 1024 * 1024 * 5); // 5MB
+
+// 実用例：設定管理
+const CONFIG = [
+    "database" => [
+        "host" => "localhost",
+        "name" => "my_app_db",
+        "charset" => "utf8mb4"
+    ],
+    "app" => [
+        "timezone" => "Asia/Tokyo",
+        "locale" => "ja_JP"
+    ]
+];
+
+// 設定値取得関数
+function getConfig($key) {
+    $keys = explode(".", $key);
+    $value = CONFIG;
+    
+    foreach ($keys as $k) {
+        if (!isset($value[$k])) return null;
+        $value = $value[$k];
+    }
+    
+    return $value;
+}
+
+echo getConfig("database.host"); // "localhost"
+?>
+```
+
+### 演算子の理解と実用
+
+**算術演算子と代入演算子**
+```php
+<?php
+$price = 1000;
+$quantity = 3;
+
+// 基本計算
+$subtotal = $price * $quantity;      // 3000
+$tax = $subtotal * 0.10;             // 300  
+$total = $subtotal + $tax;           // 3300
+
+// 代入演算子
+$points = 100;
+$points += 50;      // $points = 150
+$points *= 2;       // $points = 300
+
+// null合体演算子（PHP 7+）
+$user_name = $_POST['name'] ?? 'ゲスト';
+$config['theme'] ??= 'default';  // PHP 7.4+
+?>
+```
+
+**比較演算子と論理演算子**
+```php
+<?php
+$age = 20;
+$has_license = true;
+
+// 厳密比較を推奨
+if ($age === 20) {              // 型も含めて比較
+    echo "20歳です";
+}
+
+// 論理演算子
+if ($age >= 18 && $has_license) {
+    echo "運転できます";
+}
+
+// 実用例：フォームバリデーション
+function validateAge($age) {
+    if (!is_numeric($age)) {
+        return "年齢は数値で入力してください";
+    }
+    
+    $age = (int)$age;
+    if ($age < 0 || $age > 150) {
+        return "有効な年齢を入力してください";  
+    }
+    
+    return null; // エラーなし
+}
+?>
+```
+
+## 第3章：制御構文 Part1 - if文とforループ
+
+### if文の基本概念
+
+**基本的なif文の構造**
+```php
+<?php
+$score = 85;
+
+if ($score >= 90) {
+    echo "優秀です！";
+} elseif ($score >= 70) {
+    echo "良くできました";
+} elseif ($score >= 60) {
+    echo "合格です";
+} else {
+    echo "もう少し頑張りましょう";
+}
+
+// 実用例：ユーザー権限チェック
+function checkUserPermission($user, $action) {
+    if (!$user) {
+        return "ログインが必要です";
+    }
+    
+    if ($user['role'] === 'admin') {
+        return "全ての操作が許可されています";
+    }
+    
+    if ($user['role'] === 'editor' && in_array($action, ['read', 'write'])) {
+        return "操作が許可されています";
+    }
+    
+    return "この操作は許可されていません";
+}
+?>
+```
+
+**三項演算子とnull合体演算子**
+```php
+<?php
+// 三項演算子（短い条件分岐）
+$age = 20;
+$status = ($age >= 18) ? "大人" : "未成年";
+
+// null合体演算子（PHP 7+）
+$username = $_POST['username'] ?? $_GET['username'] ?? 'ゲスト';
+
+// 実用例：ユーザー表示名の決定
+function getDisplayName($user) {
+    return $user['display_name'] 
+           ?? $user['username'] 
+           ?? $user['email'] 
+           ?? 'Unknown User';
+}
+
+// match式（PHP 8+）- switchより安全
+$grade = 'B';
+$message = match($grade) {
+    'A' => '優秀！',
+    'B' => 'よくできました',
+    'C' => 'もう少し',
+    default => '評価不明'
+};
+?>
+```
+
+### forループの理解
+
+**基本的なforループ**
+```php
+<?php
+// 基本構文
+for ($i = 1; $i <= 10; $i++) {
+    echo "数字：$i<br>";
+}
+
+// 実用例：九九表の作成
+echo "<table border='1'>";
+for ($i = 1; $i <= 9; $i++) {
+    echo "<tr>";
+    for ($j = 1; $j <= 9; $j++) {
+        $result = $i * $j;
+        echo "<td>$i × $j = $result</td>";
+    }
+    echo "</tr>";
+}
+echo "</table>";
+?>
+```
+
+**パフォーマンスを考慮したforループ**
+```php
+<?php
+$items = range(1, 1000);
+
+// ❌ 効率の悪い例：毎回count()を実行
+for ($i = 0; $i < count($items); $i++) {
+    echo $items[$i];
+}
+
+// ✅ 効率的な例：事前にcount()を実行
+$item_count = count($items);
+for ($i = 0; $i < $item_count; $i++) {
+    echo $items[$i];
+}
+
+// さらに効率的：foreachを使用
+foreach ($items as $item) {
+    echo $item;
+}
+?>
+```
+
+### foreachループの活用
+
+**配列の反復処理**
+```php
+<?php
+$students = [
+    "田中" => 85,
+    "佐藤" => 92, 
+    "鈴木" => 78,
+    "高橋" => 88
+];
+
+// 値のみ取得
+foreach ($students as $score) {
+    echo "得点：$score<br>";
+}
+
+// キーと値両方を取得
+foreach ($students as $name => $score) {
+    $grade = match(true) {
+        $score >= 90 => 'A',
+        $score >= 80 => 'B', 
+        $score >= 70 => 'C',
+        default => 'D'
+    };
+    echo "$name さん：$score 点（$grade）<br>";
+}
+?>
+```
+
+**実用的な例：商品管理システム**
+```php
+<?php
+$products = [
+    ["id" => 1, "name" => "ノートPC", "price" => 98000, "stock" => 5],
+    ["id" => 2, "name" => "マウス", "price" => 2500, "stock" => 20],
+    ["id" => 3, "name" => "キーボード", "price" => 8000, "stock" => 15]
+];
+
+// 在庫切れ商品のチェック
+$out_of_stock = [];
+foreach ($products as $product) {
+    if ($product['stock'] <= 0) {
+        $out_of_stock[] = $product['name'];
+    }
+}
+
+// 価格帯別分類
+$price_categories = [
+    'budget' => [],      // 5000円未満
+    'standard' => [],    // 5000-30000円  
+    'premium' => []      // 30000円以上
+];
+
+foreach ($products as $product) {
+    if ($product['price'] < 5000) {
+        $price_categories['budget'][] = $product;
+    } elseif ($product['price'] <= 30000) {
+        $price_categories['standard'][] = $product;
+    } else {
+        $price_categories['premium'][] = $product;
+    }
+}
+?>
+```
+
+### 配列の構造化代入（PHP 7.1+）
+
+```php
+<?php
+// 配列の構造化代入
+$user_data = [
+    ["田中太郎", 28, "tokyo@example.com"],
+    ["佐藤花子", 25, "sato@example.com"],
+    ["鈴木一郎", 32, "suzuki@example.com"]
+];
+
+foreach ($user_data as [$name, $age, $email]) {
+    echo "名前：$name、年齢：$age、メール：$email<br>";
+}
+
+// より複雑な例：CSVデータの処理
+$csv_data = [
+    ["商品名", "価格", "カテゴリ", "在庫"],
+    ["ノートPC", "98000", "電子機器", "5"],
+    ["本", "1200", "書籍", "50"]
+];
+
+[$headers, ...$data] = $csv_data; // ヘッダーとデータを分離
+
+foreach ($data as [$name, $price, $category, $stock]) {
+    if ((int)$stock < 10) {
+        echo "警告：$name の在庫が少なくなっています（残り$stock個）<br>";
+    }
+}
+?>
+```
+
+### break文とcontinue文
+
+```php
+<?php
+// break：ループからの脱出
+for ($i = 1; $i <= 100; $i++) {
+    if ($i === 50) {
+        break; // 50に到達したらループを終了
+    }
+    echo $i . " ";
+}
+
+// continue：次の反復へスキップ
+$numbers = range(1, 20);
+foreach ($numbers as $num) {
+    if ($num % 2 === 0) {
+        continue; // 偶数はスキップ
+    }
+    echo $num . " "; // 奇数のみ表示
+}
+
+// 実用例：ファイル処理
+$files = ["document.txt", "", "image.jpg", "data.csv", ""];
+foreach ($files as $file) {
+    if (empty($file)) {
+        continue; // 空のファイル名をスキップ
+    }
+    
+    echo "処理中：$file<br>";
+}
+?>
+```
+
+## 第4章：制御構文 Part2 - whileループとswitch文
+
+### whileループの基本概念
+
+**基本的なwhile文の構造**
+```php
+<?php
+// 基本構文
+$counter = 1;
+while ($counter <= 5) {
+    echo "カウント：$counter<br>";
+    $counter++; // 重要：条件変数の更新
+}
+
+// 実用例：ユーザー入力の検証
+function getUserInput() {
+    do {
+        $input = readline("1から10までの数字を入力してください：");
+        $number = (int)$input;
+        
+        if ($number < 1 || $number > 10) {
+            echo "無効な入力です。もう一度試してください。\n";
+        }
+    } while ($number < 1 || $number > 10);
+    
+    return $number;
+}
+?>
+```
+
+**do-whileループ - 必ず1回は実行**
+```php
+<?php
+// メニューシステムの例
+function showMenu() {
+    $choice = 0;
+    
+    do {
+        echo "\n=== メインメニュー ===\n";
+        echo "1. ユーザー登録\n";
+        echo "2. ログイン\n"; 
+        echo "3. 設定\n";
+        echo "4. 終了\n";
+        echo "選択してください (1-4): ";
+        
+        $input = readline();
+        $choice = (int)$input;
+        
+        switch ($choice) {
+            case 1:
+                echo "ユーザー登録画面へ...\n";
+                break;
+            case 2:
+                echo "ログイン画面へ...\n";
+                break;
+            case 3:
+                echo "設定画面へ...\n";
+                break;
+            case 4:
+                echo "プログラムを終了します\n";
+                break;
+            default:
+                echo "無効な選択です\n";
+        }
+    } while ($choice !== 4);
+}
+?>
+```
+
+### 無限ループの防止策
+
+**よくある間違いと対策**
+```php
+<?php
+// ❌ 危険：無限ループの例
+function dangerousLoop() {
+    $i = 1;
+    while ($i <= 10) {
+        echo $i;
+        // $i++; が抜けている！
+    }
+}
+
+// ✅ 安全：カウンタ制限付きループ
+function safeLoop() {
+    $i = 1;
+    $max_iterations = 1000; // 安全装置
+    $iterations = 0;
+    
+    while ($i <= 10 && $iterations < $max_iterations) {
+        echo $i;
+        $i++;
+        $iterations++;
+        
+        if ($iterations >= $max_iterations) {
+            error_log("警告：最大反復回数に達しました");
+            break;
+        }
+    }
+}
+
+// 実用例：APIから全データを取得
+function fetchAllData($api_url) {
+    $all_data = [];
+    $page = 1;
+    $max_pages = 100; // 安全装置
+    
+    while ($page <= $max_pages) {
+        $response = file_get_contents("$api_url?page=$page");
+        $data = json_decode($response, true);
+        
+        if (empty($data) || !isset($data['items'])) {
+            break; // データがない場合は終了
+        }
+        
+        $all_data = array_merge($all_data, $data['items']);
+        
+        // 次のページがない場合は終了
+        if (!isset($data['has_more']) || !$data['has_more']) {
+            break;
+        }
+        
+        $page++;
+    }
+    
+    return $all_data;
+}
+?>
+```
+
+### switch文の理解
+
+**基本的なswitch文**
+```php
+<?php
+$day = date('w'); // 0=日曜日, 1=月曜日...
+
+switch ($day) {
+    case 0:
+    case 6:
+        echo "今日は休日です";
+        break;
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+        echo "今日は平日です";
+        break;
+    default:
+        echo "不明な曜日";
+}
+
+// 実用例：HTTPステータスコード処理
+function getStatusMessage($code) {
+    switch ($code) {
+        case 200:
+            return "成功";
+        case 201:
+            return "作成完了";
+        case 400:
+            return "リクエストエラー";
+        case 401:
+            return "認証が必要";
+        case 403:
+            return "アクセス拒否";
+        case 404:
+            return "ページが見つかりません";
+        case 500:
+            return "サーバーエラー";
+        default:
+            return "不明なステータス";
+    }
+}
+?>
+```
+
+### match式（PHP 8+）- switchの改良版
+
+**match式の利点**
+```php
+<?php
+// switch文（従来）
+function getGradeSwitch($score) {
+    switch (true) {
+        case $score >= 90:
+            $grade = 'A';
+            break;
+        case $score >= 80:
+            $grade = 'B';
+            break;
+        case $score >= 70:
+            $grade = 'C';
+            break;
+        default:
+            $grade = 'F';
+    }
+    return $grade;
+}
+
+// match式（PHP 8+）- より安全で簡潔
+function getGradeMatch($score) {
+    return match (true) {
+        $score >= 90 => 'A',
+        $score >= 80 => 'B',
+        $score >= 70 => 'C',
+        default => 'F'
+    };
+}
+
+// 実用例：ユーザー権限の管理
+function getPermissions($role) {
+    return match ($role) {
+        'admin' => ['read', 'write', 'delete', 'manage'],
+        'editor' => ['read', 'write'],
+        'viewer' => ['read'],
+        'guest', 'anonymous' => [], // 複数値対応
+        default => throw new InvalidArgumentException("不明な役割：$role")
+    };
+}
+
+// 料金計算の例
+function calculateShippingFee($weight, $distance) {
+    $base_fee = match (true) {
+        $weight <= 1 => 500,
+        $weight <= 5 => 800,
+        $weight <= 10 => 1200,
+        default => 1500
+    };
+    
+    $distance_multiplier = match (true) {
+        $distance <= 50 => 1.0,
+        $distance <= 200 => 1.5,
+        default => 2.0
+    };
+    
+    return $base_fee * $distance_multiplier;
+}
+?>
+```
+
+### フォール・スルー動作の理解
+
+```php
+<?php
+// 意図的なフォール・スルー（同じ処理を実行）
+function getWorkDayType($day) {
+    switch ($day) {
+        case 'monday':
+        case 'tuesday':
+        case 'wednesday':
+        case 'thursday':
+            // 平日の共通処理
+            setupWorkEnvironment();
+            // フォール・スルー
+        case 'friday':
+            // 平日（金曜日含む）の処理
+            return "平日です";
+            
+        case 'saturday':
+        case 'sunday':
+            return "休日です";
+            
+        default:
+            return "不明な曜日";
+    }
+}
+
+// ❌ 危険：意図しないフォール・スルー
+function dangerousSwitch($action) {
+    switch ($action) {
+        case 'delete':
+            deleteRecord();
+            // break; が抜けている！
+        case 'update':
+            updateRecord(); // deleteの場合も実行されてしまう
+            break;
+    }
+}
+?>
+```
+
+### switch vs if-elseif の選択基準
+
+```php
+<?php
+// switchが適している場合：一つの変数の複数値比較
+function handleUserCommand($command) {
+    switch ($command) {
+        case 'start':
+        case 'begin':
+            return startProcess();
+        case 'stop':
+        case 'end':
+            return stopProcess();
+        case 'pause':
+            return pauseProcess();
+        case 'resume':
+            return resumeProcess();
+        default:
+            return "不明なコマンド";
+    }
+}
+
+// if-elseifが適している場合：複雑な条件
+function determineUserCategory($user) {
+    if (!$user || !$user['is_active']) {
+        return 'inactive';
+    }
+    
+    if ($user['age'] < 18 && $user['has_guardian_consent']) {
+        return 'minor_with_consent';
+    }
+    
+    if ($user['premium_member'] && $user['subscription_active']) {
+        return 'premium';
+    }
+    
+    if ($user['total_purchases'] > 100000) {
+        return 'vip';
+    }
+    
+    return 'standard';
+}
+?>
+```
+
+### エラーハンドリングと制御構文
+
+```php
+<?php
+// try-catchとの組み合わせ
+function processUserAction($action) {
+    $max_retries = 3;
+    $attempt = 0;
+    
+    while ($attempt < $max_retries) {
+        try {
+            switch ($action) {
+                case 'save':
+                    return saveData();
+                case 'send':
+                    return sendEmail();
+                case 'process':
+                    return processPayment();
+                default:
+                    throw new InvalidArgumentException("不明なアクション：$action");
+            }
+        } catch (TemporaryException $e) {
+            $attempt++;
+            if ($attempt >= $max_retries) {
+                throw new Exception("最大試行回数に達しました：" . $e->getMessage());
+            }
+            sleep(1); // 1秒待機してリトライ
+        }
+    }
+}
+
+// バリデーションと制御構文の組み合わせ
+function validateAndProcess($data) {
+    $errors = [];
+    
+    // バリデーションループ
+    foreach ($data as $field => $value) {
+        switch ($field) {
+            case 'email':
+                if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                    $errors[] = "無効なメールアドレス";
+                }
+                break;
+                
+            case 'age':
+                if (!is_numeric($value) || $value < 0 || $value > 150) {
+                    $errors[] = "無効な年齢";
+                }
+                break;
+                
+            case 'phone':
+                if (!preg_match('/^[0-9-]+$/', $value)) {
+                    $errors[] = "無効な電話番号";
+                }
+                break;
+        }
+    }
+    
+    if (!empty($errors)) {
+        return ['success' => false, 'errors' => $errors];
+    }
+    
+    return ['success' => true, 'data' => $data];
+}
+?>
+```
+
+## 第5章：PHP関数 - コードの再利用と組織化
+
+### 関数とは何か、なぜ使うのか
+
+**関数をリモコンに例えると**  
+関数は、複雑な作業を簡単なボタン一つで実行できるリモコンのようなものです。一度プログラムを書けば、何度でも同じ作業を実行できます。
+
+**関数の利点**
+```php
+<?php
+// ❌ 関数を使わない例（重複コード）
+$user1_greeting = "こんにちは、" . $user1_name . "さん！残高は" . $user1_balance . "円です。";
+$user2_greeting = "こんにちは、" . $user2_name . "さん！残高は" . $user2_balance . "円です。";
+$user3_greeting = "こんにちは、" . $user3_name . "さん！残高は" . $user3_balance . "円です。";
+
+// ✅ 関数を使った例（再利用可能）
+function createGreeting($name, $balance) {
+    return "こんにちは、{$name}さん！残高は{$balance}円です。";
+}
+
+$user1_greeting = createGreeting("田中", 50000);
+$user2_greeting = createGreeting("佐藤", 75000);
+$user3_greeting = createGreeting("鈴木", 30000);
+?>
+```
+
+### 関数の基本構文
+
+**関数の定義と呼び出し**
+```php
+<?php
+// 基本的な関数定義
+function sayHello() {
+    echo "こんにちは！";
+}
+
+// 関数の呼び出し
+sayHello(); // 出力：こんにちは！
+
+// 引数付きの関数
+function greetUser($name, $time = "今日") {
+    return "こんにちは、{$name}さん！{$time}もお疲れさまです。";
+}
+
+echo greetUser("田中");                    // "こんにちは、田中さん！今日もお疲れさまです。"
+echo greetUser("佐藤", "今日");            // "こんにちは、佐藤さん！今日もお疲れさまです。"
+?>
+```
+
+**実用的な例：計算機能**
+```php
+<?php
+// 消費税計算関数
+function calculateTax($price, $rate = 0.10) {
+    return $price * $rate;
+}
+
+// 税込み価格計算関数
+function calculateTotalPrice($price, $tax_rate = 0.10) {
+    $tax = calculateTax($price, $tax_rate);
+    return $price + $tax;
+}
+
+// 商品価格の管理
+function formatPrice($price) {
+    return number_format($price) . '円';
+}
+
+$item_price = 1000;
+$tax_included = calculateTotalPrice($item_price);
+echo "商品価格：" . formatPrice($item_price) . "<br>";
+echo "税込価格：" . formatPrice($tax_included) . "<br>";
+?>
+```
+
+### パラメータとデフォルト値（PHP 8+）
+
+**デフォルト引数の活用**
+```php
+<?php
+// 基本的なデフォルト値
+function makeCoffee($type = "コーヒー", $sugar = false, $milk = false) {
+    $result = "{$type}を作ります";
+    
+    $additions = [];
+    if ($sugar) $additions[] = "砂糖";
+    if ($milk) $additions[] = "ミルク";
+    
+    if (!empty($additions)) {
+        $result .= "（" . implode("、", $additions) . "入り）";
+    }
+    
+    return $result;
+}
+
+echo makeCoffee();                              // "コーヒーを作ります"
+echo makeCoffee("エスプレッソ", true);           // "エスプレッソを作ります（砂糖入り）"
+echo makeCoffee("カフェラテ", false, true);     // "カフェラテを作ります（ミルク入り）"
+
+// 可変長引数（...演算子）
+function calculateSum(...$numbers) {
+    $total = 0;
+    foreach ($numbers as $number) {
+        $total += $number;
+    }
+    return $total;
+}
+
+echo calculateSum(1, 2, 3, 4, 5);              // 15
+echo calculateSum(10, 20);                     // 30
+
+// 実用例：ログ関数
+function writeLog($level, $message, ...$context) {
+    $timestamp = date('Y-m-d H:i:s');
+    $log_entry = "[$timestamp] $level: $message";
+    
+    if (!empty($context)) {
+        $log_entry .= " Context: " . json_encode($context);
+    }
+    
+    echo $log_entry . "\n";
+}
+
+writeLog("INFO", "ユーザーがログインしました");
+writeLog("ERROR", "データベース接続エラー", "host" => "localhost", "db" => "myapp");
+?>
+```
+
+### 型宣言と戻り値の型（PHP 8+）
+
+**厳密型指定の使用**
+```php
+<?php declare(strict_types=1);
+
+// 基本的な型指定
+function add(int $a, int $b): int {
+    return $a + $b;
+}
+
+function getFullName(string $first, string $last): string {
+    return $first . ' ' . $last;
+}
+
+// Union型（PHP 8+）
+function processValue(int|string $value): string {
+    if (is_int($value)) {
+        return "数値：" . $value;
+    }
+    return "文字列：" . $value;
+}
+
+// null許可型
+function findUserById(int $id): ?array {
+    // データベースから検索（模擬）
+    $users = [
+        1 => ['name' => '田中太郎', 'email' => 'tanaka@example.com'],
+        2 => ['name' => '佐藤花子', 'email' => 'sato@example.com']
+    ];
+    
+    return $users[$id] ?? null;
+}
+
+// 実用例：バリデーション関数
+function validateEmail(string $email): bool {
+    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+}
+
+function sanitizeInput(string $input): string {
+    return htmlspecialchars(strip_tags(trim($input)));
+}
+
+// 複雑な型：配列の型指定
+function processUsers(array $users): array {
+    $processed = [];
+    
+    foreach ($users as $user) {
+        if (!isset($user['name']) || !isset($user['email'])) {
+            continue;
+        }
+        
+        $processed[] = [
+            'name' => sanitizeInput($user['name']),
+            'email' => strtolower(trim($user['email'])),
+            'valid_email' => validateEmail($user['email'])
+        ];
+    }
+    
+    return $processed;
+}
+?>
+```
+
+### 変数スコープの理解
+
+**ローカルスコープとグローバルスコープ**
+```php
+<?php
+$global_message = "私はグローバル変数です";
+
+function testLocal() {
+    $local_message = "私はローカル変数です";
+    echo $local_message; // OK
+    
+    // global $global_message; // これがないとエラー
+    // echo $global_message; // エラー：未定義変数
+}
+
+// グローバル変数にアクセスする正しい方法
+function useGlobal() {
+    global $global_message;
+    echo $global_message; // OK
+}
+
+// 静的変数の例
+function pageVisitCounter() {
+    static $visit_count = 0;
+    $visit_count++;
+    return "このページは{$visit_count}回目の訪問です";
+}
+
+echo pageVisitCounter(); // "このページは1回目の訪問です"
+echo pageVisitCounter(); // "このページは2回目の訪問です"
+?>
+```
+
+**参照渡しの活用**
+```php
+<?php
+// 値渡し（通常）
+function addTenByValue($number) {
+    $number += 10;
+    return $number;
+}
+
+// 参照渡し（元の変数を変更）
+function addTenByReference(&$number) {
+    $number += 10;
+}
+
+$value = 5;
+$result1 = addTenByValue($value);
+echo $value;    // 5 (元の変数は変更されない)
+echo $result1;  // 15
+
+$value = 5;
+addTenByReference($value);
+echo $value;    // 15 (元の変数が変更される)
+
+// 実用例：配列の要素を直接変更
+function doubleArrayValues(&$array) {
+    foreach ($array as &$value) {
+        if (is_numeric($value)) {
+            $value *= 2;
+        }
+    }
+    unset($value); // 参照を解除（重要）
+}
+
+$numbers = [1, 2, 3, 4, 5];
+doubleArrayValues($numbers);
+print_r($numbers); // [2, 4, 6, 8, 10]
+?>
+```
+
+### 無名関数とクロージャ
+
+**基本的な無名関数**
+```php
+<?php
+// 基本的な無名関数
+$multiply = function($a, $b) {
+    return $a * $b;
+};
+
+echo $multiply(3, 4); // 12
+
+// クロージャ（外部変数のキャプチャ）
+$tax_rate = 0.10;
+$calculateTotal = function($price) use ($tax_rate) {
+    return $price * (1 + $tax_rate);
+};
+
+echo $calculateTotal(1000); // 1100
+
+// 実用例：配列操作
+$products = [
+    ['name' => 'ノートPC', 'price' => 100000],
+    ['name' => 'マウス', 'price' => 2500],
+    ['name' => 'キーボード', 'price' => 8000]
+];
+
+// 高額商品のフィルタリング
+$expensive_products = array_filter($products, function($product) {
+    return $product['price'] > 5000;
+});
+
+// 商品名のみ抽出
+$product_names = array_map(function($product) {
+    return $product['name'];
+}, $products);
+?>
+```
+
+### アロー関数（PHP 7.4+）
+
+**簡潔な関数記法**
+```php
+<?php
+$numbers = [1, 2, 3, 4, 5];
+
+// 従来の無名関数
+$doubled_old = array_map(function($n) { return $n * 2; }, $numbers);
+
+// アロー関数（PHP 7.4+）
+$doubled_new = array_map(fn($n) => $n * 2, $numbers);
+
+// 外部変数の自動キャプチャ
+$multiplier = 3;
+$tripled = array_map(fn($n) => $n * $multiplier, $numbers);
+
+// 実用例：商品データの処理
+$products = [
+    ['name' => 'ノートPC', 'price' => 100000, 'category' => 'electronics'],
+    ['name' => '本', 'price' => 1500, 'category' => 'books'],
+    ['name' => 'マウス', 'price' => 2500, 'category' => 'electronics']
+];
+
+// 電子機器のみフィルタリング
+$electronics = array_filter($products, fn($p) => $p['category'] === 'electronics');
+
+// 価格を20%増しにする
+$price_increased = array_map(fn($p) => [...$p, 'new_price' => $p['price'] * 1.2], $products);
+
+// 価格帯別に分類
+$by_price_range = array_reduce($products, function($acc, $product) {
+    $range = $product['price'] < 5000 ? 'budget' : 'premium';
+    $acc[$range][] = $product;
+    return $acc;
+}, ['budget' => [], 'premium' => []]);
+?>
+```
+
+### 名前付き引数（PHP 8+）
+
+```php
+<?php
+// 従来の位置引数
+function createUser($name, $email, $age = 25, $active = true, $role = 'user') {
+    return [
+        'name' => $name,
+        'email' => $email, 
+        'age' => $age,
+        'active' => $active,
+        'role' => $role
+    ];
+}
+
+// 位置引数（すべての引数が必要）
+$user1 = createUser("田中太郎", "tanaka@example.com", 30, true, "admin");
+
+// 名前付き引数（順序無関係、デフォルト値スキップ可能）
+$user2 = createUser(
+    name: "佐藤花子",
+    email: "sato@example.com", 
+    role: "editor",
+    active: false
+    // age はデフォルト値（25）を使用
+);
+
+// 実用例：HTMLタグ生成関数
+function htmlElement($tag, $content, $class = null, $id = null, $style = null) {
+    $attributes = array_filter([
+        'class' => $class,
+        'id' => $id,
+        'style' => $style
+    ]);
+    
+    $attr_string = '';
+    foreach ($attributes as $key => $value) {
+        $attr_string .= " $key=\"$value\"";
+    }
+    
+    return "<$tag$attr_string>$content</$tag>";
+}
+
+// 名前付き引数で可読性向上
+echo htmlElement(
+    tag: "div",
+    content: "こんにちは！",
+    class: "greeting",
+    id: "main-greeting"
+);
+?>
+```
+
+### 組み込み関数の活用
+
+**文字列操作関数**
+```php
+<?php
+// PHP 8+ の新しい文字列関数
+$text = "Hello World PHP";
+
+echo str_contains($text, "World");      // true
+echo str_starts_with($text, "Hello");   // true  
+echo str_ends_with($text, "PHP");       // true
+
+// 実用例：ファイル処理
+function processFileName($filename) {
+    $info = pathinfo($filename);
+    
+    return [
+        'name' => $info['filename'],
+        'extension' => $info['extension'] ?? null,
+        'is_image' => in_array($info['extension'] ?? '', ['jpg', 'jpeg', 'png', 'gif']),
+        'safe_name' => preg_replace('/[^a-zA-Z0-9._-]/', '_', $filename)
+    ];
+}
+
+// 配列操作関数の組み合わせ
+$users = [
+    ['name' => '田中', 'age' => 25, 'department' => '開発'],
+    ['name' => '佐藤', 'age' => 30, 'department' => '営業'],
+    ['name' => '鈴木', 'age' => 28, 'department' => '開発']
+];
+
+// 関数型プログラミング風の処理
+$developers = array_filter($users, fn($user) => $user['department'] === '開発');
+$ages = array_map(fn($user) => $user['age'], $developers);
+$average_age = array_sum($ages) / count($ages);
+
+echo "開発部の平均年齢：" . round($average_age, 1) . "歳";
+?>
+```
+
+### エラーハンドリングと関数
+
+```php
+<?php
+// 例外を投げる関数
+function divide(float $a, float $b): float {
+    if ($b === 0.0) {
+        throw new InvalidArgumentException("ゼロで除算はできません");
+    }
+    return $a / $b;
+}
+
+// バリデーション付きの関数
+function createUserSafe(array $data): array {
+    $errors = [];
+    
+    // 必須フィールドの検証
+    $required_fields = ['name', 'email'];
+    foreach ($required_fields as $field) {
+        if (empty($data[$field])) {
+            $errors[] = "$field は必須です";
+        }
+    }
+    
+    // メールアドレスの検証
+    if (isset($data['email']) && !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "有効なメールアドレスを入力してください";
+    }
+    
+    // 年齢の検証
+    if (isset($data['age'])) {
+        if (!is_numeric($data['age']) || $data['age'] < 0 || $data['age'] > 150) {
+            $errors[] = "有効な年齢を入力してください";
+        }
+    }
+    
+    if (!empty($errors)) {
+        throw new InvalidArgumentException("バリデーションエラー：" . implode(", ", $errors));
+    }
+    
+    return [
+        'name' => trim($data['name']),
+        'email' => strtolower(trim($data['email'])),
+        'age' => isset($data['age']) ? (int)$data['age'] : null,
+        'created_at' => date('Y-m-d H:i:s')
+    ];
+}
+
+// 関数の使用例（エラーハンドリング付き）
+try {
+    $user_data = [
+        'name' => '田中太郎',
+        'email' => 'tanaka@example.com',
+        'age' => 25
+    ];
+    
+    $user = createUserSafe($user_data);
+    echo "ユーザー作成成功：" . $user['name'];
+    
+} catch (InvalidArgumentException $e) {
+    echo "エラー：" . $e->getMessage();
+}
+?>
+```
+
+### 関数のベストプラクティス
+
+```php
+<?php
+// ✅ 良い関数の例
+function calculateMonthlyPayment(float $principal, float $annual_rate, int $years): float {
+    if ($principal <= 0) {
+        throw new InvalidArgumentException("元本は正の値である必要があります");
+    }
+    
+    if ($annual_rate < 0) {
+        throw new InvalidArgumentException("金利は負の値にできません");
+    }
+    
+    if ($years <= 0) {
+        throw new InvalidArgumentException("年数は正の値である必要があります");
+    }
+    
+    if ($annual_rate === 0.0) {
+        return $principal / ($years * 12);
+    }
+    
+    $monthly_rate = $annual_rate / 12;
+    $num_payments = $years * 12;
+    
+    return $principal * ($monthly_rate * pow(1 + $monthly_rate, $num_payments)) 
+           / (pow(1 + $monthly_rate, $num_payments) - 1);
+}
+
+// ❌ 避けるべき関数の例
+function process($data) {
+    // 何をするかわからない
+    // 引数の型が不明
+    // エラーハンドリングなし
+}
+
+// ✅ 単一責任の原則
+function validateUserEmail(string $email): bool {
+    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+}
+
+function sanitizeUserInput(string $input): string {
+    return htmlspecialchars(strip_tags(trim($input)));
+}
+
+function saveUserToDatabase(array $user): bool {
+    // データベース保存処理
+    return true;
+}
+
+// 複雑な処理は小さな関数に分割
+function registerUser(array $user_data): array {
+    $email = $user_data['email'] ?? '';
+    $name = $user_data['name'] ?? '';
+    
+    if (!validateUserEmail($email)) {
+        throw new InvalidArgumentException("無効なメールアドレス");
+    }
+    
+    $user = [
+        'email' => strtolower(trim($email)),
+        'name' => sanitizeUserInput($name),
+        'registered_at' => date('Y-m-d H:i:s')
+    ];
+    
+    if (!saveUserToDatabase($user)) {
+        throw new RuntimeException("ユーザーの保存に失敗しました");
+    }
+    
+    return $user;
+}
+?>
+```
+
+## まとめと次のステップ
+
+### 学習した内容の復習
+
+このチュートリアルでは、PHP プログラミングの基礎から実用的な応用まで、以下の重要なトピックを学習しました：
+
+1. **PHPの基礎概念**：Webサーバーでの動作原理と現代的な開発環境
+2. **データ型と変数**：厳密型指定を含む modern PHP の型システム
+3. **配列操作**：関数型プログラミング的アプローチを含む配列処理
+4. **制御構文**：条件分岐、ループ、modern な match 式の活用
+5. **関数**：再利用可能でメンテナブルなコードの設計
+
+### 実践的な学習の継続
+
+**次に学ぶべきトピック：**
+- オブジェクト指向プログラミング（クラスとオブジェクト）
+- データベース連携（PDO を使用した MySQL 操作）
+- セッション管理とセキュリティ
+- フレームワーク（Laravel）の基礎
+- API 開発とJSON の扱い
+
+**継続学習のための実践課題：**
+1. 簡単な TODO アプリの作成
+2. ユーザー登録・ログイン機能の実装
+3. 商品管理システムの開発
+4. フォームバリデーション機能の実装
+5. CSV ファイルの読み込み・書き出し機能
+
+PHP は継続的に進化している言語です。modern な機能を活用しながら、実際の Web アプリケーション開発に挑戦することで、スキルを向上させていきましょう。

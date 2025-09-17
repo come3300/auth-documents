@@ -1,0 +1,1069 @@
+---
+title: 🧑‍🏫 第1回：PHPとは？&開発環境（Docker）の準備
+category: php
+---
+
+# Next.js 13+ App Router 完全ガイド：プログラミング初心者のための包括的チュートリアル
+
+Next.js は React アプリケーションを構築するための最も人気のあるフレームワークの一つです。本記事では、HTML、CSS、JavaScript の基礎知識を持つ初心者を対象に、Next.js の核となる概念を段階的に学習していきます。
+
+## Next.js とは何か
+
+Next.js は **React の上に構築された本格的なWebアプリケーションフレームワーク** です。Vercel 社によって開発され、React だけでは提供されない数多くの強力な機能を追加しています。
+
+### 従来の React との違い
+
+普通の React アプリケーションは **クライアントサイドでのみ動作** します。つまり、ユーザーのブラウザが JavaScript をダウンロードして実行することで、初めてコンテンツが表示されます。これは **レストランでメニューを受け取った後に、料理人が調理を始める** ようなものです。
+
+一方、Next.js では **サーバーサイドでもコンテンツを生成** できます。これは **事前に調理済みの料理を提供するレストラン** のようなもので、ユーザーは待つことなく即座にコンテンツを見ることができます。
+
+### Next.js の主要なメリット
+
+**パフォーマンスの向上:**
+- **サーバーサイドレンダリング (SSR)**: サーバーで HTML を生成してブラウザに送信
+- **静的サイト生成 (SSG)**: ビルド時に HTML ページを事前生成
+- **自動コード分割**: JavaScript が必要な分だけ小さなチャンクに分割される
+- **画像最適化**: 画像の自動圧縮と遅延読み込み
+
+**開発体験の向上:**
+- **ファイルベースルーティング**: フォルダ構造でルートが自動生成される
+- **ゼロ設定**: 複雑な設定なしで開始できる
+- **TypeScript サポート**: TypeScript が最初からサポートされている
+- **ホットリロード**: コード変更が瞬時に反映される
+
+## App Router の概念とアーキテクチャ
+
+Next.js 13 で導入された **App Router** は、React の最新機能を活用した新しいルーティングシステムです。従来の Pages Router と比較して、より柔軟で効率的な開発が可能になります。
+
+### Server Components と Client Components
+
+App Router の最大の特徴は、コンポーネントがデフォルトで **サーバー上で実行される** ことです。これは **中央キッチンで料理を作って配達する** のに似ています。
+
+**Server Component（サーバーコンポーネント）の例:**
+
+```jsx
+// app/products/page.jsx - デフォルトでサーバーコンポーネント
+export default async function ProductsPage() {
+  // データベースから直接データを取得（サーバー上で実行）
+  const products = await fetch('https://api.example.com/products')
+    .then(res => res.json())
+  
+  return (
+    <div>
+      <h1>商品一覧</h1>
+      {products.map(product => (
+        <div key={product.id}>
+          <h2>{product.name}</h2>
+          <p>価格: ¥{product.price}</p>
+        </div>
+      ))}
+    </div>
+  )
+}
+```
+
+**Client Component（クライアントコンポーネント）の例:**
+
+```jsx
+// components/AddToCartButton.jsx
+'use client' // このディレクティブでクライアントコンポーネントになる
+
+import { useState } from 'react'
+
+export default function AddToCartButton({ productId }) {
+  const [isAdding, setIsAdding] = useState(false)
+  
+  const handleAddToCart = async () => {
+    setIsAdding(true)
+    // カートに追加する処理
+    await addToCart(productId)
+    setIsAdding(false)
+  }
+  
+  return (
+    <button onClick={handleAddToCart} disabled={isAdding}>
+      {isAdding ? '追加中...' : 'カートに追加'}
+    </button>
+  )
+}
+```
+
+### プロジェクト構造
+
+App Router では、特定のファイル名が特別な意味を持ちます：
+
+```
+app/
+├── layout.tsx          # ルートレイアウト（必須）
+├── page.tsx           # ホームページ
+├── loading.tsx        # ローディング UI
+├── error.tsx          # エラー UI
+├── not-found.tsx      # 404 ページ
+├── globals.css        # グローバルスタイル
+├── about/
+│   └── page.tsx       # /about ページ
+└── blog/
+    ├── layout.tsx     # ブログ用レイアウト
+    ├── page.tsx       # /blog ページ
+    └── [slug]/
+        └── page.tsx   # /blog/記事名 ページ
+```
+
+**ルートレイアウト（必須ファイル）の例:**
+
+```jsx
+// app/layout.tsx
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="ja">
+      <body>
+        <header>
+          <nav>
+            <a href="/">ホーム</a>
+            <a href="/about">会社情報</a>
+            <a href="/blog">ブログ</a>
+          </nav>
+        </header>
+        <main>{children}</main>
+        <footer>
+          <p>&copy; 2024 My Website</p>
+        </footer>
+      </body>
+    </html>
+  )
+}
+```
+
+[公式ドキュメント - App Router](https://nextjs.org/docs/app)
+
+## DOM メカニズムと水和（Hydration）
+
+**DOM（Document Object Model）** は、HTML ドキュメントをプログラムで操作できる形で表現したものです。これは **建物の設計図** のようなもので、JavaScript はこの設計図を使って Web ページを動的に変更できます。
+
+### Next.js における DOM 処理
+
+Next.js の DOM 処理は **三段階のプロセス** で行われます：
+
+1. **サーバーでの HTML 生成**: React コンポーネントが HTML に変換される
+2. **ブラウザでの HTML 表示**: ユーザーが即座にコンテンツを見ることができる
+3. **水和（Hydration）**: JavaScript が HTML を「生き返らせて」インタラクティブにする
+
+### 水和プロセスの詳細
+
+水和は **静止画に生命を吹き込むアニメーション** のようなプロセスです：
+
+```jsx
+// 水和エラーを避けるための正しい書き方
+'use client'
+import { useState, useEffect } from 'react'
+
+export default function ClientTimeComponent() {
+  const [currentTime, setCurrentTime] = useState('')
+  
+  // サーバーとクライアントで異なる値を避けるため useEffect を使用
+  useEffect(() => {
+    setCurrentTime(new Date().toLocaleString())
+    
+    const timer = setInterval(() => {
+      setCurrentTime(new Date().toLocaleString())
+    }, 1000)
+    
+    return () => clearInterval(timer)
+  }, [])
+  
+  return <div>現在時刻: {currentTime}</div>
+}
+```
+
+**よくある水和エラーとその対策:**
+
+```jsx
+// ❌ 間違った例 - サーバーとクライアントで異なる内容
+export default function BadExample() {
+  const randomNumber = Math.random() // サーバーとクライアントで異なる値
+  return <div>{randomNumber}</div>
+}
+
+// ✅ 正しい例 - 一貫した内容
+export default function GoodExample() {
+  const [mounted, setMounted] = useState(false)
+  
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+  
+  if (!mounted) {
+    return <div>読み込み中...</div>
+  }
+  
+  return <div>{Math.random()}</div>
+}
+```
+
+[公式ドキュメント - Hydration](https://nextjs.org/docs/app/building-your-application/rendering/client-components#hydration)
+
+## レンダリング方式の理解
+
+Next.js は **4つの主要なレンダリング方式** を提供しており、それぞれ異なる用途に最適化されています。これは **料理の調理方法を選ぶ** ようなもので、状況に応じて最適な方法を選択します。
+
+### 1. サーバーサイドレンダリング（SSR）
+
+SSR は **注文を受けてから料理を作る高級レストラン** のようなものです。リクエストごとに新鮮なコンテンツを提供しますが、若干の待ち時間があります。
+
+**SSR の実装例:**
+
+```jsx
+// app/user/[id]/page.jsx
+export default async function UserProfile({ params }) {
+  const { id } = await params
+  
+  // 毎回新しいデータを取得（キャッシュなし）
+  const user = await fetch(`https://api.example.com/users/${id}`, {
+    cache: 'no-store' // SSR を強制
+  }).then(res => res.json())
+  
+  return (
+    <div>
+      <h1>{user.name} のプロフィール</h1>
+      <p>メール: {user.email}</p>
+      <p>最終ログイン: {user.lastLogin}</p>
+      <p>アカウント残高: ¥{user.balance}</p>
+    </div>
+  )
+}
+```
+
+**SSR に適したケース:**
+- ユーザー固有のダッシュボード
+- リアルタイムの株価情報
+- SNS のタイムライン
+- オンラインバンキング
+
+### 2. 静的サイト生成（SSG）
+
+SSG は **事前に調理して冷凍保存した料理** のようなものです。ビルド時にページを生成するため、非常に高速です。
+
+**SSG の実装例:**
+
+```jsx
+// app/blog/[slug]/page.jsx
+export default async function BlogPost({ params }) {
+  const { slug } = await params
+  
+  // ビルド時に実行され、結果がキャッシュされる
+  const post = await fetch(`https://api.example.com/posts/${slug}`)
+    .then(res => res.json())
+  
+  return (
+    <article>
+      <h1>{post.title}</h1>
+      <p>公開日: {post.publishedAt}</p>
+      <div dangerouslySetInnerHTML={{ __html: post.content }} />
+    </article>
+  )
+}
+
+// ビルド時に生成するページを指定
+export async function generateStaticParams() {
+  const posts = await fetch('https://api.example.com/posts')
+    .then(res => res.json())
+  
+  return posts.map(post => ({
+    slug: post.slug
+  }))
+}
+```
+
+**SSG に適したケース:**
+- 企業のホームページ
+- ブログ記事
+- 製品カタログ
+- ドキュメンテーションサイト
+
+### 3. インクリメンタル静的再生成（ISR）
+
+ISR は **定期的にメニューを更新するファーストフード店** のようなものです。基本的には事前に作った料理を提供しますが、定期的に新しい料理に更新します。
+
+**ISR の実装例:**
+
+```jsx
+// app/news/[id]/page.jsx
+export const revalidate = 300 // 5分ごとに再検証
+
+export default async function NewsArticle({ params }) {
+  const { id } = await params
+  
+  const article = await fetch(`https://api.news.com/articles/${id}`)
+    .then(res => res.json())
+  
+  return (
+    <article>
+      <h1>{article.title}</h1>
+      <p>最終更新: {article.updatedAt}</p>
+      <div>{article.content}</div>
+      <p>閲覧数: {article.viewCount}</p>
+    </article>
+  )
+}
+
+// オンデマンド再検証を行うサーバーアクション
+import { revalidatePath } from 'next/cache'
+
+export async function updateArticle(formData) {
+  'use server'
+  
+  const articleId = formData.get('articleId')
+  
+  // 記事を更新
+  await updateArticleInDatabase(articleId)
+  
+  // ページを再検証
+  revalidatePath(`/news/${articleId}`)
+}
+```
+
+**ISR に適したケース:**
+- ECサイトの商品ページ
+- ニュースサイト
+- コメント付きブログ
+- イベント情報ページ
+
+### 4. クライアントサイドレンダリング（CSR）
+
+CSR は **お客さん自身が調理する焼肉店** のようなものです。高い柔軟性とインタラクティブ性を提供しますが、初期表示に時間がかかります。
+
+**CSR の実装例:**
+
+```jsx
+// app/dashboard/page.jsx
+'use client'
+import { useState, useEffect } from 'react'
+
+export default function Dashboard() {
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  
+  useEffect(() => {
+    fetch('/api/dashboard-data')
+      .then(res => res.json())
+      .then(data => {
+        setData(data)
+        setLoading(false)
+      })
+  }, [])
+  
+  if (loading) {
+    return (
+      <div className="animate-pulse">
+        <div className="h-8 bg-gray-200 rounded mb-4"></div>
+        <div className="h-4 bg-gray-200 rounded mb-2"></div>
+      </div>
+    )
+  }
+  
+  return (
+    <div>
+      <h1>ダッシュボード</h1>
+      <p>こんにちは、{data.user.name}さん！</p>
+      <div>残高: ¥{data.balance}</div>
+    </div>
+  )
+}
+```
+
+**CSR に適したケース:**
+- 管理画面
+- データ分析ツール
+- リアルタイムチャット
+- ゲーム
+
+[公式ドキュメント - Rendering](https://nextjs.org/docs/app/building-your-application/rendering)
+
+## コンポーネントの基礎
+
+React/Next.js における **コンポーネント** は、UI の再利用可能な部品です。これは **レゴブロック** のようなもので、小さな部品を組み合わせて大きなアプリケーションを構築します。
+
+### 基本的なコンポーネントの作成
+
+```jsx
+// components/UserCard.jsx
+export default function UserCard({ user }) {
+  return (
+    <div className="border rounded-lg p-4 shadow hover:shadow-lg transition-shadow">
+      <div className="flex items-center space-x-3">
+        {user.avatar && (
+          <img 
+            src={user.avatar} 
+            alt={user.name}
+            className="w-12 h-12 rounded-full"
+          />
+        )}
+        <div>
+          <h3 className="font-semibold text-lg">{user.name}</h3>
+          <p className="text-gray-600">{user.email}</p>
+          <p className="text-sm text-gray-500">{user.role}</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+
+### Server Components と Client Components の使い分け
+
+**Server Components を使う場合:**
+- データベースからデータを取得する
+- API キーやシークレットを使用する
+- SEO が重要なコンテンツ
+- JavaScript バンドルサイズを小さくしたい
+
+**Client Components を使う場合:**
+- ユーザーのインタラクション（クリック、入力など）
+- React フック（useState、useEffect など）
+- ブラウザ API（localStorage、window など）
+- リアルタイム機能
+
+**混合使用の例:**
+
+```jsx
+// app/products/[id]/page.jsx - Server Component
+import AddToCartButton from './AddToCartButton'
+
+export default async function ProductPage({ params }) {
+  const { id } = await params
+  const product = await getProduct(id) // サーバーで実行
+  
+  return (
+    <div>
+      <h1>{product.name}</h1>
+      <p>価格: ¥{product.price}</p>
+      <p>{product.description}</p>
+      
+      {/* Server Component から Client Component にデータを渡す */}
+      <AddToCartButton productId={product.id} price={product.price} />
+    </div>
+  )
+}
+```
+
+```jsx
+// components/AddToCartButton.jsx - Client Component
+'use client'
+import { useState } from 'react'
+
+export default function AddToCartButton({ productId, price }) {
+  const [quantity, setQuantity] = useState(1)
+  const [isLoading, setIsLoading] = useState(false)
+  
+  const handleAddToCart = async () => {
+    setIsLoading(true)
+    
+    try {
+      await fetch('/api/cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId, quantity })
+      })
+      
+      alert('カートに追加しました！')
+    } catch (error) {
+      alert('エラーが発生しました')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+  
+  return (
+    <div className="flex items-center space-x-4">
+      <div className="flex items-center border rounded">
+        <button 
+          onClick={() => setQuantity(Math.max(1, quantity - 1))}
+          className="px-3 py-1"
+        >
+          −
+        </button>
+        <span className="px-4 py-1">{quantity}</span>
+        <button 
+          onClick={() => setQuantity(quantity + 1)}
+          className="px-3 py-1"
+        >
+          ＋
+        </button>
+      </div>
+      
+      <button 
+        onClick={handleAddToCart}
+        disabled={isLoading}
+        className="bg-blue-500 text-white px-6 py-2 rounded disabled:opacity-50"
+      >
+        {isLoading ? '追加中...' : `カートに追加 (¥${price * quantity})`}
+      </button>
+    </div>
+  )
+}
+```
+
+[公式ドキュメント - Components](https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns)
+
+## Props の使い方
+
+**Props**（プロパティ）は、コンポーネント間でデータを受け渡すための仕組みです。これは **関数の引数** のようなもので、親コンポーネントから子コンポーネントに情報を渡します。
+
+### 基本的な Props の使用
+
+```jsx
+// 親コンポーネント
+export default function HomePage() {
+  const users = [
+    { id: 1, name: '田中太郎', email: 'tanaka@example.com', role: '管理者' },
+    { id: 2, name: '鈴木花子', email: 'suzuki@example.com', role: '一般ユーザー' },
+    { id: 3, name: '佐藤次郎', email: 'sato@example.com', role: 'エディター' }
+  ]
+  
+  return (
+    <div className="space-y-4">
+      <h1>ユーザー一覧</h1>
+      {users.map(user => (
+        <UserCard 
+          key={user.id}
+          user={user}
+          showEmail={true}
+          onUserClick={(user) => console.log('クリックされました:', user.name)}
+        />
+      ))}
+    </div>
+  )
+}
+```
+
+### さまざまな Props の型
+
+```jsx
+// components/ProductCard.jsx
+export default function ProductCard({
+  product,           // オブジェクト
+  showPrice = true,  // ブール値（デフォルト値付き）
+  discount = 0,      // 数値（デフォルト値付き）
+  categories,        // 配列
+  onAddToCart,       // 関数
+  children           // 子要素
+}) {
+  const finalPrice = product.price * (1 - discount / 100)
+  
+  return (
+    <div className="border rounded-lg p-4">
+      <h2 className="font-bold text-xl">{product.name}</h2>
+      
+      {showPrice && (
+        <div className="mt-2">
+          {discount > 0 ? (
+            <div>
+              <span className="line-through text-gray-500">¥{product.price}</span>
+              <span className="ml-2 text-red-600 font-bold">¥{finalPrice}</span>
+              <span className="ml-2 bg-red-100 text-red-800 px-2 py-1 rounded text-sm">
+                {discount}% OFF
+              </span>
+            </div>
+          ) : (
+            <span className="font-bold">¥{product.price}</span>
+          )}
+        </div>
+      )}
+      
+      {categories && categories.length > 0 && (
+        <div className="mt-2">
+          {categories.map(category => (
+            <span key={category} className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm mr-2">
+              {category}
+            </span>
+          ))}
+        </div>
+      )}
+      
+      {children}
+      
+      {onAddToCart && (
+        <button 
+          onClick={() => onAddToCart(product)}
+          className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+        >
+          カートに追加
+        </button>
+      )}
+    </div>
+  )
+}
+```
+
+### Props の分割代入と TypeScript
+
+```typescript
+// types/index.ts
+interface Product {
+  id: string
+  name: string
+  price: number
+  description: string
+  imageUrl: string
+}
+
+interface ProductCardProps {
+  product: Product
+  showPrice?: boolean
+  discount?: number
+  categories?: string[]
+  onAddToCart?: (product: Product) => void
+  children?: React.ReactNode
+}
+
+// components/ProductCard.tsx
+export default function ProductCard({
+  product,
+  showPrice = true,
+  discount = 0,
+  categories = [],
+  onAddToCart,
+  children
+}: ProductCardProps) {
+  // コンポーネントの実装...
+}
+```
+
+### Children Props パターン
+
+Children props は **コンテナのような役割** を果たし、他のコンポーネントを包む際に使用します：
+
+```jsx
+// components/Card.jsx
+export default function Card({ title, children, className = '' }) {
+  return (
+    <div className={`border rounded-lg shadow-lg ${className}`}>
+      {title && (
+        <div className="border-b p-4">
+          <h2 className="font-bold text-lg">{title}</h2>
+        </div>
+      )}
+      <div className="p-4">
+        {children}
+      </div>
+    </div>
+  )
+}
+
+// 使用例
+export default function AboutPage() {
+  return (
+    <div className="space-y-6">
+      <Card title="会社概要">
+        <p>私たちは革新的なWebソリューションを提供する会社です。</p>
+        <p>創業から10年、多くのお客様にご満足いただいています。</p>
+      </Card>
+      
+      <Card title="サービス" className="bg-blue-50">
+        <ul className="list-disc list-inside space-y-2">
+          <li>Webサイト制作</li>
+          <li>システム開発</li>
+          <li>コンサルティング</li>
+        </ul>
+      </Card>
+      
+      <Card>
+        <h3 className="font-bold mb-2">お問い合わせ</h3>
+        <p>Email: info@example.com</p>
+        <p>電話: 03-1234-5678</p>
+      </Card>
+    </div>
+  )
+}
+```
+
+[公式ドキュメント - Components and Props](https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns)
+
+## よくある初心者の間違いと対策
+
+### 1. Server と Client Components の混同
+
+**間違い:**
+
+```jsx
+// ❌ 間違った例
+'use client'
+import { useState } from 'react'
+
+export default function Page() {
+  const [count, setCount] = useState(0)
+  
+  return (
+    <div>
+      <ServerDataComponent /> {/* これもクライアントコンポーネントになってしまう */}
+      <button onClick={() => setCount(count + 1)}>
+        カウント: {count}
+      </button>
+    </div>
+  )
+}
+```
+
+**正しい方法:**
+
+```jsx
+// ✅ 正しい例
+import InteractiveButton from './InteractiveButton'
+
+export default async function Page() {
+  const data = await fetchData() // サーバーで実行
+  
+  return (
+    <div>
+      <ServerDataComponent data={data} />
+      <InteractiveButton /> {/* このコンポーネントだけクライアント側 */}
+    </div>
+  )
+}
+
+// components/InteractiveButton.jsx
+'use client'
+import { useState } from 'react'
+
+export default function InteractiveButton() {
+  const [count, setCount] = useState(0)
+  
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      カウント: {count}
+    </button>
+  )
+}
+```
+
+### 2. 水和エラーの対処
+
+**間違い:**
+
+```jsx
+// ❌ サーバーとクライアントで異なる値
+export default function TimeComponent() {
+  const currentTime = new Date().toLocaleString()
+  return <div>現在時刻: {currentTime}</div>
+}
+```
+
+**正しい方法:**
+
+```jsx
+// ✅ useEffect で一貫性を保つ
+'use client'
+import { useState, useEffect } from 'react'
+
+export default function TimeComponent() {
+  const [currentTime, setCurrentTime] = useState('')
+  
+  useEffect(() => {
+    setCurrentTime(new Date().toLocaleString())
+  }, [])
+  
+  return <div>現在時刻: {currentTime || '読み込み中...'}</div>
+}
+```
+
+### 3. 環境変数の誤用
+
+**間違い:**
+
+```jsx
+// ❌ 機密情報をクライアントに露出
+const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD // undefined になる
+```
+
+**正しい方法:**
+
+```jsx
+// ✅ サーバーサイドでのみ使用
+// Server Component または API Route 内でのみ使用
+if (typeof window === 'undefined') {
+  // サーバーサイドでのみ実行
+  const dbPassword = process.env.DATABASE_PASSWORD
+}
+
+// クライアントサイドで使いたい場合は NEXT_PUBLIC_ プレフィックス
+const publicApiUrl = process.env.NEXT_PUBLIC_API_URL
+```
+
+### 4. データ取得のベストプラクティス
+
+**間違い:**
+
+```jsx
+// ❌ Server Component で不要な API Route を作成
+export default async function Page() {
+  const res = await fetch('http://localhost:3000/api/data')
+  const data = await res.json()
+  return <div>{data.message}</div>
+}
+```
+
+**正しい方法:**
+
+```jsx
+// ✅ データベースから直接取得
+export default async function Page() {
+  const data = await db.posts.findMany() // 直接データベースアクセス
+  return <div>{JSON.stringify(data)}</div>
+}
+
+// または外部 API から直接取得
+export default async function Page() {
+  const data = await fetch('https://api.external.com/data')
+    .then(res => res.json())
+  return <div>{data.message}</div>
+}
+```
+
+## 実践的なアプリケーション例
+
+### 簡単なブログアプリケーション
+
+**プロジェクト構造:**
+
+```
+blog-app/
+├── app/
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── blog/
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   └── [slug]/
+│   │       ├── page.tsx
+│   │       └── loading.tsx
+│   └── globals.css
+├── components/
+│   ├── PostCard.tsx
+│   ├── Navigation.tsx
+│   └── Footer.tsx
+└── lib/
+    └── posts.ts
+```
+
+**ルートレイアウト:**
+
+```jsx
+// app/layout.tsx
+import Link from 'next/link'
+import './globals.css'
+
+export const metadata = {
+  title: 'My Blog',
+  description: 'Next.js で作成したブログ',
+}
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="ja">
+      <body>
+        <header className="border-b">
+          <nav className="container mx-auto px-4 py-4">
+            <div className="flex justify-between items-center">
+              <Link href="/" className="text-2xl font-bold">My Blog</Link>
+              <div className="space-x-4">
+                <Link href="/" className="hover:text-blue-600">ホーム</Link>
+                <Link href="/blog" className="hover:text-blue-600">ブログ</Link>
+                <Link href="/about" className="hover:text-blue-600">About</Link>
+              </div>
+            </div>
+          </nav>
+        </header>
+        <main className="container mx-auto px-4 py-8">
+          {children}
+        </main>
+        <footer className="border-t mt-8 py-4 text-center text-gray-600">
+          <p>&copy; 2024 My Blog. All rights reserved.</p>
+        </footer>
+      </body>
+    </html>
+  )
+}
+```
+
+**ホームページ:**
+
+```jsx
+// app/page.tsx
+import Link from 'next/link'
+import PostCard from '../components/PostCard'
+
+async function getPosts() {
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts')
+  return res.json()
+}
+
+export default async function HomePage() {
+  const posts = await getPosts()
+  const featuredPosts = posts.slice(0, 6)
+  
+  return (
+    <div>
+      <section className="text-center py-12">
+        <h1 className="text-4xl font-bold mb-4">Welcome to My Blog</h1>
+        <p className="text-xl text-gray-600 mb-8">
+          プログラミング、テクノロジー、日常について書いています
+        </p>
+        <Link 
+          href="/blog"
+          className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors"
+        >
+          ブログを読む
+        </Link>
+      </section>
+      
+      <section>
+        <h2 className="text-2xl font-bold mb-6">注目の記事</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredPosts.map(post => (
+            <PostCard key={post.id} post={post} />
+          ))}
+        </div>
+      </section>
+    </div>
+  )
+}
+```
+
+**投稿カードコンポーネント:**
+
+```jsx
+// components/PostCard.tsx
+import Link from 'next/link'
+
+export default function PostCard({ post, showExcerpt = true }) {
+  return (
+    <div className="border rounded-lg p-6 hover:shadow-lg transition-shadow">
+      <h3 className="text-xl font-semibold mb-2">
+        <Link 
+          href={`/blog/${post.id}`}
+          className="hover:text-blue-600 transition-colors"
+        >
+          {post.title}
+        </Link>
+      </h3>
+      
+      {showExcerpt && (
+        <p className="text-gray-600 mb-4 line-clamp-3">
+          {post.body}
+        </p>
+      )}
+      
+      <div className="flex justify-between items-center text-sm text-gray-500">
+        <span>投稿者: User {post.userId}</span>
+        <Link 
+          href={`/blog/${post.id}`}
+          className="text-blue-500 hover:text-blue-700"
+        >
+          続きを読む →
+        </Link>
+      </div>
+    </div>
+  )
+}
+```
+
+**個別記事ページ:**
+
+```jsx
+// app/blog/[slug]/page.tsx
+import Link from 'next/link'
+
+async function getPost(id) {
+  const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`)
+  if (!res.ok) {
+    throw new Error('記事が見つかりません')
+  }
+  return res.json()
+}
+
+export default async function BlogPost({ params }) {
+  const { slug } = await params
+  const post = await getPost(slug)
+  
+  return (
+    <article>
+      <div className="mb-8">
+        <Link 
+          href="/blog" 
+          className="text-blue-500 hover:text-blue-700 mb-4 inline-block"
+        >
+          ← ブログ一覧に戻る
+        </Link>
+        <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
+        <div className="text-gray-600 mb-8">
+          <span>投稿者: User {post.userId}</span>
+          <span className="mx-2">•</span>
+          <span>2024年1月1日</span>
+        </div>
+      </div>
+      
+      <div className="prose max-w-none">
+        <p className="text-lg leading-relaxed">{post.body}</p>
+      </div>
+      
+      <div className="mt-12 pt-8 border-t">
+        <h3 className="text-xl font-semibold mb-4">この記事についてのコメント</h3>
+        <p className="text-gray-600">コメント機能は準備中です。</p>
+      </div>
+    </article>
+  )
+}
+```
+
+**ローディング状態:**
+
+```jsx
+// app/blog/[slug]/loading.tsx
+export default function Loading() {
+  return (
+    <div className="animate-pulse">
+      <div className="h-4 bg-gray-200 rounded w-20 mb-4"></div>
+      <div className="h-10 bg-gray-200 rounded mb-4"></div>
+      <div className="h-4 bg-gray-200 rounded w-40 mb-8"></div>
+      <div className="space-y-3">
+        <div className="h-4 bg-gray-200 rounded"></div>
+        <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+        <div className="h-4 bg-gray-200 rounded w-4/6"></div>
+      </div>
+    </div>
+  )
+}
+```
+
+[公式ドキュメント - Building Your Application](https://nextjs.org/docs/app/building-your-application)
+
+## まとめ
+
+Next.js 13+ App Router は、現代の Web 開発において非常に強力なツールです。このチュートリアルで学んだ主要なポイントを振り返りましょう：
+
+**重要なポイント:**
+- **Server Components がデフォルト**: インタラクティブな機能が必要な時だけ `'use client'` を使う
+- **適切なレンダリング方式の選択**: コンテンツの性質に応じて SSR、SSG、ISR、CSR を使い分ける
+- **Props による効果的なデータ受け渡し**: コンポーネント間の連携を理解する
+- **水和エラーの回避**: サーバーとクライアントで一貫した内容を提供する
+- **パフォーマンス最適化**: next/image、next/font、dynamic import を活用する
+
+**次のステップ:**
+1. 実際に小さなプロジェクトを作成してみる
+2. TypeScript を導入してより堅牢なコードを書く
+3. データベース（Prisma + PostgreSQL など）を統合する
+4. 認証機能（NextAuth.js など）を追加する
+5. Vercel にデプロイして本番環境を体験する
+
+Next.js の学習は継続的なプロセスです。公式ドキュメントを参照しながら、実際に手を動かして学習を続けることが最も効果的な方法です。
+
+**参考リンク:**
+- [Next.js 公式ドキュメント](https://nextjs.org/docs)
+- [App Router ガイド](https://nextjs.org/docs/app)
+- [Learn Next.js](https://nextjs.org/learn)
+- [Next.js Examples](https://github.com/vercel/next.js/tree/canary/examples)
+- [Vercel デプロイガイド](https://vercel.com/docs/deployments/overview)
