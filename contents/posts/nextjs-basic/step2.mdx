@@ -1,151 +1,179 @@
 ---
-title: 📝 第２回：ログイン画面の作成
-category: php
+title: 📝 第2回：App Routerの概念とアーキテクチャ 🏗️
+category: Next.js
 ---
 
-このパートでは、**ログイン画面**を作成し、画面が正しく表示されるか確認します。
+## 第2章：App Routerの概念とアーキテクチャ 🏗️
 
----
+### 🗂️ ファイルベースルーティング：フォルダ = URL
 
-## 🎯 本パートの目標物
-
-こちらのログイン画面を完成させます。
-
-> 📷 イメージ
-> 
-> 
-> ![image.png](attachment:d0b37335-3ef7-4116-ba10-47b642b8bb08:image.png)
-> 
-
----
-
-## 🛠️ 作成の流れ
-
-以下の手順で進めていきます。
-
-1. `login/index.php` を開く
-2. 記載しているHTMLを上書きで貼り付ける
-3. 実際に画面が表示されるか動作確認する
-
-それでは、実際に作成していきましょう。
-
----
-
-## ✍️ ログイン画面を編集する
-
-前回までに作成したログイン画面を、以下のコードで**上書き**してください。
-
-### 📄 `docker_simple_memo_php/login/index.php`
-
-```php
-<!DOCTYPE html>
-<html lang="ja">
-    <?php
-        include_once "../common/header.php";
-        echo getHeader("ログイン");
-    ?>
-    <body>
-        <div class="d-flex align-items-center justify-content-center h-100">
-            <form method="post" action="../memo/">
-                <div class="card rounded login-card-width shadow">
-                    <div class="card-body">
-                        <div class="rounded-circle mx-auto border-gray border d-flex mt-3 icon-circle">
-                            <img src="../public/images/animal_stand_zou.png" class="w-75 mx-auto p-2" alt="icon"/>
-                        </div>
-                        <div class="d-flex justify-content-center">
-                            <div class="mt-3 h2">SimpleMemo</div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="offset-2 col-8 offset-2">
-                                <label class="input-group w-100">
-                                    <span class="input-group-prepend">
-                                        <span class="input-group-text"><i class="far fa-envelope"></i></span>
-                                    </span>
-                                    <input type="text" name="user_email" class="form-control" placeholder="メールアドレス" autocomplete="off" />
-                                </label>
-                                <label class="input-group w-100">
-                                    <span class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fas fa-key"></i></span>
-                                    </span>
-                                    <input type="password" name="user_password" class="form-control" placeholder="パスワード" autocomplete="off" />
-                                </label>
-                                <button type="submit" class="form-control btn btn-success">
-                                   ログイン
-                                </button>
-                            </div>
-                        </div>
-                        <div class="mt-5">
-                            <div class="d-flex justify-content-center">
-                                アカウントをお持ちではありませんか？
-                            </div>
-                            <div class="d-flex justify-content-center">
-                                <a href="../user/" class="text-success">アカウントを作成</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </body>
-</html>
-```
-
-## 🚀 動作確認
-
-それでは、画面を表示して確認してみましょう。
-
----
-
-### 1️⃣ Dockerを起動する
-
-まだDockerを立ち上げていない場合は、以下のコマンドを実行します。
-
-```bash
-cd memo-php
-docker-compose up -d
-```
-
-> ⚠️既に起動している場合はこの手順は不要です。
-> 
-
----
-
-### 2️⃣ URLにアクセスする
-
-ブラウザで次のURLを開きます。
-
-http://localhost:8080/login/index.php
-
----
-
-### 3️⃣ 表示を確認する
-
-以下のようにログイン画面が表示されていればOKです。
-
-> 📷 画面イメージ
-> 
-> 
-> ![image.png](attachment:5d9565dc-70be-4058-9630-293441380717:image.png)
-> 
-
----
-
-## 💡 ポイント
-
-このログイン画面も、ユーザー登録画面と同様に**getHeader関数**を使っています。
-
-```php
-include_once "../common/header.php";
-echo getHeader("ログイン");
+Next.jsでは、**フォルダ構造がそのままURLになります**。これは「ファイルベースルーティング」と呼ばれ、非常に直感的です。
 
 ```
+app/
+├── page.tsx                 # / (ホームページ)
+├── about/
+│   └── page.tsx            # /about
+├── blog/
+│   ├── page.tsx            # /blog
+│   └── [slug]/
+│       └── page.tsx        # /blog/記事名
+└── contact/
+    └── page.tsx            # /contact
+```
 
-共通処理を`header.php`にまとめておくことで、各ページで`head`タグの中身を繰り返し書かずに済み、とても便利です。
+**実際のコード例：**
+```javascript
+// app/blog/page.tsx - ブログ一覧ページ
+export default function BlogPage() {
+  return (
+    <div>
+      <h1>ブログ記事一覧</h1>
+      <ul>
+        <li><a href="/blog/nextjs-tutorial">Next.js入門</a></li>
+        <li><a href="/blog/react-basics">React基礎</a></li>
+      </ul>
+    </div>
+  );
+}
+
+// app/blog/[slug]/page.tsx - 個別記事ページ
+export default function ArticlePage({ params }) {
+  const { slug } = params; // "nextjs-tutorial" などが入る
+  
+  return (
+    <div>
+      <h1>{slug}の記事内容</h1>
+      <p>ここに記事の内容が表示されます</p>
+    </div>
+  );
+}
+```
+
+### 🏠 特別なファイル名とその役割
+
+Next.jsには**決められた名前のファイル**があり、それぞれ特別な役割を持っています。
+
+#### **layout.tsx - ページの共通枠組み**
+```javascript
+// app/layout.tsx - サイト全体の共通レイアウト
+export default function RootLayout({ children }) {
+  return (
+    <html lang="ja">
+      <head>
+        <title>私のWebサイト</title>
+      </head>
+      <body>
+        {/* ヘッダー（全ページ共通） */}
+        <header>
+          <nav>
+            <a href="/">ホーム</a>
+            <a href="/about">会社情報</a>
+            <a href="/blog">ブログ</a>
+          </nav>
+        </header>
+        
+        {/* ページ固有の内容がここに表示される */}
+        <main>{children}</main>
+        
+        {/* フッター（全ページ共通） */}
+        <footer>
+          <p>&copy; 2024 My Website</p>
+        </footer>
+      </body>
+    </html>
+  );
+}
+```
+
+#### **loading.tsx - 読み込み中の表示**
+```javascript
+// app/blog/loading.tsx - ブログページの読み込み中
+export default function Loading() {
+  return (
+    <div className="flex items-center justify-center p-8">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+      <p className="ml-3">記事を読み込み中...</p>
+    </div>
+  );
+}
+```
+
+#### **error.tsx - エラー時の表示**
+```javascript
+// app/blog/error.tsx - ブログでエラーが起きた時
+'use client'; // エラーページはクライアントコンポーネント
+
+export default function Error({ error, reset }) {
+  return (
+    <div className="text-center p-8">
+      <h2 className="text-2xl font-bold text-red-600 mb-4">
+        エラーが発生しました
+      </h2>
+      <p className="text-gray-600 mb-4">{error.message}</p>
+      <button 
+        onClick={reset}
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      >
+        もう一度試す
+      </button>
+    </div>
+  );
+}
+```
+
+#### **not-found.tsx - ページが見つからない時**
+```javascript
+// app/not-found.tsx - 404エラーページ
+import Link from 'next/link';
+
+export default function NotFound() {
+  return (
+    <div className="text-center p-8">
+      <h1 className="text-4xl font-bold text-gray-800 mb-4">404</h1>
+      <h2 className="text-2xl text-gray-600 mb-4">ページが見つかりません</h2>
+      <p className="text-gray-500 mb-6">
+        お探しのページは存在しないか、移動された可能性があります。
+      </p>
+      <Link 
+        href="/"
+        className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600"
+      >
+        ホームに戻る
+      </Link>
+    </div>
+  );
+}
+```
+
+### 📱 実際のプロジェクト構造例
+
+**個人ブログサイトの例：**
+```
+my-blog/
+├── app/
+│   ├── globals.css          # 全体のスタイル
+│   ├── layout.tsx           # サイト共通レイアウト
+│   ├── page.tsx             # ホームページ
+│   ├── loading.tsx          # 全体のローディング
+│   ├── not-found.tsx        # 404ページ
+│   ├── about/
+│   │   └── page.tsx         # 自己紹介ページ
+│   ├── blog/
+│   │   ├── layout.tsx       # ブログ専用レイアウト
+│   │   ├── page.tsx         # 記事一覧
+│   │   ├── loading.tsx      # 記事読み込み中
+│   │   └── [slug]/
+│   │       ├── page.tsx     # 個別記事
+│   │       └── loading.tsx  # 個別記事読み込み中
+│   └── contact/
+│       └── page.tsx         # お問い合わせ
+├── components/              # 再利用可能な部品
+│   ├── Header.tsx
+│   ├── Footer.tsx
+│   └── BlogCard.tsx
+└── lib/                     # ユーティリティ関数
+    └── blog.ts
+```
 
 ---
-
-## ✅ 完成！
-
-これでログインページの作成と動作確認が完了しました。
-
-次のパートに進んで、**メモ投稿ページ**を作成していきましょう！

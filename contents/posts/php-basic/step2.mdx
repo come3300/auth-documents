@@ -1,151 +1,352 @@
 ---
-title: 📝 第２回：ログイン画面の作成
+title: 📝 第2回：PHP基本構文 - データ型、配列、定数、演算子
 category: php
 ---
 
-このパートでは、**ログイン画面**を作成し、画面が正しく表示されるか確認します。
+## 第2章：PHP基本構文 - データ型、配列、定数、演算子
 
----
+### PHPの基本文法ルール
 
-## 🎯 本パートの目標物
+**PHPタグと文の終了**
+```php
+<?php
+// PHPコードは<?phpタグで開始
+echo "Hello World"; // 文は必ずセミコロンで終了
+?>
 
-こちらのログイン画面を完成させます。
+<?= "短縮echo構文" ?> // PHP 5.4以降
+```
 
-> 📷 イメージ
-> 
-> 
-> ![image.png](attachment:d0b37335-3ef7-4116-ba10-47b642b8bb08:image.png)
-> 
+**コメントの書き方**
+```php
+<?php
+// 単行コメント
+# Unixスタイルコメント（あまり使わない）
 
----
+/* 複数行
+   コメント */
 
-## 🛠️ 作成の流れ
+/**
+ * 関数やクラス用のDocBlockコメント
+ * @param string $name 名前
+ * @return string 挨拶文
+ */
+?>
+```
 
-以下の手順で進めていきます。
+### 変数の基本概念
 
-1. `login/index.php` を開く
-2. 記載しているHTMLを上書きで貼り付ける
-3. 実際に画面が表示されるか動作確認する
+**変数の宣言と命名規則**
+```php
+<?php
+$name = "田中太郎";        // 正しい変数名
+$age = 25;               // 数値も格納可能
+$_private = "アンダースコア開始OK";
 
-それでは、実際に作成していきましょう。
+// 命名のベストプラクティス
+$user_name = "yamada@example.com";    // スネークケース
+$userName = "sato@example.com";       // キャメルケース
 
----
+// 避けるべき命名
+// $25age = 25;      // 数字で開始は禁止
+// $my-var = "test"; // ハイフンは使用不可
+?>
+```
 
-## ✍️ ログイン画面を編集する
+### データ型の理解
 
-前回までに作成したログイン画面を、以下のコードで**上書き**してください。
+**文字列（String）の操作**
+```php
+<?php
+$single_quoted = 'リテラル文字列';
+$double_quoted = "変数が展開される：$single_quoted";
 
-### 📄 `docker_simple_memo_php/login/index.php`
+// 文字列の結合
+$full_name = "田中" . " " . "太郎";
+
+// PHP 8+ の文字列関数
+$text = "こんにちはPHP";
+echo strlen($text);                    // 文字列の長さ
+echo str_contains($text, "PHP");       // 文字列が含まれるか (true)
+echo str_starts_with($text, "こんにちは"); // 指定文字で始まるか (true)
+
+// 実用的な例：メールアドレスの検証
+$email = "user@example.com";
+if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo "有効なメールアドレスです";
+}
+?>
+```
+
+**数値型（Integer, Float）**
+```php
+<?php
+$integer = 123;
+$float = 123.45;
+$scientific = 1.2e3;    // 1200
+
+// PHP 8+ 数値セパレータ
+$large_number = 1_000_000;  // 1,000,000と同じ
+
+// 計算例：消費税計算
+$price = 1000;
+$tax_rate = 0.10;
+$total = $price * (1 + $tax_rate);
+echo "税込価格：" . number_format($total) . "円";
+?>
+```
+
+**ブール値（Boolean）と null**
+```php
+<?php
+$is_logged_in = true;
+$is_admin = false;
+$undefined_value = null;
+
+// falsy値（false と評価される値）
+$falsy_values = [false, 0, 0.0, '', '0', null, []];
+
+// 実用例：ユーザー認証チェック
+function checkAccess($user) {
+    if ($user && $user['is_active']) {
+        return "アクセス許可";
+    }
+    return "アクセス拒否";
+}
+?>
+```
+
+### 型宣言と厳密型指定（PHP 8+）
+
+**厳密型指定の使用**
+```php
+<?php declare(strict_types=1);
+
+// 型安全な関数の例
+function calculateCircleArea(float $radius): float {
+    return 3.14159 * $radius * $radius;
+}
+
+// Union型（PHP 8+）
+function processInput(int|string $value): string {
+    if (is_int($value)) {
+        return "数値：" . $value;
+    }
+    return "文字列：" . $value;
+}
+
+echo calculateCircleArea(5.0);        // 78.53975
+echo processInput(100);               // "数値：100"
+echo processInput("hello");           // "文字列：hello"
+?>
+```
+
+### 配列の理解と活用
+
+**インデックス配列**
+```php
+<?php
+// モダンな配列構文（PHP 5.4+）
+$fruits = ["りんご", "バナナ", "オレンジ"];
+$numbers = [1, 2, 3, 4, 5];
+
+// 要素へのアクセス
+echo $fruits[0];  // "りんご"
+echo count($fruits);  // 3
+
+// 要素の追加
+$fruits[] = "ぶどう";          // 末尾に追加
+array_push($fruits, "いちご");  // 同様に末尾に追加
+?>
+```
+
+**連想配列（実用例）**
+```php
+<?php
+// ユーザー情報の管理
+$user = [
+    "name" => "田中太郎",
+    "email" => "tanaka@example.com", 
+    "age" => 28,
+    "skills" => ["PHP", "MySQL", "JavaScript"]
+];
+
+// 連想配列の操作
+echo $user["name"];           // "田中太郎"
+echo $user["skills"][0];      // "PHP"
+
+// 配列の更新
+$user["last_login"] = date("Y-m-d H:i:s");
+
+// 実用的な関数：ユーザー情報表示
+function displayUserInfo($user) {
+    echo "名前：" . $user["name"] . "\n";
+    echo "メール：" . $user["email"] . "\n";
+    echo "スキル：" . implode(", ", $user["skills"]) . "\n";
+}
+?>
+```
+
+**多次元配列と実用的な処理**
+```php
+<?php
+$employees = [
+    [
+        "name" => "田中太郎",
+        "department" => "開発部",
+        "salary" => 500000,
+        "projects" => ["ECサイト", "API開発"]
+    ],
+    [
+        "name" => "佐藤花子", 
+        "department" => "営業部",
+        "salary" => 450000,
+        "projects" => ["新規開拓", "既存顧客対応"]
+    ]
+];
+
+// 部門別平均給与計算
+function calculateAverageSalary($employees, $department) {
+    $total = 0;
+    $count = 0;
+    
+    foreach ($employees as $employee) {
+        if ($employee["department"] === $department) {
+            $total += $employee["salary"];
+            $count++;
+        }
+    }
+    
+    return $count > 0 ? $total / $count : 0;
+}
+?>
+```
+
+### モダンな配列関数（PHP 8+）
 
 ```php
-<!DOCTYPE html>
-<html lang="ja">
-    <?php
-        include_once "../common/header.php";
-        echo getHeader("ログイン");
-    ?>
-    <body>
-        <div class="d-flex align-items-center justify-content-center h-100">
-            <form method="post" action="../memo/">
-                <div class="card rounded login-card-width shadow">
-                    <div class="card-body">
-                        <div class="rounded-circle mx-auto border-gray border d-flex mt-3 icon-circle">
-                            <img src="../public/images/animal_stand_zou.png" class="w-75 mx-auto p-2" alt="icon"/>
-                        </div>
-                        <div class="d-flex justify-content-center">
-                            <div class="mt-3 h2">SimpleMemo</div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="offset-2 col-8 offset-2">
-                                <label class="input-group w-100">
-                                    <span class="input-group-prepend">
-                                        <span class="input-group-text"><i class="far fa-envelope"></i></span>
-                                    </span>
-                                    <input type="text" name="user_email" class="form-control" placeholder="メールアドレス" autocomplete="off" />
-                                </label>
-                                <label class="input-group w-100">
-                                    <span class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fas fa-key"></i></span>
-                                    </span>
-                                    <input type="password" name="user_password" class="form-control" placeholder="パスワード" autocomplete="off" />
-                                </label>
-                                <button type="submit" class="form-control btn btn-success">
-                                   ログイン
-                                </button>
-                            </div>
-                        </div>
-                        <div class="mt-5">
-                            <div class="d-flex justify-content-center">
-                                アカウントをお持ちではありませんか？
-                            </div>
-                            <div class="d-flex justify-content-center">
-                                <a href="../user/" class="text-success">アカウントを作成</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </body>
-</html>
+<?php
+$numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// アロー関数を使用した配列処理（PHP 7.4+）
+$evens = array_filter($numbers, fn($n) => $n % 2 === 0);      // [2, 4, 6, 8, 10]
+$squared = array_map(fn($n) => $n * $n, $numbers);           // [1, 4, 9, 16, ...]
+$sum = array_reduce($numbers, fn($carry, $item) => $carry + $item, 0); // 55
+
+// 実用例：商品リストの処理
+$products = [
+    ["name" => "ノートPC", "price" => 100000, "category" => "電子機器"],
+    ["name" => "マウス", "price" => 2000, "category" => "電子機器"],
+    ["name" => "本", "price" => 1500, "category" => "書籍"]
+];
+
+// 高額商品のフィルタリング
+$expensive_products = array_filter($products, fn($p) => $p["price"] > 5000);
+
+// カテゴリ別グルーピング
+$grouped = [];
+foreach ($products as $product) {
+    $grouped[$product["category"]][] = $product;
+}
+?>
 ```
 
-## 🚀 動作確認
+### 定数の理解
 
-それでは、画面を表示して確認してみましょう。
-
----
-
-### 1️⃣ Dockerを起動する
-
-まだDockerを立ち上げていない場合は、以下のコマンドを実行します。
-
-```bash
-cd memo-php
-docker-compose up -d
-```
-
-> ⚠️既に起動している場合はこの手順は不要です。
-> 
-
----
-
-### 2️⃣ URLにアクセスする
-
-ブラウザで次のURLを開きます。
-
-http://localhost:8080/login/index.php
-
----
-
-### 3️⃣ 表示を確認する
-
-以下のようにログイン画面が表示されていればOKです。
-
-> 📷 画面イメージ
-> 
-> 
-> ![image.png](attachment:5d9565dc-70be-4058-9630-293441380717:image.png)
-> 
-
----
-
-## 💡 ポイント
-
-このログイン画面も、ユーザー登録画面と同様に**getHeader関数**を使っています。
-
+**const vs define() の使い分け**
 ```php
-include_once "../common/header.php";
-echo getHeader("ログイン");
+<?php
+// コンパイル時定数（推奨）
+const SITE_NAME = "私のWebサイト";
+const DEBUG_MODE = true;
+const SUPPORTED_LANGUAGES = ["ja", "en", "zh"];
 
+// 実行時定数
+define("API_VERSION", "v2.0");
+define("MAX_FILE_SIZE", 1024 * 1024 * 5); // 5MB
+
+// 実用例：設定管理
+const CONFIG = [
+    "database" => [
+        "host" => "localhost",
+        "name" => "my_app_db",
+        "charset" => "utf8mb4"
+    ],
+    "app" => [
+        "timezone" => "Asia/Tokyo",
+        "locale" => "ja_JP"
+    ]
+];
+
+// 設定値取得関数
+function getConfig($key) {
+    $keys = explode(".", $key);
+    $value = CONFIG;
+    
+    foreach ($keys as $k) {
+        if (!isset($value[$k])) return null;
+        $value = $value[$k];
+    }
+    
+    return $value;
+}
+
+echo getConfig("database.host"); // "localhost"
+?>
 ```
 
-共通処理を`header.php`にまとめておくことで、各ページで`head`タグの中身を繰り返し書かずに済み、とても便利です。
+### 演算子の理解と実用
 
----
+**算術演算子と代入演算子**
+```php
+<?php
+$price = 1000;
+$quantity = 3;
 
-## ✅ 完成！
+// 基本計算
+$subtotal = $price * $quantity;      // 3000
+$tax = $subtotal * 0.10;             // 300  
+$total = $subtotal + $tax;           // 3300
 
-これでログインページの作成と動作確認が完了しました。
+// 代入演算子
+$points = 100;
+$points += 50;      // $points = 150
+$points *= 2;       // $points = 300
 
-次のパートに進んで、**メモ投稿ページ**を作成していきましょう！
+// null合体演算子（PHP 7+）
+$user_name = $_POST['name'] ?? 'ゲスト';
+$config['theme'] ??= 'default';  // PHP 7.4+
+?>
+```
+
+**比較演算子と論理演算子**
+```php
+<?php
+$age = 20;
+$has_license = true;
+
+// 厳密比較を推奨
+if ($age === 20) {              // 型も含めて比較
+    echo "20歳です";
+}
+
+// 論理演算子
+if ($age >= 18 && $has_license) {
+    echo "運転できます";
+}
+
+// 実用例：フォームバリデーション
+function validateAge($age) {
+    if (!is_numeric($age)) {
+        return "年齢は数値で入力してください";
+    }
+    
+    $age = (int)$age;
+    if ($age < 0 || $age > 150) {
+        return "有効な年齢を入力してください";  
+    }
+    
+    return null; // エラーなし
+}
+?>
+```

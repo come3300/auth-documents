@@ -1,188 +1,139 @@
 ---
-title: 🧑‍🏫 第１回：ユーザー登録画面の作成
-category: php
+title: 🧑‍🏫 第1回：Next.jsとは何か 🚀
+category: Next.js
 ---
 
-このパートでは、**ユーザー登録画面**を作成して、動作確認まで行います。
+## 第1章：Next.jsとは何か 🚀
 
----
+### 🌟 Next.jsとは？
 
-#### 🎯 本パートの目標物
+Next.jsは、**Reactの上に構築された本格的なWebアプリケーションフレームワーク**です。普通のReactだけでは大変な作業を、Next.jsが自動でやってくれる「便利な道具箱」だと考えてください。
 
-こちらの「ユーザー登録画面」を完成させます。
+**身近な例で例えると：**
+- React = 材料（小麦粉、卵、砂糖）
+- Next.js = パンを作る専用オーブンと道具一式
 
-> 📷 イメージ
-> 
-> 
-> ![image.png](attachment:669e9e65-7b0b-418b-8cc3-29526b7abac5:image.png)
-> 
+### 📚 従来のReactとの違い
 
----
+**普通のReactアプリケーション：**
+```javascript
+// ユーザーのブラウザで全て実行される
+function App() {
+  const [data, setData] = useState(null);
+  
+  useEffect(() => {
+    fetch('/api/data')  // ページを開いてから取得開始
+      .then(res => res.json())
+      .then(setData);
+  }, []);
+  
+  if (!data) return <div>読み込み中...</div>;
+  
+  return <div>{data.message}</div>;
+}
+```
 
-## 🛠️ 作成の流れ
+**Next.jsアプリケーション：**
+```javascript
+// サーバーでデータを事前取得してから送信
+export default async function Page() {
+  const data = await fetch('https://api.example.com/data')
+    .then(res => res.json());
+  
+  // ユーザーが見る時には既に完成している
+  return <div>{data.message}</div>;
+}
+```
 
-以下の手順で進めます。
+**📊 どちらが早い？**
+- React：ページ表示 → JavaScript読み込み → データ取得 → 表示完了（**3段階**）
+- Next.js：すぐに完成したページが表示（**1段階**）
 
-1. `user/index.php` を開く
-2. 記載しているHTMLを上書きで貼り付ける
-3. 実際に画面が表示されるか動作確認する
+### 💡 Next.jsの主要なメリット
 
-それでは、実際に作成していきましょう。
+#### 1. **パフォーマンスが圧倒的に良い**
+```javascript
+// Next.jsでは画像も自動で最適化される
+import Image from 'next/image';
 
----
+export default function ProfilePage() {
+  return (
+    <div>
+      {/* 自動で圧縮・遅延読み込み・サイズ調整 */}
+      <Image 
+        src="/profile.jpg"
+        alt="プロフィール写真"
+        width={300}
+        height={300}
+        priority // 重要な画像は優先読み込み
+      />
+    </div>
+  );
+}
+```
 
-## ✍️ ユーザー登録画面を編集する
-
-### 📄 `docker_simple_memo_php/user/index.php`
-
-```php
-<!DOCTYPE html>
-<html lang="ja">
-    <?php
-        include_once "../common/header.php";
-        echo getHeader("ユーザー登録");
-    ?>
-    <body>
-        <div class="d-flex align-items-center justify-content-center h-100">
-            <form method="post" action="../memo/">
-                <div class="card rounded login-card-width shadow">
-                    <div class="card-body">
-                        <div class="rounded-circle mx-auto border-gray border d-flex mt-3 icon-circle">
-                            <img src="../public/images/animal_stand_zou.png" class="w-75 mx-auto p-2" alt="icon"/>
-                        </div>
-                        <div class="d-flex justify-content-center">
-                            <div class="mt-3 h2">SimpleMemo</div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="offset-2 col-8 offset-2">
-                                <label class="input-group w-100">
-                                    <span class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fas fa-file-signature"></i></span>
-                                    </span>
-                                    <input type="text" name="user_name" class="form-control" placeholder="ユーザー名" autocomplete="off" maxlength="255" />
-                                </label>
-                                <label class="input-group w-100">
-                                    <span class="input-group-prepend">
-                                        <span class="input-group-text"><i class="far fa-envelope"></i></span>
-                                    </span>
-                                    <input type="text" name="user_email" class="form-control" placeholder="メールアドレス" autocomplete="off" maxlength="255" />
-                                </label>
-                                <label class="input-group w-100">
-                                    <span class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fas fa-key"></i></span>
-                                    </span>
-                                    <input type="password" name="user_password" class="form-control" placeholder="パスワード" autocomplete="off" maxlength="255" />
-                                </label>
-                                <button type="submit" class="form-control btn btn-success">
-                                    登録する
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </body>
+#### 2. **SEO（検索エンジン対策）に強い**
+```html
+<!-- Next.jsが生成するHTML（Googleがすぐ理解できる） -->
+<html>
+<head>
+  <title>田中太郎のブログ</title>
+  <meta name="description" content="プログラミングについて書いています" />
+</head>
+<body>
+  <h1>私のブログへようこそ</h1>
+  <p>今日はNext.jsについて学びました...</p>
+</body>
 </html>
 ```
 
----
+#### 3. **開発が楽になる機能がたくさん**
+```javascript
+// ファイルを作るだけでページができる（ルーティング自動設定）
+// app/about/page.js → https://yoursite.com/about
+// app/blog/page.js → https://yoursite.com/blog
+// app/contact/page.js → https://yoursite.com/contact
 
-## **🔍 コードのポイント**
-
-PHPコードで注目すべき部分はこちらです。
-
-```
-<?php
-    include_once "../common/header.php";
-    echo getHeader("ユーザー登録");
-?>
-```
-
-- **include_once**
-    
-    ../common/header.php を読み込み、ヘッダー共通部分の関数を使えるようにしています。
-    
-- **getHeader関数**
-    
-    getHeader("ユーザー登録") によって、ページタイトルが「ユーザー登録」になります。
-    
-    返ってきたHTMLを echo で出力しています。
-    
-
----
-
-## **🚀 動作確認**
-
-それでは、画面を表示してみましょう。
-
----
-
-### **1️⃣ Dockerを起動する**
-
-まだDockerが立ち上がっていない場合は、以下のコマンドを実行してください。
-
-```bash
-cd memo-php
-docker-compose up -d
+export default function AboutPage() {
+  return (
+    <div>
+      <h1>私について</h1>
+      <p>プログラマーです</p>
+    </div>
+  );
+}
 ```
 
-> ⚠️ 既に起動している場合はこの手順は不要です。
-> 
+### 🔧 どんなサイトに向いている？
 
----
+**Next.jsが得意なサイト：**
+- **企業サイト**：会社紹介、サービス案内
+- **ブログ**：記事の読み込みが速い
+- **ECサイト**：商品ページが検索されやすい
+- **ポートフォリオサイト**：作品を美しく表示
 
-### **2️⃣ URLにアクセスする**
-
-ブラウザで次のURLを開きます。
-
-http://localhost:8080/user/index.php
-
----
-
-### **3️⃣ 表示を確認する**
-
-以下のようにユーザー登録画面が表示されればOKです。
-
-> 📷
-> 
-> 
-> **画面イメージ**
-> 
-> ![image.png](attachment:53aa8c62-a5ac-40c1-bd7b-d4916d0740c4:image.png)
-> 
-
-ブラウザのタブに「ユーザー登録」と表示されているか確認してみましょう。
-
----
-
-## **🕵️ ページタイトルを確認する**
-
-実際にHTMLソースを見てみます。
-
-### **Chromeの場合**
-
-1. 登録画面上で右クリック
-2. 「ページのソースを表示」をクリック
-
-```
-<title>ユーザー登録</title>
+**具体例：**
+```javascript
+// ECサイトの商品ページ例
+export default async function ProductPage({ params }) {
+  const { id } = await params;
+  
+  // サーバーで商品データを取得（高速）
+  const product = await db.products.findUnique({
+    where: { id }
+  });
+  
+  return (
+    <div>
+      <h1>{product.name}</h1>
+      <p>価格: ¥{product.price.toLocaleString()}</p>
+      <p>{product.description}</p>
+      
+      {/* 購入ボタンだけはクライアント側で動作 */}
+      <BuyButton productId={product.id} />
+    </div>
+  );
+}
 ```
 
-このように`<title>`タグに「ユーザー登録」が反映されていることが確認できます。
-
-> 📷
-> 
-> 
-> **確認イメージ**
-> 
-> ![image.png](attachment:362f9abc-5c86-4ef9-a1ea-c06482e83102:image.png)
-> 
-
 ---
-
-## **🎉 完成！**
-
-以上で、ユーザー登録ページの作成と動作確認が完了しました。
-
-次のステップに進みましょう！

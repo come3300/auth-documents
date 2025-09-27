@@ -1,213 +1,398 @@
 ---
-title: 第４回：ユーザーテーブルの作成
+title: 第４回：制御構文 Part2 - whileループとswitch文
 category: php
 ---
 
-このパートでは、**データベースとユーザーテーブル**を作成し、今後のアプリケーション開発で利用できるようにします。
+## 第4章：制御構文 Part2 - whileループとswitch文
 
----
+### whileループの基本概念
 
-## 🎯 本パートの目標物
+**基本的なwhile文の構造**
+```php
+<?php
+// 基本構文
+$counter = 1;
+while ($counter <= 5) {
+    echo "カウント：$counter<br>";
+    $counter++; // 重要：条件変数の更新
+}
 
-最終的に、`http://127.0.0.1:8081/` (phpMyAdmin) にアクセスすると、**simple_memoデータベース**と**usersテーブル**が作成済みで表示される状態を目指します。
-
-> 📷 イメージ
-> 
-> 
-> ![image.png](attachment:2ce1449f-2abc-4ad9-a050-d18b5f992038:image.png)
-> 
-
----
-
-## 🛠️ 作成の流れ
-
-進め方は以下の通りです。
-
-1. `http://127.0.0.1:8081/` にアクセス
-2. SQLタブを開く
-3. データベース作成用のSQLを実行
-4. 作成した `simple_memo` データベースを選択
-5. SQLタブを開く
-6. ユーザーテーブル作成用のSQLを実行
-
-それでは、データベースから作成していきましょう。
-
----
-
-## 🗃️ データベースを作成する
-
-Docker環境を立ち上げると、すでに**phpMyAdmin**が利用可能になっています。
-
-以下のURLにアクセスしてください。
-
-http://127.0.0.1:8081/
-
----
-
-アクセスすると、次のような画面が表示されます。
-
-> 📷 画面イメージ
-> 
-> 
-> ![image.png](attachment:905832f1-aa99-47e8-963d-aa7b46bbba2c:image.png)
-> 
-
-画面上部の赤枠「**SQL**」タブをクリックします。
-
----
-
-テキストエリアと実行ボタンが表示されるので、下記のSQLを貼り付けて実行してください。
-
-```sql
-CREATE DATABASE simple_memo DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+// 実用例：ユーザー入力の検証
+function getUserInput() {
+    do {
+        $input = readline("1から10までの数字を入力してください：");
+        $number = (int)$input;
+        
+        if ($number < 1 || $number > 10) {
+            echo "無効な入力です。もう一度試してください。\n";
+        }
+    } while ($number < 1 || $number > 10);
+    
+    return $number;
+}
+?>
 ```
 
-実行が完了すると、左側のデータベース一覧に**simple_memo**が表示されます。
-
-> 📷 画面イメージ
-> 
-> 
-> ![image.png](attachment:44807658-1de5-4994-957e-26caaa517641:image.png)
-> 
-
----
-
-### 💡 CREATE DATABASE文の解説
-
-今回のSQLは次の通りです。
-
-```sql
-CREATE DATABASE simple_memo DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+**do-whileループ - 必ず1回は実行**
+```php
+<?php
+// メニューシステムの例
+function showMenu() {
+    $choice = 0;
+    
+    do {
+        echo "\n=== メインメニュー ===\n";
+        echo "1. ユーザー登録\n";
+        echo "2. ログイン\n"; 
+        echo "3. 設定\n";
+        echo "4. 終了\n";
+        echo "選択してください (1-4): ";
+        
+        $input = readline();
+        $choice = (int)$input;
+        
+        switch ($choice) {
+            case 1:
+                echo "ユーザー登録画面へ...\n";
+                break;
+            case 2:
+                echo "ログイン画面へ...\n";
+                break;
+            case 3:
+                echo "設定画面へ...\n";
+                break;
+            case 4:
+                echo "プログラムを終了します\n";
+                break;
+            default:
+                echo "無効な選択です\n";
+        }
+    } while ($choice !== 4);
+}
+?>
 ```
 
-ポイントを簡単に整理します。
+### 無限ループの防止策
 
-✅ **`simple_memo`**
+**よくある間違いと対策**
+```php
+<?php
+// ❌ 危険：無限ループの例
+function dangerousLoop() {
+    $i = 1;
+    while ($i <= 10) {
+        echo $i;
+        // $i++; が抜けている！
+    }
+}
 
-データベース名。自由に変更可能ですが、本教材ではこの名前を使用します。
+// ✅ 安全：カウンタ制限付きループ
+function safeLoop() {
+    $i = 1;
+    $max_iterations = 1000; // 安全装置
+    $iterations = 0;
+    
+    while ($i <= 10 && $iterations < $max_iterations) {
+        echo $i;
+        $i++;
+        $iterations++;
+        
+        if ($iterations >= $max_iterations) {
+            error_log("警告：最大反復回数に達しました");
+            break;
+        }
+    }
+}
 
-✅ **`DEFAULT CHARACTER SET utf8mb4`**
-
-文字コードをutf8mb4に設定します。
-
-utf8mb4はUTF-8の拡張版で、**絵文字なども格納できます**。
-
-✅ **`COLLATE utf8mb4_unicode_ci`**
-
-照合順序（文字の比較ルール）を設定しています。
-
-指定しなくても問題はありませんが、明示的に指定しています。
-
----
-
-## 🗄️ ユーザーテーブルを作成する
-
-次に、**usersテーブル**を作成します。
-
-これは実際にユーザーのデータを格納するためのテーブルです。
-
----
-
-### 1️⃣ データベースを選択
-
-先ほど作成した `simple_memo` を左メニューから選択します。
-
----
-
-### 2️⃣ SQLタブを開く
-
-`simple_memo` を選択した状態で、画面上部の**SQL**タブをクリックします。
-
----
-
-### 3️⃣ SQLを貼り付けて実行
-
-以下のSQLをテキストエリアに貼り付けて実行します。
-
-```sql
-sql
-コピーする編集する
-CREATE TABLE users (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(255),
-    email VARCHAR(255),
-    password VARCHAR(255),
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
-);
-
+// 実用例：APIから全データを取得
+function fetchAllData($api_url) {
+    $all_data = [];
+    $page = 1;
+    $max_pages = 100; // 安全装置
+    
+    while ($page <= $max_pages) {
+        $response = file_get_contents("$api_url?page=$page");
+        $data = json_decode($response, true);
+        
+        if (empty($data) || !isset($data['items'])) {
+            break; // データがない場合は終了
+        }
+        
+        $all_data = array_merge($all_data, $data['items']);
+        
+        // 次のページがない場合は終了
+        if (!isset($data['has_more']) || !$data['has_more']) {
+            break;
+        }
+        
+        $page++;
+    }
+    
+    return $all_data;
+}
+?>
 ```
 
-実行が完了すると、左側に**usersテーブル**が表示されます。
+### switch文の理解
 
-> 📷 画面イメージ
-> 
-> 
-> ![image.png](attachment:b85b41c7-39f0-4524-90ff-00520180c605:image.png)
-> 
+**基本的なswitch文**
+```php
+<?php
+$day = date('w'); // 0=日曜日, 1=月曜日...
 
----
+switch ($day) {
+    case 0:
+    case 6:
+        echo "今日は休日です";
+        break;
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+        echo "今日は平日です";
+        break;
+    default:
+        echo "不明な曜日";
+}
 
-### 💡 CREATE TABLE文の解説
-
-今回のSQLは以下のように構成されています。
-
-```sql
-sql
-コピーする編集する
-CREATE TABLE users (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(255),
-    email VARCHAR(255),
-    password VARCHAR(255),
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
-);
-
+// 実用例：HTTPステータスコード処理
+function getStatusMessage($code) {
+    switch ($code) {
+        case 200:
+            return "成功";
+        case 201:
+            return "作成完了";
+        case 400:
+            return "リクエストエラー";
+        case 401:
+            return "認証が必要";
+        case 403:
+            return "アクセス拒否";
+        case 404:
+            return "ページが見つかりません";
+        case 500:
+            return "サーバーエラー";
+        default:
+            return "不明なステータス";
+    }
+}
+?>
 ```
 
-それぞれのポイントを見てみましょう。
+### match式（PHP 8+）- switchの改良版
 
-| カラム名 | データ型 | 説明 |
-| --- | --- | --- |
-| `id` | BIGINT | ユーザーID（自動採番） |
-| `name` | VARCHAR(255) | ユーザー名 |
-| `email` | VARCHAR(255) | メールアドレス |
-| `password` | VARCHAR(255) | パスワード |
-| `created_at` | DATETIME | 登録日時（デフォルト: 現在日時） |
-| `updated_at` | DATETIME | 更新日時（デフォルト: 現在日時） |
+**match式の利点**
+```php
+<?php
+// switch文（従来）
+function getGradeSwitch($score) {
+    switch (true) {
+        case $score >= 90:
+            $grade = 'A';
+            break;
+        case $score >= 80:
+            $grade = 'B';
+            break;
+        case $score >= 70:
+            $grade = 'C';
+            break;
+        default:
+            $grade = 'F';
+    }
+    return $grade;
+}
 
----
+// match式（PHP 8+）- より安全で簡潔
+function getGradeMatch($score) {
+    return match (true) {
+        $score >= 90 => 'A',
+        $score >= 80 => 'B',
+        $score >= 70 => 'C',
+        default => 'F'
+    };
+}
 
-### 🔹 特に重要な指定
+// 実用例：ユーザー権限の管理
+function getPermissions($role) {
+    return match ($role) {
+        'admin' => ['read', 'write', 'delete', 'manage'],
+        'editor' => ['read', 'write'],
+        'viewer' => ['read'],
+        'guest', 'anonymous' => [], // 複数値対応
+        default => throw new InvalidArgumentException("不明な役割：$role")
+    };
+}
 
-- **`NOT NULL`**
+// 料金計算の例
+function calculateShippingFee($weight, $distance) {
+    $base_fee = match (true) {
+        $weight <= 1 => 500,
+        $weight <= 5 => 800,
+        $weight <= 10 => 1200,
+        default => 1500
+    };
     
-    `NULL`を許容しない設定。空データを防ぎます。
+    $distance_multiplier = match (true) {
+        $distance <= 50 => 1.0,
+        $distance <= 200 => 1.5,
+        default => 2.0
+    };
     
-- **`AUTO_INCREMENT`**
-    
-    新規データ登録時に自動的にIDが1ずつ増加します。
-    
-- **`DEFAULT CURRENT_TIMESTAMP`**
-    
-    初期値として現在日時を設定します。
-    
-- **`PRIMARY KEY (id)`**
-    
-    主キー（レコードを一意に識別するキー）として `id` を指定しています。
-    
+    return $base_fee * $distance_multiplier;
+}
+?>
+```
 
----
+### フォール・スルー動作の理解
 
-作成後にテーブルの構造を確認したい場合は、phpMyAdminで**usersテーブルを選択 → 構造タブ**をクリックしてください。
+```php
+<?php
+// 意図的なフォール・スルー（同じ処理を実行）
+function getWorkDayType($day) {
+    switch ($day) {
+        case 'monday':
+        case 'tuesday':
+        case 'wednesday':
+        case 'thursday':
+            // 平日の共通処理
+            setupWorkEnvironment();
+            // フォール・スルー
+        case 'friday':
+            // 平日（金曜日含む）の処理
+            return "平日です";
+            
+        case 'saturday':
+        case 'sunday':
+            return "休日です";
+            
+        default:
+            return "不明な曜日";
+    }
+}
 
-設定内容が一覧で確認できます。
+// ❌ 危険：意図しないフォール・スルー
+function dangerousSwitch($action) {
+    switch ($action) {
+        case 'delete':
+            deleteRecord();
+            // break; が抜けている！
+        case 'update':
+            updateRecord(); // deleteの場合も実行されてしまう
+            break;
+    }
+}
+?>
+```
 
----
+### switch vs if-elseif の選択基準
 
-## ✅ 完成！
+```php
+<?php
+// switchが適している場合：一つの変数の複数値比較
+function handleUserCommand($command) {
+    switch ($command) {
+        case 'start':
+        case 'begin':
+            return startProcess();
+        case 'stop':
+        case 'end':
+            return stopProcess();
+        case 'pause':
+            return pauseProcess();
+        case 'resume':
+            return resumeProcess();
+        default:
+            return "不明なコマンド";
+    }
+}
 
-以上で、**simple_memoデータベース**と**usersテーブル**が作成できました。
+// if-elseifが適している場合：複雑な条件
+function determineUserCategory($user) {
+    if (!$user || !$user['is_active']) {
+        return 'inactive';
+    }
+    
+    if ($user['age'] < 18 && $user['has_guardian_consent']) {
+        return 'minor_with_consent';
+    }
+    
+    if ($user['premium_member'] && $user['subscription_active']) {
+        return 'premium';
+    }
+    
+    if ($user['total_purchases'] > 100000) {
+        return 'vip';
+    }
+    
+    return 'standard';
+}
+?>
+```
+
+### エラーハンドリングと制御構文
+
+```php
+<?php
+// try-catchとの組み合わせ
+function processUserAction($action) {
+    $max_retries = 3;
+    $attempt = 0;
+    
+    while ($attempt < $max_retries) {
+        try {
+            switch ($action) {
+                case 'save':
+                    return saveData();
+                case 'send':
+                    return sendEmail();
+                case 'process':
+                    return processPayment();
+                default:
+                    throw new InvalidArgumentException("不明なアクション：$action");
+            }
+        } catch (TemporaryException $e) {
+            $attempt++;
+            if ($attempt >= $max_retries) {
+                throw new Exception("最大試行回数に達しました：" . $e->getMessage());
+            }
+            sleep(1); // 1秒待機してリトライ
+        }
+    }
+}
+
+// バリデーションと制御構文の組み合わせ
+function validateAndProcess($data) {
+    $errors = [];
+    
+    // バリデーションループ
+    foreach ($data as $field => $value) {
+        switch ($field) {
+            case 'email':
+                if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                    $errors[] = "無効なメールアドレス";
+                }
+                break;
+                
+            case 'age':
+                if (!is_numeric($value) || $value < 0 || $value > 150) {
+                    $errors[] = "無効な年齢";
+                }
+                break;
+                
+            case 'phone':
+                if (!preg_match('/^[0-9-]+$/', $value)) {
+                    $errors[] = "無効な電話番号";
+                }
+                break;
+        }
+    }
+    
+    if (!empty($errors)) {
+        return ['success' => false, 'errors' => $errors];
+    }
+    
+    return ['success' => true, 'data' => $data];
+}
+?>
+```

@@ -1,190 +1,261 @@
 ---
-title: 第３回：メモ投稿画面の作成
-category: php
+title: 第３回：基礎構文 その1（if文、for文）
+category: js
 ---
-
-このパートでは、**メモ投稿画面**を作成し、画面遷移を含めた動作確認を行います。
-
----
-
-## 🎯 本パートの目標物
-
-こちらのメモ投稿画面を完成させます。
-
-> 📷 イメージ
-> 
-> 
-> ![image.png](attachment:91b1bde8-12c8-4141-a287-ca48c012c6d1:image.png)
-> 
 
 ---
 
-## 🛠️ 作成の流れ
+## 第3回：基礎構文 その1（if文、for文）
 
-以下の手順で進めていきます。
+### **🤔 条件分岐：プログラムに判断させる**
 
-1. `memo/index.php` を開く
-2. 記載しているHTMLを上書きで貼り付ける
-3. 実際に画面が表示されるか確認する
-4. すべての画面を通して動作確認する
+if文を使って、条件によって異なる処理を実行できます。
 
-それでは、実際に作成していきましょう。
+#### 基本のif文
+```javascript
+let age = 18;
 
----
+if (age >= 18) {
+    console.log("選挙権があります");
+}
 
-## ✍️ メモ投稿画面を編集する
+// if-else：2つの選択肢
+let temperature = 25;
 
-前回までに作成したメモ投稿画面を、以下のコードで**上書き**してください。
-
-### 📄 `docker_simple_memo_php/memo/index.php`
-
-```php
-<!DOCTYPE html>
-<html lang="ja">
-    <?php
-        include_once "../common/header.php";
-        echo getHeader("メモ投稿");
-    ?>
-    <body class="bg-white">
-        <div class="h-100">
-            <div class="row h-100 m-0 p-0">
-                <div class="col-3 h-100 m-0 p-0 border-left border-right border-gray">
-                    <div class="left-memo-menu d-flex justify-content-between pt-2">
-                        <div class="pl-3 pt-2">
-                            xxxさん、こんにちは。
-                        </div>
-                        <div class="pr-1">
-                            <a href="" class="btn btn-success"><i class="fas fa-plus"></i></a>
-                            <a href="../login/" class="btn btn-dark"><i class="fas fa-sign-out-alt"></i></a>
-                        </div>
-                    </div>
-                    <div class="left-memo-title h3 pl-3 pt-3">
-                        メモリスト
-                    </div>
-                    <div class="left-memo-list list-group-flush p-0">
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">メモタイトル1</h5>
-                                <small>2020/08/01 09:00</small>
-                            </div>
-                            <p class="mb-1">
-                                メモ詳細1
-                            </p>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">メモタイトル2</h5>
-                                <small>2020/08/01 09:00</small>
-                            </div>
-                            <p class="mb-1">
-                                メモ詳細2
-                            </p>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">メモタイトル3</h5>
-                                <small>2020/08/01 09:00</small>
-                            </div>
-                            <p class="mb-1">
-                                メモ詳細3
-                            </p>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-9 h-100">
-                    <form class="w-100 h-100" method="post">
-                        <input type="hidden" name="edit_id" value="" />
-                        <div id="memo-menu">
-                            <button type="submit" class="btn btn-danger" formaction=""><i class="fas fa-trash-alt"></i></button>
-                            <button type="submit" class="btn btn-success" formaction=""><i class="fas fa-save"></i></button>
-                        </div>
-                        <input type="text" id="memo-title" name="edit_title" placeholder="タイトルを入力する..." value="" />
-                        <textarea id="memo-content" name="edit_content" placeholder="内容を入力する..."></textarea>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </body>
-</html>
+if (temperature > 30) {
+    console.log("暑いですね！");
+} else {
+    console.log("過ごしやすい気温です");
+}
 ```
 
-## 🚀 動作確認
+#### 複数条件：else if
+```javascript
+let score = 85;
 
-それでは、画面を表示して確認してみましょう。
-
----
-
-### 1️⃣ Dockerを起動する
-
-まだDockerを立ち上げていない場合は、以下のコマンドを実行します。
-
-```bash
-cd memo-php
-docker-compose up -d
+if (score >= 90) {
+    console.log("A評価：優秀です！");
+} else if (score >= 80) {
+    console.log("B評価：良くできました");
+} else if (score >= 70) {
+    console.log("C評価：普通です");
+} else if (score >= 60) {
+    console.log("D評価：もう少し頑張りましょう");
+} else {
+    console.log("F評価：再試験が必要です");
+}
 ```
 
-> ⚠️ 既に起動中の場合は、この手順は不要です。
-> 
+### **🔍 比較演算子**
+
+```javascript
+let x = 10;
+let y = "10";
+
+// 等価比較
+console.log(x == y);   // true（型を変換して比較）
+console.log(x === y);  // false（厳密比較、型も含めて）
+console.log(x !== y);  // true（厳密不等価）
+
+// 現代JavaScriptでは「===」を使いましょう！
+
+// 数値比較
+console.log(x > 5);    // true
+console.log(x < 15);   // true
+console.log(x >= 10);  // true
+console.log(x <= 9);   // false
+```
+
+### **🔗 論理演算子**
+
+```javascript
+let isStudent = true;
+let hasID = false;
+let age = 20;
+
+// AND演算子（&&）：両方がtrueの時だけtrue
+let canEnterLibrary = isStudent && hasID;
+console.log(canEnterLibrary); // false
+
+// OR演算子（||）：どちらかがtrueならtrue
+let canGetDiscount = isStudent || age < 25;
+console.log(canGetDiscount); // true
+
+// NOT演算子（!）：真偽値を反転
+let isNotStudent = !isStudent;
+console.log(isNotStudent); // false
+```
+
+### **🌟 実践的な条件分岐の例**
+
+#### メール検証システム
+```javascript
+function validateEmail(email) {
+    if (email === "") {
+        return "メールアドレスが入力されていません";
+    } else if (!email.includes("@")) {
+        return "メールアドレスに@マークが含まれていません";
+    } else if (!email.includes(".")) {
+        return "メールアドレスにドメインが含まれていません";
+    } else {
+        return "有効なメールアドレスです";
+    }
+}
+
+// テストしてみる
+console.log(validateEmail(""));                    // "メールアドレスが入力されていません"
+console.log(validateEmail("tanaka"));              // "メールアドレスに@マークが含まれていません"
+console.log(validateEmail("tanaka@"));             // "メールアドレスにドメインが含まれていません"
+console.log(validateEmail("tanaka@example.com"));  // "有効なメールアドレスです"
+```
+
+#### 学割判定システム
+```javascript
+function checkStudentDiscount(age, isStudent, hasStudentID) {
+    if (!isStudent) {
+        return "学生ではないため、学割は適用されません";
+    }
+    
+    if (age > 25) {
+        return "年齢制限により、学割は適用されません";
+    }
+    
+    if (!hasStudentID) {
+        return "学生証の提示が必要です";
+    }
+    
+    return "学割が適用されます！20%オフです";
+}
+
+// テスト
+console.log(checkStudentDiscount(20, true, true));   // "学割が適用されます！20%オフです"
+console.log(checkStudentDiscount(20, false, true));  // "学生ではないため、学割は適用されません"
+console.log(checkStudentDiscount(30, true, true));   // "年齢制限により、学割は適用されません"
+```
+
+### **🔄 繰り返し処理：for文**
+
+同じ処理を何度も繰り返したい時にfor文を使います。
+
+#### 基本のfor文
+```javascript
+// 0から4まで数える
+for (let i = 0; i < 5; i++) {
+    console.log(`カウント: ${i}`);
+}
+// 出力: カウント: 0, 1, 2, 3, 4
+
+// 配列の全要素を処理
+let fruits = ["りんご", "バナナ", "オレンジ", "いちご"];
+
+for (let i = 0; i < fruits.length; i++) {
+    console.log(`${i + 1}番目: ${fruits[i]}`);
+}
+// 出力: 1番目: りんご, 2番目: バナナ, 3番目: オレンジ, 4番目: いちご
+```
+
+#### for...of文（現代的で簡潔）
+```javascript
+let colors = ["赤", "青", "緑", "黄色"];
+
+// 値を直接取得
+for (let color of colors) {
+    console.log(`私は${color}が好きです`);
+}
+
+// より複雑な例
+let students = ["田中太郎", "佐藤花子", "鈴木次郎"];
+let scores = [85, 92, 78];
+
+for (let student of students) {
+    console.log(`${student}さんがクラスにいます`);
+}
+```
+
+#### for...in文（オブジェクトのプロパティ用）
+```javascript
+let person = {
+    name: "田中太郎",
+    age: 25,
+    city: "東京",
+    job: "エンジニア"
+};
+
+for (let key in person) {
+    console.log(`${key}: ${person[key]}`);
+}
+// 出力: name: 田中太郎, age: 25, city: 東京, job: エンジニア
+```
+
+### **🛍️ 実践的なfor文の例**
+
+#### ショッピングカート計算
+```javascript
+let cart = [
+    { name: "ノートパソコン", price: 89800, quantity: 1 },
+    { name: "マウス", price: 2500, quantity: 2 },
+    { name: "キーボード", price: 7500, quantity: 1 }
+];
+
+let totalCost = 0;
+
+console.log("ショッピングカート");
+console.log("==================");
+
+for (let item of cart) {
+    let itemTotal = item.price * item.quantity;
+    totalCost += itemTotal;
+    
+    console.log(`${item.name}: ${item.price.toLocaleString()}円 × ${item.quantity}個 = ${itemTotal.toLocaleString()}円`);
+}
+
+console.log("==================");
+console.log(`小計: ${totalCost.toLocaleString()}円`);
+
+// 消費税計算
+let taxRate = 0.1;
+let tax = Math.floor(totalCost * taxRate);
+let finalTotal = totalCost + tax;
+
+console.log(`消費税(10%): ${tax.toLocaleString()}円`);
+console.log(`合計: ${finalTotal.toLocaleString()}円`);
+```
+
+#### 成績処理システム
+```javascript
+let students = [
+    { name: "田中太郎", scores: [85, 92, 78, 88] },
+    { name: "佐藤花子", scores: [92, 88, 95, 90] },
+    { name: "鈴木次郎", scores: [78, 82, 85, 80] }
+];
+
+console.log("学生成績一覧");
+console.log("==============");
+
+for (let student of students) {
+    let total = 0;
+    
+    // 各学生の合計点を計算
+    for (let score of student.scores) {
+        total += score;
+    }
+    
+    let average = total / student.scores.length;
+    let grade;
+    
+    // 成績判定
+    if (average >= 90) {
+        grade = "A";
+    } else if (average >= 80) {
+        grade = "B";
+    } else if (average >= 70) {
+        grade = "C";
+    } else {
+        grade = "D";
+    }
+    
+    console.log(`${student.name}: 平均点 ${average.toFixed(1)}点 (評価: ${grade})`);
+}
+```
 
 ---
-
-### 2️⃣ URLにアクセスする
-
-ブラウザで次のURLを開きます。
-
-http://localhost:8080/memo/index.php
-
----
-
-### 3️⃣ 表示を確認する
-
-以下のようにメモ投稿画面が表示されればOKです。
-
-> 📷 画面イメージ
-> 
-> 
-> ![image.png](attachment:775cfc98-4412-4771-9fbc-9e5da0ec2a13:image.png)
-> 
-
----
-
-## 🔄 画面遷移の確認
-
-今回作成したメモ投稿画面を含め、**全画面の遷移**も確認しておきましょう。
-
----
-
-### ✅ 手順
-
-1. ログイン画面へアクセス
-    
-    http://localhost:8080/login/index.php
-    
-2. 「アカウントを作成」リンクをクリック
-    
-    → ユーザー登録画面に遷移
-    
-3. ユーザー登録画面で「登録する」をクリック
-    
-    → メモ投稿画面に遷移
-    
-4. メモ投稿画面で「ログアウトアイコン」をクリック
-    
-    → ログイン画面に戻る
-    
-
----
-
-この流れで画面遷移がスムーズに行えることを確認してください。
-
-> 📷 遷移イメージ
-> 
-> 
-> ![](https://techpit-market-prod.s3.amazonaws.com/uploads/part_attachment/file/17002/7e5a316a-55b9-406a-a792-c81857ca0b71.gif)
-> 
-
----
-
-## 🎉 完成！
-
-以上で、**メモ投稿画面の作成と動作確認**が完了しました。

@@ -1,213 +1,362 @@
 ---
-title: 第４回：ユーザーテーブルの作成
-category: php
+title: 第４回：レンダリング方式の理解 🎨
+category: Next.js
 ---
 
-このパートでは、**データベースとユーザーテーブル**を作成し、今後のアプリケーション開発で利用できるようにします。
+## 第4章：レンダリング方式の理解 🎨
 
----
+Next.jsは**4つの主要なレンダリング方式**を提供しており、コンテンツの性質に応じて最適な方法を選択できます。
 
-## 🎯 本パートの目標物
+### 🔥 1. サーバーサイドレンダリング（SSR）
 
-最終的に、`http://127.0.0.1:8081/` (phpMyAdmin) にアクセスすると、**simple_memoデータベース**と**usersテーブル**が作成済みで表示される状態を目指します。
+SSRは**リクエストのたびに新しいページを作る**方式です。**注文を受けてから作る高級レストラン**のイメージです。
 
-> 📷 イメージ
-> 
-> 
-> ![image.png](attachment:2ce1449f-2abc-4ad9-a050-d18b5f992038:image.png)
-> 
+#### **いつ使う？**
+- ユーザー固有の情報を表示する時
+- リアルタイムデータが必要な時
+- 常に最新情報を表示したい時
 
----
-
-## 🛠️ 作成の流れ
-
-進め方は以下の通りです。
-
-1. `http://127.0.0.1:8081/` にアクセス
-2. SQLタブを開く
-3. データベース作成用のSQLを実行
-4. 作成した `simple_memo` データベースを選択
-5. SQLタブを開く
-6. ユーザーテーブル作成用のSQLを実行
-
-それでは、データベースから作成していきましょう。
-
----
-
-## 🗃️ データベースを作成する
-
-Docker環境を立ち上げると、すでに**phpMyAdmin**が利用可能になっています。
-
-以下のURLにアクセスしてください。
-
-http://127.0.0.1:8081/
-
----
-
-アクセスすると、次のような画面が表示されます。
-
-> 📷 画面イメージ
-> 
-> 
-> ![image.png](attachment:905832f1-aa99-47e8-963d-aa7b46bbba2c:image.png)
-> 
-
-画面上部の赤枠「**SQL**」タブをクリックします。
-
----
-
-テキストエリアと実行ボタンが表示されるので、下記のSQLを貼り付けて実行してください。
-
-```sql
-CREATE DATABASE simple_memo DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+#### **実装例：ユーザーダッシュボード**
+```javascript
+// app/dashboard/page.tsx
+export default async function Dashboard() {
+  // 毎回最新データを取得（キャッシュなし）
+  const user = await fetch('https://api.example.com/user/me', {
+    cache: 'no-store' // SSRを強制
+  }).then(res => res.json());
+  
+  const notifications = await fetch('https://api.example.com/notifications', {
+    cache: 'no-store'
+  }).then(res => res.json());
+  
+  return (
+    <div className="max-w-4xl mx-auto p-6">
+      <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <h1 className="text-2xl font-bold mb-4">
+          こんにちは、{user.name}さん！
+        </h1>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-blue-50 p-4 rounded">
+            <p className="text-sm text-gray-600">アカウント残高</p>
+            <p className="text-2xl font-bold text-blue-600">
+              ¥{user.balance.toLocaleString()}
+            </p>
+          </div>
+          <div className="bg-green-50 p-4 rounded">
+            <p className="text-sm text-gray-600">今月の売上</p>
+            <p className="text-2xl font-bold text-green-600">
+              ¥{user.monthlySales.toLocaleString()}
+            </p>
+          </div>
+          <div className="bg-purple-50 p-4 rounded">
+            <p className="text-sm text-gray-600">総注文数</p>
+            <p className="text-2xl font-bold text-purple-600">
+              {user.totalOrders}件
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div className="bg-white rounded-lg shadow p-6">
+        <h2 className="text-xl font-semibold mb-4">最新の通知</h2>
+        {notifications.length > 0 ? (
+          <ul className="space-y-3">
+            {notifications.map(notification => (
+              <li key={notification.id} className="border-l-4 border-blue-500 pl-4">
+                <p className="font-medium">{notification.title}</p>
+                <p className="text-sm text-gray-600">{notification.message}</p>
+                <p className="text-xs text-gray-400">{notification.createdAt}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-500">新しい通知はありません</p>
+        )}
+      </div>
+    </div>
+  );
+}
 ```
 
-実行が完了すると、左側のデータベース一覧に**simple_memo**が表示されます。
+### 🏭 2. 静的サイト生成（SSG）
 
-> 📷 画面イメージ
-> 
-> 
-> ![image.png](attachment:44807658-1de5-4994-957e-26caaa517641:image.png)
-> 
+SSGは**ビルド時にページを作って保存しておく**方式です。**事前に作った冷凍食品**のように、非常に高速に提供できます。
 
----
+#### **いつ使う？**
+- 内容があまり変わらないページ
+- 多くの人に同じ内容を見せるページ
+- 速度を最優先にしたい時
 
-### 💡 CREATE DATABASE文の解説
+#### **実装例：ブログ記事**
+```javascript
+// app/blog/[slug]/page.tsx
+export default async function BlogPost({ params }) {
+  const { slug } = await params;
+  
+  // ビルド時に実行され、結果がキャッシュされる
+  const post = await fetch(`https://api.blog.com/posts/${slug}`)
+    .then(res => res.json());
+  
+  return (
+    <article className="max-w-4xl mx-auto p-6">
+      <header className="mb-8">
+        <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
+        <div className="flex items-center text-gray-600 space-x-4">
+          <span>著者: {post.author}</span>
+          <span>公開日: {post.publishedAt}</span>
+          <span>読了時間: {post.readingTime}分</span>
+        </div>
+      </header>
+      
+      <div className="prose lg:prose-lg max-w-none">
+        <div dangerouslySetInnerHTML={{ __html: post.content }} />
+      </div>
+      
+      <footer className="mt-8 pt-8 border-t">
+        <div className="flex flex-wrap gap-2">
+          {post.tags.map(tag => (
+            <span 
+              key={tag}
+              className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
+            >
+              #{tag}
+            </span>
+          ))}
+        </div>
+      </footer>
+    </article>
+  );
+}
 
-今回のSQLは次の通りです。
+// ビルド時に生成するページを指定
+export async function generateStaticParams() {
+  const posts = await fetch('https://api.blog.com/posts')
+    .then(res => res.json());
+  
+  return posts.map(post => ({
+    slug: post.slug
+  }));
+}
 
-```sql
-CREATE DATABASE simple_memo DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+// SEO最適化（静的なので検索エンジンに好まれる）
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const post = await fetch(`https://api.blog.com/posts/${slug}`)
+    .then(res => res.json());
+  
+  return {
+    title: post.title,
+    description: post.excerpt,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      images: [post.featuredImage]
+    }
+  };
+}
 ```
 
-ポイントを簡単に整理します。
+### 🔄 3. インクリメンタル静的再生成（ISR）
 
-✅ **`simple_memo`**
+ISRは**定期的にページを更新する**方式です。**定期的にメニューを更新するファーストフード店**のイメージです。
 
-データベース名。自由に変更可能ですが、本教材ではこの名前を使用します。
+#### **いつ使う？**
+- 基本的には静的だが、時々更新されるコンテンツ
+- パフォーマンスと鮮度のバランスを取りたい時
 
-✅ **`DEFAULT CHARACTER SET utf8mb4`**
+#### **実装例：ニュースサイト**
+```javascript
+// app/news/[id]/page.tsx
+export const revalidate = 300; // 5分ごとに再検証
 
-文字コードをutf8mb4に設定します。
+export default async function NewsArticle({ params }) {
+  const { id } = await params;
+  
+  const article = await fetch(`https://api.news.com/articles/${id}`)
+    .then(res => res.json());
+  
+  return (
+    <article className="max-w-4xl mx-auto p-6">
+      <div className="bg-red-50 border border-red-200 rounded p-4 mb-6">
+        <div className="flex items-center">
+          <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse mr-2"></div>
+          <span className="text-red-700 font-medium">最新ニュース</span>
+        </div>
+      </div>
+      
+      <header className="mb-6">
+        <h1 className="text-3xl font-bold mb-4">{article.title}</h1>
+        <div className="flex items-center justify-between text-sm text-gray-600">
+          <div className="flex items-center space-x-4">
+            <span>記者: {article.reporter}</span>
+            <span>更新: {article.updatedAt}</span>
+          </div>
+          <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded">
+            {article.category}
+          </span>
+        </div>
+      </header>
+      
+      <div className="prose max-w-none mb-6">
+        <p className="text-lg leading-relaxed">{article.content}</p>
+      </div>
+      
+      <div className="bg-gray-50 p-4 rounded">
+        <p className="text-sm text-gray-600 mb-2">この記事の統計</p>
+        <div className="flex space-x-6 text-sm">
+          <span>閲覧数: {article.viewCount.toLocaleString()}</span>
+          <span>シェア数: {article.shareCount}</span>
+          <span>コメント数: {article.commentCount}</span>
+        </div>
+      </div>
+    </article>
+  );
+}
 
-utf8mb4はUTF-8の拡張版で、**絵文字なども格納できます**。
+// オンデマンド再検証（緊急ニュースの場合）
+// app/api/revalidate/route.ts
+import { revalidatePath } from 'next/cache';
 
-✅ **`COLLATE utf8mb4_unicode_ci`**
-
-照合順序（文字の比較ルール）を設定しています。
-
-指定しなくても問題はありませんが、明示的に指定しています。
-
----
-
-## 🗄️ ユーザーテーブルを作成する
-
-次に、**usersテーブル**を作成します。
-
-これは実際にユーザーのデータを格納するためのテーブルです。
-
----
-
-### 1️⃣ データベースを選択
-
-先ほど作成した `simple_memo` を左メニューから選択します。
-
----
-
-### 2️⃣ SQLタブを開く
-
-`simple_memo` を選択した状態で、画面上部の**SQL**タブをクリックします。
-
----
-
-### 3️⃣ SQLを貼り付けて実行
-
-以下のSQLをテキストエリアに貼り付けて実行します。
-
-```sql
-sql
-コピーする編集する
-CREATE TABLE users (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(255),
-    email VARCHAR(255),
-    password VARCHAR(255),
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
-);
-
+export async function POST(request) {
+  const { articleId } = await request.json();
+  
+  // 管理者が手動で更新をトリガー
+  revalidatePath(`/news/${articleId}`);
+  
+  return Response.json({ message: '記事が更新されました' });
+}
 ```
 
-実行が完了すると、左側に**usersテーブル**が表示されます。
+### 💻 4. クライアントサイドレンダリング（CSR）
 
-> 📷 画面イメージ
-> 
-> 
-> ![image.png](attachment:b85b41c7-39f0-4524-90ff-00520180c605:image.png)
-> 
+CSRは**ブラウザ上でページを組み立てる**方式です。**お客さんが自分で調理する**システムで、高い柔軟性があります。
 
----
+#### **いつ使う？**
+- リアルタイムでデータが変わる画面
+- ユーザーのインタラクションが多い画面
+- 個人的な設定画面やダッシュボード
 
-### 💡 CREATE TABLE文の解説
+#### **実装例：リアルタイムチャット**
+```javascript
+// app/chat/page.tsx
+'use client';
 
-今回のSQLは以下のように構成されています。
+import { useState, useEffect, useRef } from 'react';
 
-```sql
-sql
-コピーする編集する
-CREATE TABLE users (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(255),
-    email VARCHAR(255),
-    password VARCHAR(255),
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
-);
-
+export default function ChatPage() {
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [isConnected, setIsConnected] = useState(false);
+  const messagesEndRef = useRef(null);
+  
+  useEffect(() => {
+    // WebSocket接続（リアルタイム通信）
+    const ws = new WebSocket('wss://chat.example.com');
+    
+    ws.onopen = () => {
+      setIsConnected(true);
+      console.log('チャットに接続しました');
+    };
+    
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      setMessages(prev => [...prev, message]);
+    };
+    
+    ws.onclose = () => {
+      setIsConnected(false);
+      console.log('チャットから切断しました');
+    };
+    
+    return () => ws.close();
+  }, []);
+  
+  // 新しいメッセージが来たら自動スクロール
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+  
+  const sendMessage = (e) => {
+    e.preventDefault();
+    if (!newMessage.trim() || !isConnected) return;
+    
+    const message = {
+      id: Date.now(),
+      text: newMessage,
+      user: 'あなた',
+      timestamp: new Date().toLocaleTimeString()
+    };
+    
+    // サーバーに送信
+    ws.send(JSON.stringify(message));
+    setNewMessage('');
+  };
+  
+  return (
+    <div className="max-w-4xl mx-auto h-screen flex flex-col">
+      {/* ヘッダー */}
+      <div className="bg-blue-500 text-white p-4 flex items-center justify-between">
+        <h1 className="text-xl font-bold">リアルタイムチャット</h1>
+        <div className="flex items-center">
+          <div className={`w-3 h-3 rounded-full mr-2 ${isConnected ? 'bg-green-400' : 'bg-red-400'}`}></div>
+          <span className="text-sm">{isConnected ? '接続中' : '切断中'}</span>
+        </div>
+      </div>
+      
+      {/* メッセージ一覧 */}
+      <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+        {messages.length === 0 ? (
+          <p className="text-center text-gray-500 mt-8">まだメッセージがありません</p>
+        ) : (
+          <div className="space-y-4">
+            {messages.map(message => (
+              <div key={message.id} className="flex">
+                <div className="bg-white rounded-lg p-3 shadow max-w-xs">
+                  <p className="font-medium text-sm text-blue-600 mb-1">
+                    {message.user}
+                  </p>
+                  <p>{message.text}</p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {message.timestamp}
+                  </p>
+                </div>
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
+        )}
+      </div>
+      
+      {/* メッセージ入力 */}
+      <form onSubmit={sendMessage} className="p-4 bg-white border-t">
+        <div className="flex space-x-2">
+          <input
+            type="text"
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            placeholder="メッセージを入力..."
+            disabled={!isConnected}
+            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500"
+          />
+          <button
+            type="submit"
+            disabled={!isConnected || !newMessage.trim()}
+            className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 disabled:opacity-50"
+          >
+            送信
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
 ```
 
-それぞれのポイントを見てみましょう。
+### 📊 レンダリング方式の比較表
 
-| カラム名 | データ型 | 説明 |
-| --- | --- | --- |
-| `id` | BIGINT | ユーザーID（自動採番） |
-| `name` | VARCHAR(255) | ユーザー名 |
-| `email` | VARCHAR(255) | メールアドレス |
-| `password` | VARCHAR(255) | パスワード |
-| `created_at` | DATETIME | 登録日時（デフォルト: 現在日時） |
-| `updated_at` | DATETIME | 更新日時（デフォルト: 現在日時） |
-
----
-
-### 🔹 特に重要な指定
-
-- **`NOT NULL`**
-    
-    `NULL`を許容しない設定。空データを防ぎます。
-    
-- **`AUTO_INCREMENT`**
-    
-    新規データ登録時に自動的にIDが1ずつ増加します。
-    
-- **`DEFAULT CURRENT_TIMESTAMP`**
-    
-    初期値として現在日時を設定します。
-    
-- **`PRIMARY KEY (id)`**
-    
-    主キー（レコードを一意に識別するキー）として `id` を指定しています。
-    
-
----
-
-作成後にテーブルの構造を確認したい場合は、phpMyAdminで**usersテーブルを選択 → 構造タブ**をクリックしてください。
-
-設定内容が一覧で確認できます。
-
----
-
-## ✅ 完成！
-
-以上で、**simple_memoデータベース**と**usersテーブル**が作成できました。
+| 方式 | 速度 | リアルタイム性 | SEO | 適用場面 |
+|---|---|---|---|---|
+| **SSG** | ⭐⭐⭐⭐⭐ | ❌ | ⭐⭐⭐⭐⭐ | ブログ、企業サイト |
+| **ISR** | ⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐⭐ | ニュース、商品ページ |
+| **SSR** | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ユーザーダッシュボード |
+| **CSR** | ⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐ | チャット、管理画面 |
