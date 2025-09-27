@@ -1,14 +1,14 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { materialLists } from "@/data/materialLists";
+import { courses } from "@/data/courses";
 
-const HomePage = () => {
+const CoursesPage = () => {
   return (
     <section className="text-gray-600 body-font">
       <div className="container px-5 py-24 mx-auto">
         <div className="flex flex-wrap -m-4">
-          {materialLists.map((post) => (
+          {courses.map((post) => (
             <div key={post.id} className="p-4 md:w-1/4">
               <div className="h-full border border-opacity-60 rounded-lg overflow-hidden">
                 <Image
@@ -85,4 +85,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default CoursesPage;

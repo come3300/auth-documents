@@ -1,4 +1,4 @@
-export const materialLists = [
+export const courses = [
   {
     id: 1,
     imgSrc: 'images/home-imgs/tutorial_ホーム画像.png',
@@ -8,7 +8,7 @@ export const materialLists = [
       'これから学習するにあたっての考え方,ツールのダウンロードを行い開発環境を整える。',
     views: '1.2K',
     comments: '6',
-    linksrc: '/material5',
+    linksrc: '/courses/tutorial/lessons',
   },
   {
     id: 2,
@@ -19,7 +19,7 @@ export const materialLists = [
       'Linuxとは何か、そしてLinuxを操作するために必要なコマンドを学んでいく。',
     views: '1.5K',
     comments: '8',
-    linksrc: '/material8',
+    linksrc: '/courses/linux/lessons',
   },
   {
     id: 3,
@@ -30,7 +30,7 @@ export const materialLists = [
       'Webサイトを制作する上で必要なHTML/CSSの基礎・実践的な知識を学ぶ',
     views: '1.8K',
     comments: '12',
-    linksrc: '/material9',
+    linksrc: '/courses/website/lessons',
   },
   {
     id: 4,
@@ -39,7 +39,7 @@ export const materialLists = [
     title: 'JS基礎',
     description:
       'JavaScriptの基礎的な知識をはじめ、基礎構文を学びJavaScriptの基礎力を培う内容になります',
-    linksrc: '/material3',
+    linksrc: '/courses/js-basic/lessons',
   },
   {
     id: 5,
@@ -50,7 +50,7 @@ export const materialLists = [
       'JavaScriptを使って様々なアプリを開発していき、実践的に使い方を学んでいく。',
     views: '1.1K',
     comments: '4',
-    linksrc: '/material10',
+    linksrc: '/courses/js-advanced/lessons',
   },
   {
     id: 6,
@@ -59,7 +59,7 @@ export const materialLists = [
     title: 'PHP基礎',
     description:
       'PHPの基礎的な知識をはじめ、基礎構文を学びPHPの基礎力を培う内容になります',
-    linksrc: '/material4',
+    linksrc: '/courses/php-basic/lessons',
   },
   {
     id: 7,
@@ -70,7 +70,7 @@ export const materialLists = [
       'phpを使って様々なアプリを開発していき、実践的に使い方を学んでいく。',
     views: '1.7K',
     comments: '9',
-    linksrc: '/material11',
+    linksrc: '/courses/php-advanced/lessons',
   },
   {
     id: 8,
@@ -80,7 +80,7 @@ export const materialLists = [
     description: 'SQLの基礎的な使い方、考え方、書き方を学んでいく。',
     views: '1.7K',
     comments: '9',
-    linksrc: '/material12',
+    linksrc: '/courses/sql/lessons',
   },
   {
     id: 9,
@@ -91,7 +91,7 @@ export const materialLists = [
       'React.jsの基礎的な知識をはじめ、基礎構文を学びReact.jsの基礎力を培う。',
     views: '1.3K',
     comments: '10',
-    linksrc: '/material15',
+    linksrc: '/courses/react/lessons',
   },
   {
     id: 10,
@@ -100,7 +100,7 @@ export const materialLists = [
     title: 'TODOアプリを作ってみよう',
     description:
       'phpのみでメモアプリを開発してみましょう',
-    linksrc: '/material1',
+    linksrc: '/courses/php-todo/lessons',
   },
   {
     id: 11,
@@ -109,7 +109,7 @@ export const materialLists = [
     title: 'メモアプリを作ってみよう',
     description:
       'phpのみでメモアプリを開発してみましょう',
-    linksrc: '/material2',
+    linksrc: '/courses/php-memo/lessons',
   },
   {
     id: 12,
@@ -120,7 +120,7 @@ export const materialLists = [
       'GitHubの基本的な考え方を学び、グローバルへプッシュするまでの一連の流れを実践していく。',
     views: '1.2K',
     comments: '6',
-    linksrc: '/material6',
+    linksrc: '/courses/github/lessons',
   },
   {
     id: 13,
@@ -131,7 +131,7 @@ export const materialLists = [
       'インターネットがどのように動くかを学び、開発に必要な基礎力を高めていく。',
     views: '1.2K',
     comments: '6',
-    linksrc: '/material7',
+    linksrc: '/courses/internet/lessons',
   },
   {
     id: 14,
@@ -142,7 +142,7 @@ export const materialLists = [
       'Laravelの基礎的な知識をはじめ、基礎構文を学びLaravelの基礎力を培う。',
     views: '1.5K',
     comments: '8',
-    linksrc: '/material13',
+    linksrc: '/courses/laravel/lessons',
   },
   {
     id: 15,
@@ -153,7 +153,7 @@ export const materialLists = [
       'Laravelを使って様々なアプリを開発していき、実践的に使い方を学んでいく。',
     views: '1.8K',
     comments: '12',
-    linksrc: '/material14',
+    linksrc: '/courses/laravel-advanced/lessons',
   },
   {
     id: 16,
@@ -164,7 +164,7 @@ export const materialLists = [
       'React.jsを使って様々なアプリを開発していき、実践的に使い方を学んでいく。',
     views: '1.1K',
     comments: '4',
-    linksrc: '/material16',
+    linksrc: '/courses/react-advanced/lessons',
   },
   {
     id: 17,
@@ -174,7 +174,7 @@ export const materialLists = [
     description: 'ポートフォリオの作り方、アイデアの探し方を学ぶ。',
     views: '1.9K',
     comments: '14',
-    linksrc: '/material17',
+    linksrc: '/courses/portfolio/lessons',
   },
   {
     id: 18,
@@ -185,6 +185,6 @@ export const materialLists = [
       '就職・転職活動をしていく上で必要な考え方や対策、履歴書・スキルシートの作り方を学ぶ。',
     views: '1.7K',
     comments: '9',
-    linksrc: '/material18',
+    linksrc: '/courses/career/lessons',
   },
 ];
