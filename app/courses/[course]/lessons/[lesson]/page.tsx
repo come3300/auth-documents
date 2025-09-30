@@ -15,7 +15,7 @@ interface LessonPageProps {
 
 export async function generateStaticParams() {
   const slugs = GetAllPostSlugs();
-  const params = [];
+  const params: { course: string; lesson: string; }[] = [];
 
   for (const slug of slugs) {
     const parts = slug.split('/');
