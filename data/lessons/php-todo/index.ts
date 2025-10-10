@@ -65,4 +65,12 @@ export const phpTodoLessons = [
     description: 'TODOを完了状態で絞り込み表示できるようにしましょう',
     linksrc: '/courses/php-todo/lessons/step8',
   },
+  {
+    id: 9,
+    imgSrc: 'images/home-imgs/php_todo.png',
+    category: 'PHP入門',
+    title: '絞り込み機能を追加してみよう',
+    description: 'TODOを完了状態で絞り込み表示できるようにしましょう',
+    linksrc: '/courses/php-todo/lessons/step9',
+  },
 ];
