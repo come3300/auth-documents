@@ -1,0 +1,320 @@
+---
+title: 第３回：Server ComponentsとClient Components 🔄
+category:  Next.js
+---
+
+## 第3章：Server ComponentsとClient Components 🔄
+
+### 🖥️ Server Components（サーバーコンポーネント）
+
+**Server Components**は、サーバー上で実行されるコンポーネントです。**レストランの厨房で料理を作って、完成した料理をお客さんに提供する**イメージです。
+
+#### **基本的なServer Component**
+```javascript
+// app/products/page.tsx - デフォルトでServer Component
+export default async function ProductsPage() {
+  // サーバー上でデータベースにアクセス（ブラウザからは見えない）
+  const products = await db.products.findMany({
+    orderBy: { createdAt: 'desc' }
+  });
+  
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <h1 className="col-span-full text-3xl font-bold mb-6">商品一覧</h1>
+      {products.map(product => (
+        <div key={product.id} className="border rounded-lg p-4">
+          <h2 className="text-xl font-semibold">{product.name}</h2>
+          <p className="text-2xl font-bold text-green-600">
+            ¥{product.price.toLocaleString()}
+          </p>
+          <p className="text-gray-600 mt-2">{product.description}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+#### **Server Componentで外部APIを呼ぶ例**
+```javascript
+// app/weather/page.tsx - 天気情報を表示
+export default async function WeatherPage() {
+  // APIキーはサーバーでのみ使用（安全）
+  const apiKey = process.env.WEATHER_API_KEY;
+  
+  const weatherData = await fetch(
+    `https://api.openweathermap.org/data/2.5/weather?q=Tokyo&appid=${apiKey}&units=metric`,
+    { next: { revalidate: 3600 } } // 1時間ごとに更新
+  ).then(res => res.json());
+  
+  return (
+    <div className="max-w-md mx-auto bg-blue-100 rounded-lg p-6">
+      <h1 className="text-2xl font-bold text-center mb-4">東京の天気</h1>
+      <div className="text-center">
+        <p className="text-4xl font-bold">{Math.round(weatherData.main.temp)}°C</p>
+        <p className="text-lg capitalize">{weatherData.weather[0].description}</p>
+        <p className="text-sm text-gray-600 mt-2">
+          体感温度: {Math.round(weatherData.main.feels_like)}°C
+        </p>
+      </div>
+    </div>
+  );
+}
+```
+
+### 💻 Client Components（クライアントコンポーネント）
+
+**Client Components**は、ユーザーのブラウザ上で実行されるコンポーネントです。**お客さんが自分で調理する焼肉店**のようなイメージで、インタラクティブな機能を提供します。
+
+#### **基本的なClient Component**
+```javascript
+// components/Counter.tsx - カウンターコンポーネント
+'use client'; // この行でClient Componentになる
+
+import { useState } from 'react';
+
+export default function Counter() {
+  const [count, setCount] = useState(0);
+  
+  return (
+    <div className="text-center p-6 border rounded-lg">
+      <p className="text-2xl mb-4">カウント: {count}</p>
+      <div className="space-x-2">
+        <button 
+          onClick={() => setCount(count - 1)}
+          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+        >
+          −1
+        </button>
+        <button 
+          onClick={() => setCount(0)}
+          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+        >
+          リセット
+        </button>
+        <button 
+          onClick={() => setCount(count + 1)}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          +1
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+#### **実用的なClient Component例：お問い合わせフォーム**
+```javascript
+// components/ContactForm.tsx
+'use client';
+
+import { useState } from 'react';
+
+export default function ContactForm() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      
+      if (response.ok) {
+        setSubmitted(true);
+        setFormData({ name: '', email: '', message: '' });
+      }
+    } catch (error) {
+      alert('送信に失敗しました。もう一度お試しください。');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
+  if (submitted) {
+    return (
+      <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+        <p className="font-bold">送信完了！</p>
+        <p>お問い合わせありがとうございます。48時間以内にご返信いたします。</p>
+      </div>
+    );
+  }
+  
+  return (
+    <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4">
+      <div>
+        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+          お名前
+        </label>
+        <input
+          type="text"
+          id="name"
+          required
+          value={formData.name}
+          onChange={(e) => setFormData({...formData, name: e.target.value})}
+          className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+        />
+      </div>
+      
+      <div>
+        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          メールアドレス
+        </label>
+        <input
+          type="email"
+          id="email"
+          required
+          value={formData.email}
+          onChange={(e) => setFormData({...formData, email: e.target.value})}
+          className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+        />
+      </div>
+      
+      <div>
+        <label htmlFor="message" className="block text-sm font-medium text-gray-700">
+          メッセージ
+        </label>
+        <textarea
+          id="message"
+          rows={4}
+          required
+          value={formData.message}
+          onChange={(e) => setFormData({...formData, message: e.target.value})}
+          className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+        />
+      </div>
+      
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:opacity-50"
+      >
+        {isSubmitting ? '送信中...' : '送信する'}
+      </button>
+    </form>
+  );
+}
+```
+
+### 🤝 Server ComponentsとClient Componentsの連携
+
+**Server Componentの中でClient Componentを使う例：**
+```javascript
+// app/shop/page.tsx - Server Component
+import ProductCard from './ProductCard'; // Client Component
+
+export default async function ShopPage() {
+  // サーバーで商品データを取得
+  const products = await db.products.findMany();
+  
+  return (
+    <div>
+      <h1 className="text-3xl font-bold mb-8">オンラインショップ</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {products.map(product => (
+          // Server ComponentからClient Componentにデータを渡す
+          <ProductCard 
+            key={product.id} 
+            product={product} 
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// app/shop/ProductCard.tsx - Client Component
+'use client';
+
+import { useState } from 'react';
+
+export default function ProductCard({ product }) {
+  const [quantity, setQuantity] = useState(1);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  
+  const addToCart = async () => {
+    setIsAddingToCart(true);
+    
+    try {
+      await fetch('/api/cart/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          productId: product.id, 
+          quantity 
+        })
+      });
+      
+      alert('カートに追加しました！');
+    } catch (error) {
+      alert('エラーが発生しました');
+    } finally {
+      setIsAddingToCart(false);
+    }
+  };
+  
+  return (
+    <div className="border rounded-lg p-4 shadow hover:shadow-lg transition-shadow">
+      <img 
+        src={product.imageUrl} 
+        alt={product.name}
+        className="w-full h-48 object-cover rounded mb-4"
+      />
+      <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
+      <p className="text-gray-600 mb-4">{product.description}</p>
+      <p className="text-2xl font-bold text-green-600 mb-4">
+        ¥{product.price.toLocaleString()}
+      </p>
+      
+      <div className="flex items-center space-x-4">
+        <div className="flex items-center border rounded">
+          <button 
+            onClick={() => setQuantity(Math.max(1, quantity - 1))}
+            className="px-3 py-1 hover:bg-gray-100"
+          >
+            −
+          </button>
+          <span className="px-4 py-1 border-x">{quantity}</span>
+          <button 
+            onClick={() => setQuantity(quantity + 1)}
+            className="px-3 py-1 hover:bg-gray-100"
+          >
+            +
+          </button>
+        </div>
+        
+        <button 
+          onClick={addToCart}
+          disabled={isAddingToCart}
+          className="flex-1 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:opacity-50"
+        >
+          {isAddingToCart ? '追加中...' : 'カートに追加'}
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+### ⚖️ Server vs Client Components の使い分け
+
+| Server Components を使う場面 | Client Components を使う場面 |
+|---|---|
+| データベースアクセス | ユーザーの操作（クリック、入力） |
+| 外部API呼び出し | React Hook（useState、useEffect） |
+| 機密情報の処理 | ブラウザAPI（localStorage、window） |
+| SEOが重要なコンテンツ | リアルタイム機能 |
+| 静的なコンテンツ表示 | アニメーション |
+
+---

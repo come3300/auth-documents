@@ -1,0 +1,116 @@
+---
+title: 🧑‍🏫 第1回：JavaScriptとは？
+category: js
+---
+
+このパートでは、**ユーザー登録画面**を作成して、動作確認まで行います。
+
+---
+
+### **🌟 JavaScriptとは何か**
+
+**JavaScript**は、ウェブサイトに動きと機能を与えるプログラミング言語です。HTMLが骨組み、CSSが見た目を担当するなら、JavaScriptは「頭脳」の役割を果たします。
+
+例えば：
+- ボタンを押すと画面が変わる
+- フォームに入力すると即座にエラーチェックされる
+- 画像がスライドショーで切り替わる
+- リアルタイムで時刻が更新される
+
+これらはすべてJavaScriptによって実現されています。
+
+### **💡 なぜJavaScriptが重要なのか**
+
+#### 1. 学習しやすい
+```javascript
+// まずは簡単な例から
+console.log("こんにちは、JavaScript！");
+```
+
+#### 2. すぐに結果が見える
+ブラウザがあれば、すぐにプログラムを実行して結果を確認できます。
+
+#### 3. 就職に有利
+JavaScriptは世界で最も需要の高いプログラミング言語の一つです。
+
+### **🔧 JavaScriptの用途**
+
+#### フロントエンド（ウェブサイトの見える部分）
+```javascript
+// ボタンをクリックすると色が変わる例
+const button = document.getElementById('myButton');
+button.addEventListener('click', function() {
+    button.style.backgroundColor = 'blue';
+    button.textContent = 'クリックされました！';
+});
+```
+
+#### バックエンド（サーバー側の処理）
+Node.jsを使用してサーバーの処理も書けます。
+
+#### モバイルアプリ
+React NativeやCordovaでスマホアプリも作れます。
+
+### **🚀 はじめての実行環境**
+
+#### 方法1：ブラウザのコンソール（一番簡単）
+1. ブラウザ（Chrome推奨）を開く
+2. F12キーを押す（または右クリック→検証）
+3. 「Console」タブをクリック
+4. 以下のコードを入力してEnterキーを押す
+
+```javascript
+console.log("Hello World!");
+```
+
+#### 方法2：HTMLファイルで実行（推奨）
+`index.html`というファイルを作成：
+
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript練習</title>
+</head>
+<body>
+    <h1>JavaScriptを学ぼう</h1>
+    <button onclick="sayHello()">挨拶する</button>
+    <p id="message"></p>
+    
+    <script>
+        function sayHello() {
+            const now = new Date();
+            const time = now.toLocaleTimeString();
+            document.getElementById('message').textContent = 
+                `こんにちは！現在時刻は ${time} です。`;
+        }
+        
+        console.log('ページが読み込まれました！');
+    </script>
+</body>
+</html>
+```
+
+### **✨ 実際に動かしてみよう**
+
+以下のコードをブラウザのコンソールで試してみてください：
+
+```javascript
+// 現在の日時を表示
+console.log(new Date());
+
+// 簡単な計算
+console.log(5 + 3);
+console.log(10 * 2);
+
+// 文字列の結合
+console.log("私の名前は" + "田中太郎" + "です");
+
+// 変数を使った例
+let name = "山田花子";
+let age = 25;
+console.log(name + "さんは" + age + "歳です");
+```
+
+---

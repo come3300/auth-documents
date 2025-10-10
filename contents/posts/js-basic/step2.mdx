@@ -1,0 +1,192 @@
+---
+title: 📝 第2回：JavaScript基礎の書き方
+category: js
+---
+
+## 第2回：JavaScript基礎の書き方
+
+### **📝 JavaScriptの基本ルール**
+
+#### 1. 文（Statement）
+JavaScriptは「文」と呼ばれる命令の集まりです：
+
+```javascript
+// これが一つの文です
+console.log("こんにちは");
+
+// 文の終わりにはセミコロン（;）をつけます（推奨）
+let message = "Hello World";
+console.log(message);
+```
+
+#### 2. 大文字・小文字の区別
+JavaScriptは大文字・小文字を区別します：
+
+```javascript
+let myName = "太郎";
+let MyName = "花子";  // これは別の変数
+console.log(myName);  // "太郎"
+console.log(MyName);  // "花子"
+```
+
+### **📦 変数：値を保存する箱**
+
+変数は値を入れておく「箱」のようなものです。
+
+#### 現代的な変数宣言（ES6以降）
+
+```javascript
+// const - 変更されない値用
+const schoolName = "東京大学";
+const maxStudents = 1000;
+
+// let - 変更される可能性がある値用
+let studentName = "田中太郎";
+let currentScore = 85;
+
+// 悪い例：varは使わない（古い書き方）
+var oldWay = "使わないでください";
+```
+
+#### 変数の命名規則
+
+```javascript
+// ✅ 良い例：分かりやすい名前
+let userName = "田中太郎";
+let totalPrice = 3500;
+let isLoggedIn = true;
+let studentList = ["太郎", "花子", "次郎"];
+
+// ❌ 悪い例：短すぎて分からない
+let u = "田中太郎";
+let tp = 3500;
+let li = true;
+
+// ✅ 複数の単語はキャメルケース（最初は小文字、単語の頭は大文字）
+let firstName = "太郎";
+let lastName = "田中";
+let birthDate = "1990-01-01";
+```
+
+### **🔢 データ型：異なる種類の情報**
+
+#### 数値（Number）
+```javascript
+let age = 25;                    // 整数
+let price = 1980.5;              // 小数
+let temperature = -5;            // 負の数
+let score = 0;                   // ゼロ
+
+// 数値の計算
+let total = price + (price * 0.1);  // 消費税10%を追加
+let discount = price * 0.2;         // 20%割引
+let finalPrice = price - discount;
+console.log("最終価格:", finalPrice);
+```
+
+#### 文字列（String）
+```javascript
+let firstName = "太郎";           // ダブルクォート
+let lastName = '田中';            // シングルクォート
+let fullName = `${lastName} ${firstName}`;  // テンプレートリテラル
+
+// 文字列の操作
+let greeting = "こんにちは";
+let message = greeting + "、世界！";
+let length = greeting.length;         // 文字数を取得
+let uppercase = greeting.toUpperCase(); // 大文字に変換
+```
+
+#### テンプレートリテラル（最新の文字列記法）
+```javascript
+let studentName = "田中太郎";
+let age = 20;
+let school = "東京大学";
+
+// バッククォート（`）を使って文字列の中に変数を埋め込む
+let introduction = `私の名前は${studentName}です。${age}歳で、${school}に通っています。`;
+
+// 複数行の文字列も書ける
+let poem = `春が来た
+桜が咲いた
+美しい季節だ`;
+
+// 計算結果も埋め込める
+let price = 1000;
+let quantity = 3;
+let invoice = `合計金額：${price * quantity}円（${quantity}個 × ${price}円）`;
+console.log(invoice);
+```
+
+#### 真偽値（Boolean）
+```javascript
+let isStudent = true;
+let isGraduated = false;
+let hasLicense = true;
+
+// 条件の組み合わせ
+let canDrive = hasLicense && age >= 18;
+
+if (isStudent) {
+    console.log("学割が適用されます！");
+}
+```
+
+#### 配列（Array）- リスト
+```javascript
+let fruits = ["りんご", "バナナ", "オレンジ"];
+let numbers = [1, 2, 3, 4, 5];
+let mixed = ["田中太郎", 25, true, "学生"];
+
+// 配列の操作
+console.log(fruits[0]);        // "りんご"（最初の要素）
+console.log(fruits.length);   // 3（要素の数）
+
+fruits.push("いちご");         // 末尾に追加
+fruits.unshift("メロン");      // 先頭に追加
+console.log(fruits);           // ["メロン", "りんご", "バナナ", "オレンジ", "いちご"]
+```
+
+#### オブジェクト（Object）- 構造化されたデータ
+```javascript
+let student = {
+    name: "田中太郎",
+    age: 20,
+    school: "東京大学",
+    grades: [85, 92, 78, 88],
+    isActive: true
+};
+
+// オブジェクトの値にアクセス
+console.log(student.name);        // "田中太郎"
+console.log(student["age"]);      // 20
+
+// 新しいプロパティを追加
+student.email = "tanaka@example.com";
+student.age = 21;  // 既存の値を更新
+
+console.log(student);
+```
+
+### **💬 コメントの書き方**
+
+```javascript
+// これは一行コメントです
+let price = 1000;  // 価格を設定
+
+/*
+これは複数行コメントです
+長い説明を書く時に使います
+*/
+let tax = price * 0.1;
+
+/**
+ * 関数の説明用コメント（JSDoc形式）
+ * @param {number} price - 商品の価格
+ * @param {number} taxRate - 税率
+ * @returns {number} 税込み価格
+ */
+function calculateTotalPrice(price, taxRate) {
+    return price + (price * taxRate);
+}
+```
