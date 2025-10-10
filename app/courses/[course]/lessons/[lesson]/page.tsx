@@ -136,11 +136,14 @@ export default async function LessonPage({ params }: LessonPageProps) {
 
   // 全記事slug一覧を取得
   const allSlugs = GetAllPostSlugs();
-  const currentIndex = allSlugs.findIndex((s) => s === slug);
 
-  // 前後のslugを判定
-  const prevSlug = currentIndex > 0 ? allSlugs[currentIndex - 1] : null;
-  const nextSlug = currentIndex < allSlugs.length - 1 ? allSlugs[currentIndex + 1] : null;
+  // 同じコース内の記事のみをフィルタリング
+  const courseSlugs = allSlugs.filter((s) => s.startsWith(`${params.course}/`));
+  const currentIndex = courseSlugs.findIndex((s) => s === slug);
+
+  // 前後のslugを判定（同じコース内のみ）
+  const prevSlug = currentIndex > 0 ? courseSlugs[currentIndex - 1] : null;
+  const nextSlug = currentIndex < courseSlugs.length - 1 ? courseSlugs[currentIndex + 1] : null;
 
   // 新しいURL形式での前後のリンクを生成
   const generateLessonUrl = (slug: string) => {
