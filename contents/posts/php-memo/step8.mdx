@@ -1,7 +1,9 @@
 ---
-title: 第７回：バリデーションを実装
+title: ✅ 第7回:バリデーションを実装
 category: php
 ---
+
+# ✅ 共通バリデーション関数を作成しよう
 
 このパートでは、**共通バリデーション関数群**を`common/validation.php`にまとめ、ユーザー登録など複数の処理で再利用できる形にしていきます。
 
@@ -19,7 +21,7 @@ category: php
 - メールアドレス重複チェック
 
 > 📂 ディレクトリ構成
-> 
+>
 
 ```bash
 common/
@@ -170,10 +172,10 @@ function mailAddressDuplicationCheck(&$errors, $check_value, $message) {
 - DB接続は `getDatabaseConnection()`（database.php）を使用
 
 > ⚠️ validation.php 自体では database.php を require していません。
-> 
-> 
+>
+>
 > 呼び出し元で読み込まれる前提で構成されています。
-> 
+>
 
 ---
 
@@ -192,3 +194,14 @@ SELECT id FROM users WHERE email = :user_email
 ## ✅ まとめ
 
 これで、以下の共通バリデーション関数が完成しました。
+
+| 関数名 | 目的 |
+| --- | --- |
+| `emptyCheck` | 空欄チェック |
+| `stringMinSizeCheck` | 最小文字数チェック |
+| `stringMaxSizeCheck` | 最大文字数チェック |
+| `mailAddressCheck` | メール形式チェック |
+| `halfAlphanumericCheck` | 半角英数字チェック |
+| `mailAddressDuplicationCheck` | メールアドレス重複チェック |
+
+---

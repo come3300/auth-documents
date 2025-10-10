@@ -1,7 +1,9 @@
 ---
-title: 第４回：ユーザーテーブルの作成
+title: 🗄️ 第4回:ユーザーテーブルの作成
 category: php
 ---
+
+# 🗄️ データベースとユーザーテーブルを作成しよう
 
 このパートでは、**データベースとユーザーテーブル**を作成し、今後のアプリケーション開発で利用できるようにします。
 
@@ -12,10 +14,10 @@ category: php
 最終的に、`http://127.0.0.1:8081/` (phpMyAdmin) にアクセスすると、**simple_memoデータベース**と**usersテーブル**が作成済みで表示される状態を目指します。
 
 > 📷 イメージ
-> 
-> 
-> ![image.png](attachment:2ce1449f-2abc-4ad9-a050-d18b5f992038:image.png)
-> 
+>
+>
+> ![イメージ画像](/images/documents/php-memo/step5/table-created.png)
+>
 
 ---
 
@@ -40,17 +42,17 @@ Docker環境を立ち上げると、すでに**phpMyAdmin**が利用可能にな
 
 以下のURLにアクセスしてください。
 
-http://127.0.0.1:8081/
+[http://127.0.0.1:8081/](http://127.0.0.1:8081/)
 
 ---
 
 アクセスすると、次のような画面が表示されます。
 
 > 📷 画面イメージ
-> 
-> 
-> ![image.png](attachment:905832f1-aa99-47e8-963d-aa7b46bbba2c:image.png)
-> 
+>
+>
+> ![phpMyAdmin画面](/images/documents/php-memo/step5/phpmyadmin-access.png)
+>
 
 画面上部の赤枠「**SQL**」タブをクリックします。
 
@@ -65,10 +67,10 @@ CREATE DATABASE simple_memo DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicod
 実行が完了すると、左側のデータベース一覧に**simple_memo**が表示されます。
 
 > 📷 画面イメージ
-> 
-> 
-> ![image.png](attachment:44807658-1de5-4994-957e-26caaa517641:image.png)
-> 
+>
+>
+> ![データベース作成完了](/images/documents/php-memo/step5/select-database.png)
+>
 
 ---
 
@@ -82,17 +84,17 @@ CREATE DATABASE simple_memo DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicod
 
 ポイントを簡単に整理します。
 
-✅ **`simple_memo`**
+**`simple_memo`**
 
 データベース名。自由に変更可能ですが、本教材ではこの名前を使用します。
 
-✅ **`DEFAULT CHARACTER SET utf8mb4`**
+**`DEFAULT CHARACTER SET utf8mb4`**
 
 文字コードをutf8mb4に設定します。
 
 utf8mb4はUTF-8の拡張版で、**絵文字なども格納できます**。
 
-✅ **`COLLATE utf8mb4_unicode_ci`**
+**`COLLATE utf8mb4_unicode_ci`**
 
 照合順序（文字の比較ルール）を設定しています。
 
@@ -125,8 +127,6 @@ utf8mb4はUTF-8の拡張版で、**絵文字なども格納できます**。
 以下のSQLをテキストエリアに貼り付けて実行します。
 
 ```sql
-sql
-コピーする編集する
 CREATE TABLE users (
     id BIGINT NOT NULL AUTO_INCREMENT,
     name VARCHAR(255),
@@ -136,16 +136,15 @@ CREATE TABLE users (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
-
 ```
 
 実行が完了すると、左側に**usersテーブル**が表示されます。
 
 > 📷 画面イメージ
-> 
-> 
-> ![image.png](attachment:b85b41c7-39f0-4524-90ff-00520180c605:image.png)
-> 
+>
+>
+> ![usersテーブル作成完了](/images/documents/php-memo/step5/sql-tab.png)
+>
 
 ---
 
@@ -154,8 +153,6 @@ CREATE TABLE users (
 今回のSQLは以下のように構成されています。
 
 ```sql
-sql
-コピーする編集する
 CREATE TABLE users (
     id BIGINT NOT NULL AUTO_INCREMENT,
     name VARCHAR(255),
@@ -165,7 +162,6 @@ CREATE TABLE users (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
-
 ```
 
 それぞれのポイントを見てみましょう。
@@ -184,21 +180,21 @@ CREATE TABLE users (
 ### 🔹 特に重要な指定
 
 - **`NOT NULL`**
-    
+
     `NULL`を許容しない設定。空データを防ぎます。
-    
+
 - **`AUTO_INCREMENT`**
-    
+
     新規データ登録時に自動的にIDが1ずつ増加します。
-    
+
 - **`DEFAULT CURRENT_TIMESTAMP`**
-    
+
     初期値として現在日時を設定します。
-    
+
 - **`PRIMARY KEY (id)`**
-    
+
     主キー（レコードを一意に識別するキー）として `id` を指定しています。
-    
+
 
 ---
 

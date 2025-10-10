@@ -1,21 +1,23 @@
 ---
-title: 🧑‍🏫 第１回：ユーザー登録画面の作成
+title: 📝 第1回:ユーザー登録画面の作成
 category: php
 ---
+
+# 📝 ユーザー登録画面を作成しよう
 
 このパートでは、**ユーザー登録画面**を作成して、動作確認まで行います。
 
 ---
 
-#### 🎯 本パートの目標物
+## 🎯 本パートの目標物
 
 こちらの「ユーザー登録画面」を完成させます。
 
 > 📷 イメージ
-> 
-> 
-> ![image.png](attachment:669e9e65-7b0b-418b-8cc3-29526b7abac5:image.png)
-> 
+>
+>
+> ![イメージ画像](/images/documents/php-memo/step2/user-register-page.png)
+>
 
 ---
 
@@ -92,7 +94,7 @@ category: php
 
 PHPコードで注目すべき部分はこちらです。
 
-```
+```php
 <?php
     include_once "../common/header.php";
     echo getHeader("ユーザー登録");
@@ -100,15 +102,15 @@ PHPコードで注目すべき部分はこちらです。
 ```
 
 - **include_once**
-    
-    ../common/header.php を読み込み、ヘッダー共通部分の関数を使えるようにしています。
-    
+
+    `../common/header.php` を読み込み、ヘッダー共通部分の関数を使えるようにしています。
+
 - **getHeader関数**
-    
-    getHeader("ユーザー登録") によって、ページタイトルが「ユーザー登録」になります。
-    
-    返ってきたHTMLを echo で出力しています。
-    
+
+    `getHeader("ユーザー登録")` によって、ページタイトルが「ユーザー登録」になります。
+
+    返ってきたHTMLを `echo` で出力しています。
+
 
 ---
 
@@ -128,7 +130,7 @@ docker-compose up -d
 ```
 
 > ⚠️ 既に起動している場合はこの手順は不要です。
-> 
+>
 
 ---
 
@@ -136,7 +138,7 @@ docker-compose up -d
 
 ブラウザで次のURLを開きます。
 
-http://localhost:8080/user/index.php
+[http://localhost:8080/user/index.php](http://localhost:8080/user/index.php)
 
 ---
 
@@ -144,13 +146,11 @@ http://localhost:8080/user/index.php
 
 以下のようにユーザー登録画面が表示されればOKです。
 
-> 📷
-> 
-> 
-> **画面イメージ**
-> 
-> ![image.png](attachment:53aa8c62-a5ac-40c1-bd7b-d4916d0740c4:image.png)
-> 
+> 📷 **画面イメージ**
+>
+>
+> ![イメージ画像](/images/documents/php-memo/step2/user-register-page-displayed.png)
+>
 
 ブラウザのタブに「ユーザー登録」と表示されているか確認してみましょう。
 
@@ -165,19 +165,17 @@ http://localhost:8080/user/index.php
 1. 登録画面上で右クリック
 2. 「ページのソースを表示」をクリック
 
-```
+```html
 <title>ユーザー登録</title>
 ```
 
-このように`<title>`タグに「ユーザー登録」が反映されていることが確認できます。
+このように `<title>` タグに「ユーザー登録」が反映されていることが確認できます。
 
-> 📷
-> 
-> 
-> **確認イメージ**
-> 
-> ![image.png](attachment:362f9abc-5c86-4ef9-a1ea-c06482e83102:image.png)
-> 
+> 📷 **確認イメージ**
+>
+>
+> ![イメージ画像](/images/documents/php-memo/step2/page-source.png)
+>
 
 ---
 

@@ -1,7 +1,9 @@
 ---
-title: 📝 第２回：ログイン画面の作成
+title: 🔑 第2回:ログイン画面の作成
 category: php
 ---
+
+# 🔑 ログイン画面を作成しよう
 
 このパートでは、**ログイン画面**を作成し、画面が正しく表示されるか確認します。
 
@@ -12,10 +14,10 @@ category: php
 こちらのログイン画面を完成させます。
 
 > 📷 イメージ
-> 
-> 
-> ![image.png](attachment:d0b37335-3ef7-4116-ba10-47b642b8bb08:image.png)
-> 
+>
+>
+> ![イメージ画像](/images/documents/php-memo/step3/login-page.png)
+>
 
 ---
 
@@ -106,7 +108,7 @@ docker-compose up -d
 ```
 
 > ⚠️既に起動している場合はこの手順は不要です。
-> 
+>
 
 ---
 
@@ -114,7 +116,7 @@ docker-compose up -d
 
 ブラウザで次のURLを開きます。
 
-http://localhost:8080/login/index.php
+[http://localhost:8080/login/index.php](http://localhost:8080/login/index.php)
 
 ---
 
@@ -123,10 +125,10 @@ http://localhost:8080/login/index.php
 以下のようにログイン画面が表示されていればOKです。
 
 > 📷 画面イメージ
-> 
-> 
-> ![image.png](attachment:5d9565dc-70be-4058-9630-293441380717:image.png)
-> 
+>
+>
+> ![イメージ画像](/images/documents/php-memo/step3/login-page-displayed.png)
+>
 
 ---
 
@@ -137,7 +139,6 @@ http://localhost:8080/login/index.php
 ```php
 include_once "../common/header.php";
 echo getHeader("ログイン");
-
 ```
 
 共通処理を`header.php`にまとめておくことで、各ページで`head`タグの中身を繰り返し書かずに済み、とても便利です。

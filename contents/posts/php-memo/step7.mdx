@@ -1,7 +1,9 @@
 ---
-title: 第６回：ユーザー登録機能追加
+title: ✨ 第6回:ユーザー登録機能追加
 category: php
 ---
+
+# ✨ ユーザー登録処理を実装しよう
 
 このパートでは、**ユーザー登録機能**を実装し、登録したユーザー情報がデータベースに保存されるようにします。
 
@@ -12,10 +14,10 @@ category: php
 ユーザー登録画面から情報を入力すると、データベースの`users`テーブルにデータが登録される状態を目指します。
 
 > 📷 イメージ
-> 
-> 
-> ![image.png](attachment:6c71a9fe-7c25-4843-95a9-c5d6af809468:image.png)
-> 
+>
+>
+> ![ユーザー登録成功](/images/documents/php-memo/step7/user-registered.png)
+>
 
 ---
 
@@ -51,10 +53,10 @@ category: php
 ---
 
 > 💡 ポイント
-> 
-> 
+>
+>
 > 画面を表示するPHPファイルと、処理を行うPHPファイルを分けることで、コードの見通しが良くなります。
-> 
+>
 
 ---
 
@@ -82,13 +84,13 @@ category: php
 ### 💡 解説
 
 - `require`
-    
+
     共通関数`getDatabaseConnection()`を使えるようにしています。
-    
+
 - `$_POST`
-    
+
     フォームから送信された値を受け取っています。
-    
+
 
 ---
 
@@ -120,44 +122,44 @@ exit;
 ### 💡 処理の流れ
 
 1. **SQL準備**
-    
+
     ```php
     $statement = $database_handler->prepare('INSERT INTO users ...')
     ```
-    
+
     `prepare()`でSQLを準備します。
-    
+
 2. **パスワードのハッシュ化**
-    
+
     ```php
     $password = password_hash($user_password, PASSWORD_DEFAULT);
     ```
-    
+
     セキュリティのため、ハッシュ化してから保存します。
-    
+
 3. **値をバインド**
-    
+
     ```php
     $statement->bindParam(':name', htmlspecialchars($user_name));
     ```
-    
+
     `htmlspecialchars()`で特殊文字をエスケープ。
-    
+
 4. **実行**
-    
+
     ```php
     $statement->execute();
     ```
-    
+
 5. **リダイレクト**
-    
+
     ```php
     header('Location: ../../memo/');
     exit;
     ```
-    
+
     登録後はメモ投稿画面に移動します。
-    
+
 
 ---
 
@@ -186,17 +188,17 @@ exit;
 ## 🚀 動作確認
 
 1. ブラウザで以下にアクセス
-    
-    http://localhost:8080/user/index.php
-    
+
+    [http://localhost:8080/user/index.php](http://localhost:8080/user/index.php)
+
 2. ユーザー名・メールアドレス・パスワードを入力
 3. **登録する**をクリック
 
 > 📷 イメージ
-> 
-> 
-> ![image.png](attachment:4a4bf205-201c-4956-91ad-300b3940b12f:image.png)
-> 
+>
+>
+> ![登録画面](/images/documents/php-memo/step7/register-test.png)
+>
 
 登録が成功すると、メモ投稿画面に遷移します。
 
@@ -211,10 +213,10 @@ phpMyAdminにアクセスして、登録内容を確認してみましょう。
 `simple_memo > users`テーブルを開くと、登録したデータが表示されます。
 
 > 📷 イメージ
-> 
-> 
-> ![image.png](attachment:316442fd-fd1b-40d5-9f84-a682df0385c0:image.png)
-> 
+>
+>
+> ![データベース確認](/images/documents/php-memo/step7/db-user-record.png)
+>
 
 ---
 
@@ -250,7 +252,7 @@ $password = password_hash($user_password, PASSWORD_DEFAULT);
 
 ---
 
-## 🎉 完成！
+## ✅ 完成！
 
 これで、**ユーザー登録処理**の実装が完了しました。
 
