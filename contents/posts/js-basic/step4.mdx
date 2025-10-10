@@ -1,0 +1,332 @@
+---
+title: 第4回：基礎構文 その2（while文、switch文）
+category: js
+---
+
+## 第4回：基礎構文 その2（while文、switch文）
+
+### **🔄 while文：条件が続く限り繰り返す**
+
+while文は条件がtrueの間、処理を繰り返します。繰り返し回数が分からない時に便利です。
+
+#### 基本のwhile文
+```javascript
+let count = 0;
+
+while (count < 5) {
+    console.log(`カウント: ${count}`);
+    count++; // 重要：カウントを増やさないと無限ループになる
+}
+// 出力: カウント: 0, 1, 2, 3, 4
+```
+
+#### do-while文（最低一回は実行される）
+```javascript
+let userInput;
+
+do {
+    userInput = prompt("10より大きい数字を入力してください:");
+    userInput = parseInt(userInput);
+} while (userInput <= 10);
+
+console.log(`ありがとうございます！ ${userInput} が入力されました`);
+```
+
+### **⚖️ for文 vs while文の使い分け**
+
+**for文を使う場面：**
+- 繰り返し回数が決まっている
+- 配列やリストを処理する
+- カウンターを使った処理
+
+**while文を使う場面：**
+- 条件によって繰り返し回数が変わる
+- ユーザー入力を受け続ける
+- 特定の状態になるまで処理を続ける
+
+### **🎮 実践的なwhile文の例**
+
+#### パスワード入力システム
+```javascript
+let attempts = 0;
+let maxAttempts = 3;
+let correctPassword = "secret123";
+let userPassword = "";
+
+while (attempts < maxAttempts && userPassword !== correctPassword) {
+    userPassword = prompt(`パスワードを入力してください (残り${maxAttempts - attempts}回):`);
+    attempts++;
+    
+    if (userPassword !== correctPassword) {
+        console.log("パスワードが間違っています！");
+    }
+}
+
+if (userPassword === correctPassword) {
+    console.log("ログイン成功！");
+} else {
+    console.log("試行回数超過により、アカウントがロックされました。");
+}
+```
+
+#### 簡単な数当てゲーム
+```javascript
+let targetNumber = Math.floor(Math.random() * 100) + 1; // 1-100の乱数
+let guess = 0;
+let attempts = 0;
+
+console.log("1から100までの数字を当ててください！");
+
+while (guess !== targetNumber) {
+    guess = parseInt(prompt("数字を入力してください:"));
+    attempts++;
+    
+    if (guess < targetNumber) {
+        console.log("もっと大きい数字です！");
+    } else if (guess > targetNumber) {
+        console.log("もっと小さい数字です！");
+    } else {
+        console.log(`正解！ ${targetNumber} を ${attempts} 回で当てました！`);
+    }
+}
+```
+
+### **🔀 break文とcontinue文**
+
+#### break：ループを途中で抜ける
+```javascript
+let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+console.log("6を探しています:");
+for (let number of numbers) {
+    if (number === 6) {
+        console.log(`見つけました！ ${number}`);
+        break; // ループを即座に終了
+    }
+    console.log(`チェック中: ${number}`);
+}
+// 出力: チェック中: 1, 2, 3, 4, 5, 見つけました！ 6
+```
+
+#### continue：次の繰り返しにスキップ
+```javascript
+console.log("1から10までの奇数:");
+for (let i = 1; i <= 10; i++) {
+    if (i % 2 === 0) {
+        continue; // 偶数をスキップ
+    }
+    console.log(i);
+}
+// 出力: 1, 3, 5, 7, 9
+```
+
+### **🎛️ switch文：複数の条件を整理する**
+
+switch文は同じ変数を複数の値と比較する時に便利です。
+
+#### 基本のswitch文
+```javascript
+let dayNumber = 3;
+let dayName;
+
+switch (dayNumber) {
+    case 1:
+        dayName = "月曜日";
+        break;
+    case 2:
+        dayName = "火曜日";
+        break;
+    case 3:
+        dayName = "水曜日";
+        break;
+    case 4:
+        dayName = "木曜日";
+        break;
+    case 5:
+        dayName = "金曜日";
+        break;
+    case 6:
+        dayName = "土曜日";
+        break;
+    case 7:
+        dayName = "日曜日";
+        break;
+    default:
+        dayName = "無効な日付";
+}
+
+console.log(dayName); // "水曜日"
+```
+
+#### switch vs if-else の比較
+
+```javascript
+// if-elseの場合（同じ処理）
+let grade = 'B';
+let message;
+
+if (grade === 'A') {
+    message = "優秀です！";
+} else if (grade === 'B') {
+    message = "良くできました！";
+} else if (grade === 'C') {
+    message = "普通です";
+} else if (grade === 'D') {
+    message = "もう少し頑張りましょう";
+} else if (grade === 'F') {
+    message = "再試験が必要です";
+} else {
+    message = "無効な成績";
+}
+
+// switchの場合（より見やすい）
+switch (grade) {
+    case 'A':
+        message = "優秀です！";
+        break;
+    case 'B':
+        message = "良くできました！";
+        break;
+    case 'C':
+        message = "普通です";
+        break;
+    case 'D':
+        message = "もう少し頑張りましょう";
+        break;
+    case 'F':
+        message = "再試験が必要です";
+        break;
+    default:
+        message = "無効な成績";
+}
+```
+
+### **🔗 フォールスルー（breakを書かない）**
+
+```javascript
+let month = "12月";
+let season;
+
+switch (month) {
+    case "12月":
+    case "1月":
+    case "2月":
+        season = "冬";
+        break;
+    case "3月":
+    case "4月":
+    case "5月":
+        season = "春";
+        break;
+    case "6月":
+    case "7月":
+    case "8月":
+        season = "夏";
+        break;
+    case "9月":
+    case "10月":
+    case "11月":
+        season = "秋";
+        break;
+    default:
+        season = "不明";
+}
+
+console.log(`${month}は${season}です`); // "12月は冬です"
+```
+
+### **🏧 実践的なswitch文の例：ATMシミュレーター**
+
+```javascript
+function atmSimulator() {
+    let balance = 100000; // 残高
+    let running = true;
+    
+    console.log("🏧 ATMへようこそ");
+    
+    while (running) {
+        let choice = prompt(`
+        操作を選択してください:
+        1. 残高照会
+        2. 入金
+        3. 出金
+        4. 終了
+        番号を入力してください (1-4):`);
+        
+        switch (choice) {
+            case "1":
+                console.log(`現在の残高: ${balance.toLocaleString()}円`);
+                break;
+                
+            case "2":
+                let depositAmount = parseInt(prompt("入金額を入力してください:"));
+                if (depositAmount > 0) {
+                    balance += depositAmount;
+                    console.log(`${depositAmount.toLocaleString()}円を入金しました。新しい残高: ${balance.toLocaleString()}円`);
+                } else {
+                    console.log("無効な金額です");
+                }
+                break;
+                
+            case "3":
+                let withdrawAmount = parseInt(prompt("出金額を入力してください:"));
+                if (withdrawAmount > 0 && withdrawAmount <= balance) {
+                    balance -= withdrawAmount;
+                    console.log(`${withdrawAmount.toLocaleString()}円を出金しました。新しい残高: ${balance.toLocaleString()}円`);
+                } else if (withdrawAmount > balance) {
+                    console.log("残高が不足しています");
+                } else {
+                    console.log("無効な金額です");
+                }
+                break;
+                
+            case "4":
+                console.log("ATMのご利用ありがとうございました！");
+                running = false;
+                break;
+                
+            default:
+                console.log("無効な選択です。1-4の番号を入力してください。");
+        }
+    }
+}
+```
+
+#### レストラン注文システム
+```javascript
+function orderSystem() {
+    let menu = {
+        "1": { name: "ハンバーガー", price: 500 },
+        "2": { name: "チーズバーガー", price: 600 },
+        "3": { name: "フライドポテト", price: 300 },
+        "4": { name: "ドリンク", price: 200 },
+        "5": { name: "アイスクリーム", price: 250 }
+    };
+    
+    let total = 0;
+    let orderList = [];
+    
+    console.log("🍔 レストラン注文システム");
+    console.log("メニュー:");
+    for (let key in menu) {
+        console.log(`${key}. ${menu[key].name} - ${menu[key].price}円`);
+    }
+    
+    while (true) {
+        let choice = prompt("商品番号を入力してください (0で終了):");
+        
+        switch (choice) {
+            case "0":
+                if (orderList.length > 0) {
+                    console.log("ご注文内容:");
+                    orderList.forEach(item => console.log(`- ${item.name} - ${item.price}円`));
+                    console.log(`合計金額: ${total.toLocaleString()}円`);
+                } else {
+                    console.log("注文がありません");
+                }
+                return; // 関数を終了
+            case "1":
+            case "2":
+            case "3":           
+            case "4":
+```

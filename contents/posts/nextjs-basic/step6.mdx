@@ -1,0 +1,258 @@
+---
+title: 第６回：よくある間違いとベストプラクティス ⚠️
+category: Next.js
+---
+
+## 第6章：よくある間違いとベストプラクティス ⚠️
+
+### 🚫 よくある初心者の間違い
+
+#### 1. **Server ComponentsでReact Hooksを使用**
+```javascript
+// ❌ 間違い - Server ComponentでuseStateを使用
+export default function ServerComponent() {
+  const [count, setCount] = useState(0); // エラー！
+  
+  return <div>{count}</div>;
+}
+
+// ✅ 正解 - Client Componentでuse client指定
+'use client';
+
+import { useState } from 'react';
+
+export default function ClientComponent() {
+  const [count, setCount] = useState(0);
+  
+  return (
+    <div>
+      <p>カウント: {count}</p>
+      <button onClick={() => setCount(count + 1)}>+1</button>
+    </div>
+  );
+}
+```
+
+#### 2. **水和エラー（Hydration Error）**
+```javascript
+// ❌ 間違い - サーバーとクライアントで異なる値
+export default function TimeComponent() {
+  const now = new Date().toLocaleString(); // 実行のたびに変わる
+  return <div>現在時刻: {now}</div>;
+}
+
+// ✅ 正解 - useEffectで一貫性を保つ
+'use client';
+
+import { useState, useEffect } from 'react';
+
+export default function TimeComponent() {
+  const [currentTime, setCurrentTime] = useState('');
+  
+  useEffect(() => {
+    setCurrentTime(new Date().toLocaleString());
+    
+    const timer = setInterval(() => {
+      setCurrentTime(new Date().toLocaleString());
+    }, 1000);
+    
+    return () => clearInterval(timer);
+  }, []);
+  
+  return (
+    <div>
+      現在時刻: {currentTime || '読み込み中...'}
+    </div>
+  );
+}
+```
+
+#### 3. **環境変数の誤用**
+```javascript
+// ❌ 間違い - 機密情報をクライアントに露出
+'use client';
+
+export default function BadExample() {
+  const apiKey = process.env.SECRET_API_KEY; // undefined になる！
+  return <div>{apiKey}</div>;
+}
+
+// ✅ 正解 - Server Componentで使用
+export default async function GoodExample() {
+  const apiKey = process.env.SECRET_API_KEY; // サーバーでのみ使用
+  const data = await fetch(`https://api.example.com/data?key=${apiKey}`)
+    .then(res => res.json());
+  
+  return <div>{data.message}</div>;
+}
+
+// クライアントで使いたい場合はNEXT_PUBLIC_プレフィックス
+'use client';
+
+export default function PublicExample() {
+  const publicUrl = process.env.NEXT_PUBLIC_API_URL; // これは使える
+  return <div>{publicUrl}</div>;
+}
+```
+
+### ✅ ベストプラクティス
+
+#### 1. **コンポーネントの適切な分割**
+```javascript
+// ✅ 良い例：責任を明確に分割
+// Server Component - データ取得
+export default async function ProductsPage() {
+  const products = await getProducts();
+  
+  return (
+    <div>
+      <h1>商品一覧</h1>
+      {products.map(product => (
+        <ProductCard key={product.id} product={product} />
+      ))}
+    </div>
+  );
+}
+
+// Client Component - インタラクション
+'use client';
+
+export default function ProductCard({ product }) {
+  const [isFavorite, setIsFavorite] = useState(false);
+  
+  return (
+    <div className="product-card">
+      <h2>{product.name}</h2>
+      <p>¥{product.price}</p>
+      <button onClick={() => setIsFavorite(!isFavorite)}>
+        {isFavorite ? '❤️' : '🤍'}
+      </button>
+    </div>
+  );
+}
+```
+
+#### 2. **エラーハンドリングの実装**
+```javascript
+// error.tsx - エラー境界
+'use client';
+
+export default function Error({ 
+  error, 
+  reset 
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  useEffect(() => {
+    // エラーをログに記録
+    console.error('Application error:', error);
+  }, [error]);
+  
+  return (
+    <div className="error-boundary">
+      <h2>問題が発生しました</h2>
+      <details>
+        <summary>エラーの詳細</summary>
+        <pre>{error.message}</pre>
+      </details>
+      <button onClick={reset}>
+        もう一度試す
+      </button>
+    </div>
+  );
+}
+
+// loading.tsx - ローディング状態
+export default function Loading() {
+  return (
+    <div className="loading-skeleton">
+      <div className="animate-pulse space-y-4">
+        <div className="h-8 bg-gray-200 rounded"></div>
+        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+      </div>
+    </div>
+  );
+}
+```
+
+#### 3. **パフォーマンス最適化**
+```javascript
+// 画像最適化
+import Image from 'next/image';
+
+export default function OptimizedImages() {
+  return (
+    <div>
+      {/* ✅ Next.js Image コンポーネントを使用 */}
+      <Image
+        src="/hero-image.jpg"
+        alt="ヒーロー画像"
+        width={800}
+        height={400}
+        priority // 重要な画像は優先読み込み
+        placeholder="blur" // ぼかしプレースホルダー
+      />
+      
+      {/* ❌ 通常のimg要素は避ける */}
+      {/* <img src="/hero-image.jpg" alt="ヒーロー画像" /> */}
+    </div>
+  );
+}
+
+// 動的インポート（コード分割）
+import { lazy, Suspense } from 'react';
+
+const HeavyComponent = lazy(() => import('./HeavyComponent'));
+
+export default function OptimizedLoading() {
+  return (
+    <div>
+      <h1>メインコンテンツ</h1>
+      
+      <Suspense fallback={<div>重いコンポーネントを読み込み中...</div>}>
+        <HeavyComponent />
+      </Suspense>
+    </div>
+  );
+}
+```
+
+---
+
+## まとめ 🎯
+
+**Next.jsの学習で最も重要なポイント：**
+
+### 📚 **覚えておくべき核心概念**
+
+1. **App Routerのファイルベースルーティング**
+   - フォルダ構造 = URL構造
+   - 特別なファイル名（page.tsx、layout.tsx、loading.tsx、error.tsx）
+
+2. **Server Components vs Client Components**
+   - デフォルトはServer Components
+   - インタラクションが必要な時だけ`'use client'`
+
+3. **4つのレンダリング方式**
+   - **SSG**: 静的なコンテンツ（ブログ、企業サイト）
+   - **ISR**: 定期更新が必要（ニュース、商品ページ）
+   - **SSR**: ユーザー固有のコンテンツ（ダッシュボード）
+   - **CSR**: リアルタイム機能（チャット、管理画面）
+
+### 🚀 **次のステップ**
+
+1. **実際にプロジェクトを作ってみる**
+2. **TypeScript を導入する**
+3. **データベース（Prisma + PostgreSQL）を繋げる**
+4. **認証システム（NextAuth.js）を追加する**
+5. **Vercel にデプロイして公開する**
+
+### 📖 **学習リソース**
+
+- [Next.js 公式ドキュメント](https://nextjs.org/docs)
+- [App Router 完全ガイド](https://nextjs.org/docs/app)
+- [Next.js Learn コース](https://nextjs.org/learn)
+
+**Next.jsは継続的な学習が必要な技術です。この基礎をしっかり身につけて、実際に手を動かしながら学習を続けていきましょう！** 🎉

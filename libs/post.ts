@@ -24,9 +24,23 @@ function getAllMdxFiles(dir: string): string[] {
 // ファイル名（slug）の一覧を取得
 export function GetAllPostSlugs() {
   const postFilePaths = getAllMdxFiles(POSTS_PATH);
-  return postFilePaths.map((filePath) => {
+  const slugs = postFilePaths.map((filePath) => {
     // slug例: php-memo/sample-post
     return path.relative(POSTS_PATH, filePath).replace(/\.mdx?$/, "");
+  });
+
+  // stepXX形式のファイルを数値順にソート
+  return slugs.sort((a, b) => {
+    const aMatch = a.match(/step(\d+)$/);
+    const bMatch = b.match(/step(\d+)$/);
+
+    if (aMatch && bMatch) {
+      // 両方stepXX形式の場合は数値でソート
+      return parseInt(aMatch[1]) - parseInt(bMatch[1]);
+    }
+
+    // それ以外は通常の文字列ソート
+    return a.localeCompare(b);
   });
 }
 

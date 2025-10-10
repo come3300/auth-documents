@@ -1,0 +1,570 @@
+---
+title: 第５回：実践的なアプリケーション作成 🛠️
+category: Next.js
+---
+
+## 第5章：実践的なアプリケーション作成 🛠️
+
+実際に**簡単なブログサイト**を作りながら、Next.jsの各機能がどのように連携するのかを学びましょう。
+
+### 📁 プロジェクトのセットアップ
+
+```bash
+# 新しいNext.jsプロジェクトを作成
+npx create-next-app@latest my-blog --typescript --tailwind --eslint
+
+# プロジェクトフォルダに移動
+cd my-blog
+
+# 開発サーバーを起動
+npm run dev
+```
+
+### 🏗️ ディレクトリ構造
+
+```
+my-blog/
+├── app/
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── blog/
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   └── [slug]/
+│   │       ├── page.tsx
+│   │       └── loading.tsx
+│   └── about/
+│       └── page.tsx
+├── components/
+│   ├── Header.tsx
+│   ├── Footer.tsx
+│   ├── BlogCard.tsx
+│   └── SearchBox.tsx
+├── lib/
+│   ├── blog.ts
+│   └── constants.ts
+└── public/
+    └── images/
+```
+
+### 🎨 サイト全体のレイアウト
+
+```javascript
+// app/layout.tsx
+import './globals.css';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+
+export const metadata = {
+  title: '私のブログ',
+  description: 'プログラミングと日常について書いています',
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="ja">
+      <body className="bg-gray-50">
+        <Header />
+        <main className="min-h-screen">
+          {children}
+        </main>
+        <Footer />
+      </body>
+    </html>
+  );
+}
+```
+
+### 📱 ヘッダーコンポーネント
+
+```javascript
+// components/Header.tsx
+'use client';
+
+import Link from 'next/link';
+import { useState } from 'react';
+
+export default function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
+  return (
+    <header className="bg-white shadow-sm">
+      <div className="max-w-6xl mx-auto px-4 py-4">
+        <div className="flex justify-between items-center">
+          {/* ロゴ */}
+          <Link href="/" className="text-2xl font-bold text-blue-600">
+            My Blog
+          </Link>
+          
+          {/* デスクトップメニュー */}
+          <nav className="hidden md:flex space-x-6">
+            <Link href="/" className="text-gray-700 hover:text-blue-600 transition-colors">
+              ホーム
+            </Link>
+            <Link href="/blog" className="text-gray-700 hover:text-blue-600 transition-colors">
+              ブログ
+            </Link>
+            <Link href="/about" className="text-gray-700 hover:text-blue-600 transition-colors">
+              About
+            </Link>
+          </nav>
+          
+          {/* モバイルメニューボタン */}
+          <button 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2"
+          >
+            <div className="w-6 h-6 flex flex-col justify-around">
+              <div className={`w-full h-0.5 bg-gray-600 transition-all ${isMenuOpen ? 'rotate-45 translate-y-2.5' : ''}`}></div>
+              <div className={`w-full h-0.5 bg-gray-600 transition-all ${isMenuOpen ? 'opacity-0' : ''}`}></div>
+              <div className={`w-full h-0.5 bg-gray-600 transition-all ${isMenuOpen ? '-rotate-45 -translate-y-2.5' : ''}`}></div>
+            </div>
+          </button>
+        </div>
+        
+        {/* モバイルメニュー */}
+        {isMenuOpen && (
+          <nav className="md:hidden mt-4 py-4 border-t">
+            <div className="flex flex-col space-y-4">
+              <Link href="/" onClick={() => setIsMenuOpen(false)}>
+                ホーム
+              </Link>
+              <Link href="/blog" onClick={() => setIsMenuOpen(false)}>
+                ブログ
+              </Link>
+              <Link href="/about" onClick={() => setIsMenuOpen(false)}>
+                About
+              </Link>
+            </div>
+          </nav>
+        )}
+      </div>
+    </header>
+  );
+}
+```
+
+### 🏠 ホームページ（SSG）
+
+```javascript
+// app/page.tsx - 静的生成されるホームページ
+import Link from 'next/link';
+import BlogCard from '../components/BlogCard';
+
+async function getFeaturedPosts() {
+  // 実際のプロジェクトではデータベースから取得
+  const posts = [
+    {
+      id: '1',
+      title: 'Next.js 13の新機能を徹底解説',
+      excerpt: 'App Routerの登場により、Next.jsがさらに進化しました。新機能を詳しく解説します。',
+      publishedAt: '2024-01-15',
+      readingTime: 8,
+      tags: ['Next.js', 'React'],
+      slug: 'nextjs-13-features'
+    },
+    {
+      id: '2',
+      title: 'TypeScriptで型安全なReactアプリ開発',
+      excerpt: 'TypeScriptを使ってより安全で保守性の高いReactアプリケーションを作る方法を学びます。',
+      publishedAt: '2024-01-10',
+      readingTime: 12,
+      tags: ['TypeScript', 'React'],
+      slug: 'typescript-react-development'
+    },
+    {
+      id: '3',
+      title: 'Tailwind CSSでモダンなUIデザイン',
+      excerpt: 'Tailwind CSSを使って効率的にモダンなユーザーインターフェースを構築する技術を紹介。',
+      publishedAt: '2024-01-05',
+      readingTime: 6,
+      tags: ['CSS', 'Design'],
+      slug: 'tailwind-modern-ui'
+    }
+  ];
+  
+  return posts;
+}
+
+export default async function HomePage() {
+  const featuredPosts = await getFeaturedPosts();
+  
+  return (
+    <div className="max-w-6xl mx-auto px-4 py-8">
+      {/* ヒーローセクション */}
+      <section className="text-center py-16">
+        <h1 className="text-4xl md:text-6xl font-bold text-gray-800 mb-6">
+          プログラミングの世界へ
+          <span className="text-blue-600">ようこそ</span>
+        </h1>
+        <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+          Web開発、プログラミング、そして技術について学んだことや体験談をシェアしています。
+          一緒に成長していきましょう！
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link 
+            href="/blog"
+            className="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors"
+          >
+            ブログを読む
+          </Link>
+          <Link 
+            href="/about"
+            className="border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-50 transition-colors"
+          >
+            About me
+          </Link>
+        </div>
+      </section>
+      
+      {/* おすすめ記事セクション */}
+      <section>
+        <h2 className="text-3xl font-bold text-center mb-12">おすすめ記事</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {featuredPosts.map(post => (
+            <BlogCard key={post.id} post={post} />
+          ))}
+        </div>
+        <div className="text-center mt-12">
+          <Link 
+            href="/blog"
+            className="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold"
+          >
+            もっと記事を見る
+            <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </Link>
+        </div>
+      </section>
+      
+      {/* ニュースレターセクション */}
+      <section className="bg-blue-50 rounded-2xl p-8 mt-16">
+        <div className="text-center">
+          <h3 className="text-2xl font-bold mb-4">📮 新着記事をお届け</h3>
+          <p className="text-gray-600 mb-6">
+            週1回、新しい記事や技術情報をメールでお知らせします
+          </p>
+          <form className="max-w-md mx-auto flex gap-4">
+            <input 
+              type="email" 
+              placeholder="あなたのメールアドレス"
+              className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
+            />
+            <button 
+              type="submit"
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              登録
+            </button>
+          </form>
+        </div>
+      </section>
+    </div>
+  );
+}
+```
+
+### 📄 ブログカードコンポーネント
+
+```javascript
+// components/BlogCard.tsx
+import Link from 'next/link';
+
+interface BlogPost {
+  id: string;
+  title: string;
+  excerpt: string;
+  publishedAt: string;
+  readingTime: number;
+  tags: string[];
+  slug: string;
+}
+
+interface BlogCardProps {
+  post: BlogPost;
+}
+
+export default function BlogCard({ post }: BlogCardProps) {
+  // 日付を読みやすい形式に変換
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ja-JP', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+  
+  return (
+    <article className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6">
+      {/* タグ */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {post.tags.slice(0, 2).map(tag => (
+          <span 
+            key={tag}
+            className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full"
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+      
+      {/* タイトル */}
+      <h3 className="text-xl font-bold mb-3 line-clamp-2">
+        <Link 
+          href={`/blog/${post.slug}`}
+          className="hover:text-blue-600 transition-colors"
+        >
+          {post.title}
+        </Link>
+      </h3>
+      
+      {/* 概要 */}
+      <p className="text-gray-600 mb-4 line-clamp-3">
+        {post.excerpt}
+      </p>
+      
+      {/* メタ情報 */}
+      <div className="flex items-center justify-between text-sm text-gray-500">
+        <time dateTime={post.publishedAt}>
+          {formatDate(post.publishedAt)}
+        </time>
+        <span className="flex items-center">
+          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {post.readingTime}分で読める
+        </span>
+      </div>
+      
+      {/* 続きを読むリンク */}
+      <div className="mt-4 pt-4 border-t">
+        <Link 
+          href={`/blog/${post.slug}`}
+          className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium"
+        >
+          続きを読む
+          <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </Link>
+      </div>
+    </article>
+  );
+}
+```
+
+### 📝 個別記事ページ（ISR）
+
+```javascript
+// app/blog/[slug]/page.tsx
+export const revalidate = 3600; // 1時間ごとに再検証
+
+interface BlogPost {
+  id: string;
+  title: string;
+  content: string;
+  publishedAt: string;
+  updatedAt: string;
+  readingTime: number;
+  tags: string[];
+  author: {
+    name: string;
+    bio: string;
+    avatar: string;
+  };
+}
+
+async function getPost(slug: string): Promise<BlogPost> {
+  // 実際のプロジェクトではCMSやデータベースから取得
+  const posts: Record<string, BlogPost> = {
+    'nextjs-13-features': {
+      id: '1',
+      title: 'Next.js 13の新機能を徹底解説',
+      content: `
+        <h2>App Routerの登場</h2>
+        <p>Next.js 13では、従来のPages Routerに加えて、新しいApp Routerが導入されました。この新機能により、より柔軟で効率的なルーティングが可能になります。</p>
+        
+        <h3>主な特徴</h3>
+        <ul>
+          <li><strong>Server Components</strong>: デフォルトでサーバー側で実行される</li>
+          <li><strong>Layout システム</strong>: ネストしたレイアウトが簡単に作成できる</li>
+          <li><strong>Loading UI</strong>: 自動的なローディング状態の管理</li>
+        </ul>
+        
+        <h3>実装例</h3>
+        <pre><code>// app/blog/layout.tsx
+export default function BlogLayout({ children }) {
+  return (
+    &lt;div className="max-w-4xl mx-auto"&gt;
+      &lt;aside&gt;サイドバー&lt;/aside&gt;
+      &lt;main&gt;{children}&lt;/main&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        
+        <p>このような書き方により、ブログセクション全体で共通のレイアウトを効率的に管理できます。</p>
+      `,
+      publishedAt: '2024-01-15',
+      updatedAt: '2024-01-16',
+      readingTime: 8,
+      tags: ['Next.js', 'React', 'Web開発'],
+      author: {
+        name: '山田太郎',
+        bio: 'フロントエンド開発者として5年の経験があります',
+        avatar: '/images/avatar.jpg'
+      }
+    }
+  };
+  
+  return posts[slug] || null;
+}
+
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const post = await getPost(slug);
+  
+  if (!post) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-16 text-center">
+        <h1 className="text-4xl font-bold text-gray-800 mb-4">記事が見つかりません</h1>
+        <p className="text-gray-600 mb-8">お探しの記事は存在しないか、削除された可能性があります。</p>
+        <Link 
+          href="/blog"
+          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          ブログ一覧に戻る
+        </Link>
+      </div>
+    );
+  }
+  
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      {/* パンくずリスト */}
+      <nav className="text-sm mb-8">
+        <Link href="/" className="text-blue-600 hover:text-blue-700">ホーム</Link>
+        <span className="mx-2 text-gray-400">›</span>
+        <Link href="/blog" className="text-blue-600 hover:text-blue-700">ブログ</Link>
+        <span className="mx-2 text-gray-400">›</span>
+        <span className="text-gray-600">{post.title}</span>
+      </nav>
+      
+      <article className="bg-white rounded-xl shadow-sm p-8">
+        {/* ヘッダー */}
+        <header className="mb-8">
+          <div className="flex flex-wrap gap-2 mb-4">
+            {post.tags.map(tag => (
+              <span 
+                key={tag}
+                className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+          
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
+            {post.title}
+          </h1>
+          
+          <div className="flex items-center justify-between pb-6 border-b">
+            <div className="flex items-center">
+              <img 
+                src={post.author.avatar}
+                alt={post.author.name}
+                className="w-12 h-12 rounded-full mr-4"
+              />
+              <div>
+                <p className="font-semibold text-gray-800">{post.author.name}</p>
+                <p className="text-sm text-gray-600">{post.author.bio}</p>
+              </div>
+            </div>
+            
+            <div className="text-right text-sm text-gray-600">
+              <p>公開: {new Date(post.publishedAt).toLocaleDateString('ja-JP')}</p>
+              <p>更新: {new Date(post.updatedAt).toLocaleDateString('ja-JP')}</p>
+              <p className="flex items-center justify-end mt-1">
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {post.readingTime}分で読める
+              </p>
+            </div>
+          </div>
+        </header>
+        
+        {/* 記事内容 */}
+        <div 
+          className="prose lg:prose-lg max-w-none"
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
+        
+        {/* シェアボタン */}
+        <div className="mt-8 pt-8 border-t">
+          <p className="text-sm text-gray-600 mb-4">この記事をシェア</p>
+          <div className="flex space-x-4">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
+              Twitter
+            </button>
+            <button className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800 transition-colors">
+              Facebook
+            </button>
+            <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors">
+              LINE
+            </button>
+          </div>
+        </div>
+      </article>
+      
+      {/* 関連記事セクション */}
+      <section className="mt-12">
+        <h2 className="text-2xl font-bold mb-6">関連記事</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* 関連記事のカードをここに表示 */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <h3 className="font-bold mb-2">TypeScriptで型安全なReact開発</h3>
+            <p className="text-gray-600 text-sm mb-4">TypeScriptを使ってより安全で...</p>
+            <Link href="/blog/typescript-react" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
+              続きを読む →
+            </Link>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+// SEO最適化
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const post = await getPost(slug);
+  
+  if (!post) {
+    return {
+      title: '記事が見つかりません | My Blog'
+    };
+  }
+  
+  return {
+    title: `${post.title} | My Blog`,
+    description: post.content.replace(/<[^>]*>/g, '').slice(0, 160) + '...',
+    openGraph: {
+      title: post.title,
+      description: post.content.replace(/<[^>]*>/g, '').slice(0, 160) + '...',
+      type: 'article',
+      publishedTime: post.publishedAt,
+      modifiedTime: post.updatedAt,
+      authors: [post.author.name],
+    },
+  };
+}
+```
+
+---

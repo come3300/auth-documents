@@ -1,0 +1,249 @@
+---
+title: 第３回：制御構文 Part1 - if文とforループ
+category: php
+---
+
+## 第3章：制御構文 Part1 - if文とforループ
+
+### if文の基本概念
+
+**基本的なif文の構造**
+```php
+<?php
+$score = 85;
+
+if ($score >= 90) {
+    echo "優秀です！";
+} elseif ($score >= 70) {
+    echo "良くできました";
+} elseif ($score >= 60) {
+    echo "合格です";
+} else {
+    echo "もう少し頑張りましょう";
+}
+
+// 実用例：ユーザー権限チェック
+function checkUserPermission($user, $action) {
+    if (!$user) {
+        return "ログインが必要です";
+    }
+    
+    if ($user['role'] === 'admin') {
+        return "全ての操作が許可されています";
+    }
+    
+    if ($user['role'] === 'editor' && in_array($action, ['read', 'write'])) {
+        return "操作が許可されています";
+    }
+    
+    return "この操作は許可されていません";
+}
+?>
+```
+
+**三項演算子とnull合体演算子**
+```php
+<?php
+// 三項演算子（短い条件分岐）
+$age = 20;
+$status = ($age >= 18) ? "大人" : "未成年";
+
+// null合体演算子（PHP 7+）
+$username = $_POST['username'] ?? $_GET['username'] ?? 'ゲスト';
+
+// 実用例：ユーザー表示名の決定
+function getDisplayName($user) {
+    return $user['display_name'] 
+           ?? $user['username'] 
+           ?? $user['email'] 
+           ?? 'Unknown User';
+}
+
+// match式（PHP 8+）- switchより安全
+$grade = 'B';
+$message = match($grade) {
+    'A' => '優秀！',
+    'B' => 'よくできました',
+    'C' => 'もう少し',
+    default => '評価不明'
+};
+?>
+```
+
+### forループの理解
+
+**基本的なforループ**
+```php
+<?php
+// 基本構文
+for ($i = 1; $i <= 10; $i++) {
+    echo "数字：$i<br>";
+}
+
+// 実用例：九九表の作成
+echo "<table border='1'>";
+for ($i = 1; $i <= 9; $i++) {
+    echo "<tr>";
+    for ($j = 1; $j <= 9; $j++) {
+        $result = $i * $j;
+        echo "<td>$i × $j = $result</td>";
+    }
+    echo "</tr>";
+}
+echo "</table>";
+?>
+```
+
+**パフォーマンスを考慮したforループ**
+```php
+<?php
+$items = range(1, 1000);
+
+// ❌ 効率の悪い例：毎回count()を実行
+for ($i = 0; $i < count($items); $i++) {
+    echo $items[$i];
+}
+
+// ✅ 効率的な例：事前にcount()を実行
+$item_count = count($items);
+for ($i = 0; $i < $item_count; $i++) {
+    echo $items[$i];
+}
+
+// さらに効率的：foreachを使用
+foreach ($items as $item) {
+    echo $item;
+}
+?>
+```
+
+### foreachループの活用
+
+**配列の反復処理**
+```php
+<?php
+$students = [
+    "田中" => 85,
+    "佐藤" => 92, 
+    "鈴木" => 78,
+    "高橋" => 88
+];
+
+// 値のみ取得
+foreach ($students as $score) {
+    echo "得点：$score<br>";
+}
+
+// キーと値両方を取得
+foreach ($students as $name => $score) {
+    $grade = match(true) {
+        $score >= 90 => 'A',
+        $score >= 80 => 'B', 
+        $score >= 70 => 'C',
+        default => 'D'
+    };
+    echo "$name さん：$score 点（$grade）<br>";
+}
+?>
+```
+
+**実用的な例：商品管理システム**
+```php
+<?php
+$products = [
+    ["id" => 1, "name" => "ノートPC", "price" => 98000, "stock" => 5],
+    ["id" => 2, "name" => "マウス", "price" => 2500, "stock" => 20],
+    ["id" => 3, "name" => "キーボード", "price" => 8000, "stock" => 15]
+];
+
+// 在庫切れ商品のチェック
+$out_of_stock = [];
+foreach ($products as $product) {
+    if ($product['stock'] <= 0) {
+        $out_of_stock[] = $product['name'];
+    }
+}
+
+// 価格帯別分類
+$price_categories = [
+    'budget' => [],      // 5000円未満
+    'standard' => [],    // 5000-30000円  
+    'premium' => []      // 30000円以上
+];
+
+foreach ($products as $product) {
+    if ($product['price'] < 5000) {
+        $price_categories['budget'][] = $product;
+    } elseif ($product['price'] <= 30000) {
+        $price_categories['standard'][] = $product;
+    } else {
+        $price_categories['premium'][] = $product;
+    }
+}
+?>
+```
+
+### 配列の構造化代入（PHP 7.1+）
+
+```php
+<?php
+// 配列の構造化代入
+$user_data = [
+    ["田中太郎", 28, "tokyo@example.com"],
+    ["佐藤花子", 25, "sato@example.com"],
+    ["鈴木一郎", 32, "suzuki@example.com"]
+];
+
+foreach ($user_data as [$name, $age, $email]) {
+    echo "名前：$name、年齢：$age、メール：$email<br>";
+}
+
+// より複雑な例：CSVデータの処理
+$csv_data = [
+    ["商品名", "価格", "カテゴリ", "在庫"],
+    ["ノートPC", "98000", "電子機器", "5"],
+    ["本", "1200", "書籍", "50"]
+];
+
+[$headers, ...$data] = $csv_data; // ヘッダーとデータを分離
+
+foreach ($data as [$name, $price, $category, $stock]) {
+    if ((int)$stock < 10) {
+        echo "警告：$name の在庫が少なくなっています（残り$stock個）<br>";
+    }
+}
+?>
+```
+
+### break文とcontinue文
+
+```php
+<?php
+// break：ループからの脱出
+for ($i = 1; $i <= 100; $i++) {
+    if ($i === 50) {
+        break; // 50に到達したらループを終了
+    }
+    echo $i . " ";
+}
+
+// continue：次の反復へスキップ
+$numbers = range(1, 20);
+foreach ($numbers as $num) {
+    if ($num % 2 === 0) {
+        continue; // 偶数はスキップ
+    }
+    echo $num . " "; // 奇数のみ表示
+}
+
+// 実用例：ファイル処理
+$files = ["document.txt", "", "image.jpg", "data.csv", ""];
+foreach ($files as $file) {
+    if (empty($file)) {
+        continue; // 空のファイル名をスキップ
+    }
+    
+    echo "処理中：$file<br>";
+}
+?>
+```

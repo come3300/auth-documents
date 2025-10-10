@@ -1,36 +1,65 @@
 ---
-title: 📝 第2回：TODOの追加機能を作ろう
+title: 🧑‍🏫 第1回：PHPとは？&開発環境（Docker）の準備
 category: php
 ---
 
-## **🎯 今回の目標**
+## **🌟 はじめに**
 
-- HTMLフォームからTODOを追加できるようにする
-- 入力されたTODOをセッションに保存する
-- .htaccess + ルーティングでURL設計をスッキリさせる
+PHPを使った、完全初心者向けWebアプリケーション開発講座を始めます！
+
+この講座では **TODOリストアプリ** を作りながら、実際に動くアプリケーションを完成させることを目指します 💪
+
+## **💡 PHPってなに？**
+
+- サーバーサイドで動作するプログラミング言語
+- WebサイトやWebアプリケーションの開発に広く利用されている
+- WordPressなどのCMSにも採用されており、学習コストが比較的低い
 
 ---
 
-## **📁 プロジェクト構成**
+## **💻 開発環境を準備しよう**
+
+この講座では **Docker** を使って、PHPの実行環境を簡単に構築します。
+
+Laravelの構成を意識して、以下のようにフォルダを分けて作っていきます。
+
+---
+
+### **📂 プロジェクト構成（初期）**
+
+プロジェクト名：todo-app
 
 ```
 todo-app/
-├── docker-compose.yml
+├── docker-compose.yml        # Docker全体の設定
 ├── php/
-│   ├── Dockerfile
-│   ├── public/
-│   │   ├── .htaccess          ← 追加：Apacheのルーティング設定
-│   │   └── index.php          ← 全ルーティングを処理するフロントコントローラ
-│   ├── todo/
-│   │   ├── index.php          ← 一覧表示処理
-│   │   └── add.php            ← TODO追加処理
-│   └── views/
-│       └── todo.php           ← HTML表示テンプレート
+│   ├── Dockerfile            # PHP+Apacheの環境
+│   ├── public/               # ブラウザからアクセスされる入口
+│   │   └── index.php         # 初期表示用ファイル
+│   ├── todo/                 # TODOアプリ本体ロジックを入れる
+│   │   └── index.php         # index.phpへルーティングされた処理
+│   └── views/                # HTML表示を切り出すビュー
+│       └── todo.php          # TODOリストの表示用テンプレート
 ```
 
 ---
 
-## **✅ Dockerfile（DocumentRootと.htaccessの有効化）**
+### **📝 ファイルを作成しよう**
+
+1️⃣ **docker-compose.yml**
+
+```
+version: '3.8'
+services:
+  app:
+    build: ./php
+    ports:
+      - "8000:80"
+    volumes:
+      - ./php:/var/www/html
+```
+
+2️⃣ **php/Dockerfile**
 
 ```
 FROM php:8.2-apache
@@ -38,135 +67,70 @@ FROM php:8.2-apache
 # DocumentRoot を public に変更
 RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
 
-# AllowOverride All を追加（.htaccess 有効化）
+# AllowOverride All を追加して .htaccess を有効化
 RUN echo '<Directory /var/www/html/public>\n\
     AllowOverride All\n\
 </Directory>' >> /etc/apache2/apache2.conf
 
+# 必要な PHP 拡張をインストール（ここが重要！）
+RUN docker-php-ext-install pdo pdo_mysql
+
+# ソースコードの配置
+COPY . /var/www/html/
+
 # mod_rewrite を有効化
 RUN a2enmod rewrite
-
-# ソースコードを配置
-COPY . /var/www/html/
 ```
 
----
-
-## **✅ public/.htaccess（新規作成）**
-
-```
-RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.php [QSA,L]
-```
-
-すべてのリクエストを index.php に集約し、そこでルーティング処理を行います。
-
----
-
-## **✅ public/index.php（ルーター）**
+3️⃣ **php/public/index.php**
 
 ```
 <?php
 
-$uri = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
-$method = $_SERVER['REQUEST_METHOD'];
-
-if ($uri === '' || $uri === '/index') {
-    require_once __DIR__ . '/../todo/index.php';
-} elseif ($uri === '/add' && $method === 'POST') {
-    require_once __DIR__ . '/../todo/add.php';
-} else {
-    http_response_code(404);
-    echo '404 Not Found';
-}
+// TODOアプリのメイン処理に処理を渡す
+require_once __DIR__ . '/../todo/index.php';
 ```
 
----
+4️⃣ **php/todo/index.php**
 
-## **✅ todo/index.php（一覧表示）**
+（この時点では仮でOK、次回以降で中身を実装）
 
 ```
 <?php
-session_start();
-
-if (!isset($_SESSION['todos'])) {
-    $_SESSION['todos'] = [];
-}
-
-$todos = $_SESSION['todos'];
-
-require_once __DIR__ . '/../views/todo.php';
+echo "TODOアプリ開発スタート！";
 ```
 
 ---
 
-## **✅ todo/add.php（追加処理）**
+### **🚀 環境を起動しよう**
+
+1. ターミナルでプロジェクトフォルダに移動
 
 ```
-<?php
-session_start();
-
-$task = $_POST['task'] ?? '';
-
-if (trim($task) !== '') {
-    $_SESSION['todos'][] = $task;
-}
-
-header('Location: /');
-exit;
+cd todo-app
 ```
 
----
-
-## **✅ views/todo.php（表示とフォーム）**
+1. Dockerを起動
 
 ```
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>TODOアプリ</title>
-</head>
-<body>
-    <h1>TODOリスト</h1>
-
-    <form action="/add" method="POST">
-        <input type="text" name="task" placeholder="やることを入力" required>
-        <button type="submit">追加</button>
-    </form>
-
-    <h2>やること一覧</h2>
-    <ul>
-        <?php foreach ($todos as $todo): ?>
-            <li><?= htmlspecialchars($todo, ENT_QUOTES, 'UTF-8') ?></li>
-        <?php endforeach; ?>
-    </ul>
-</body>
-</html>
+docker compose up -d
 ```
 
----
-
-## **✅ 実行手順**
-
-1. Dockerを再ビルド・再起動
-
-```
-docker compose down
-docker compose up --build -d
-```
-
-1. ブラウザでアクセス：
+1. ブラウザで以下のURLを開く
 
 ```
 http://localhost:8000
 ```
 
-1. フォームにタスクを入力 → 「追加」ボタンを押す
-2. ページがリロードされて、TODOリストに表示されていれば成功 🎉
+### **✨ 表示確認**
+
+> 「TODOアプリ開発スタート！」というメッセージが表示されればOKです！
+> 
 
 ---
 
 ## **✅ まとめ**
+
+- PHPはサーバーサイドで動作するWeb開発向け言語
+- Dockerを使えば手軽に環境構築できる
+- 今後の開発のベースとなるフォルダ構成を用意できた！

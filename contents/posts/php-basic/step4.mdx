@@ -1,0 +1,398 @@
+---
+title: 第４回：制御構文 Part2 - whileループとswitch文
+category: php
+---
+
+## 第4章：制御構文 Part2 - whileループとswitch文
+
+### whileループの基本概念
+
+**基本的なwhile文の構造**
+```php
+<?php
+// 基本構文
+$counter = 1;
+while ($counter <= 5) {
+    echo "カウント：$counter<br>";
+    $counter++; // 重要：条件変数の更新
+}
+
+// 実用例：ユーザー入力の検証
+function getUserInput() {
+    do {
+        $input = readline("1から10までの数字を入力してください：");
+        $number = (int)$input;
+        
+        if ($number < 1 || $number > 10) {
+            echo "無効な入力です。もう一度試してください。\n";
+        }
+    } while ($number < 1 || $number > 10);
+    
+    return $number;
+}
+?>
+```
+
+**do-whileループ - 必ず1回は実行**
+```php
+<?php
+// メニューシステムの例
+function showMenu() {
+    $choice = 0;
+    
+    do {
+        echo "\n=== メインメニュー ===\n";
+        echo "1. ユーザー登録\n";
+        echo "2. ログイン\n"; 
+        echo "3. 設定\n";
+        echo "4. 終了\n";
+        echo "選択してください (1-4): ";
+        
+        $input = readline();
+        $choice = (int)$input;
+        
+        switch ($choice) {
+            case 1:
+                echo "ユーザー登録画面へ...\n";
+                break;
+            case 2:
+                echo "ログイン画面へ...\n";
+                break;
+            case 3:
+                echo "設定画面へ...\n";
+                break;
+            case 4:
+                echo "プログラムを終了します\n";
+                break;
+            default:
+                echo "無効な選択です\n";
+        }
+    } while ($choice !== 4);
+}
+?>
+```
+
+### 無限ループの防止策
+
+**よくある間違いと対策**
+```php
+<?php
+// ❌ 危険：無限ループの例
+function dangerousLoop() {
+    $i = 1;
+    while ($i <= 10) {
+        echo $i;
+        // $i++; が抜けている！
+    }
+}
+
+// ✅ 安全：カウンタ制限付きループ
+function safeLoop() {
+    $i = 1;
+    $max_iterations = 1000; // 安全装置
+    $iterations = 0;
+    
+    while ($i <= 10 && $iterations < $max_iterations) {
+        echo $i;
+        $i++;
+        $iterations++;
+        
+        if ($iterations >= $max_iterations) {
+            error_log("警告：最大反復回数に達しました");
+            break;
+        }
+    }
+}
+
+// 実用例：APIから全データを取得
+function fetchAllData($api_url) {
+    $all_data = [];
+    $page = 1;
+    $max_pages = 100; // 安全装置
+    
+    while ($page <= $max_pages) {
+        $response = file_get_contents("$api_url?page=$page");
+        $data = json_decode($response, true);
+        
+        if (empty($data) || !isset($data['items'])) {
+            break; // データがない場合は終了
+        }
+        
+        $all_data = array_merge($all_data, $data['items']);
+        
+        // 次のページがない場合は終了
+        if (!isset($data['has_more']) || !$data['has_more']) {
+            break;
+        }
+        
+        $page++;
+    }
+    
+    return $all_data;
+}
+?>
+```
+
+### switch文の理解
+
+**基本的なswitch文**
+```php
+<?php
+$day = date('w'); // 0=日曜日, 1=月曜日...
+
+switch ($day) {
+    case 0:
+    case 6:
+        echo "今日は休日です";
+        break;
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+        echo "今日は平日です";
+        break;
+    default:
+        echo "不明な曜日";
+}
+
+// 実用例：HTTPステータスコード処理
+function getStatusMessage($code) {
+    switch ($code) {
+        case 200:
+            return "成功";
+        case 201:
+            return "作成完了";
+        case 400:
+            return "リクエストエラー";
+        case 401:
+            return "認証が必要";
+        case 403:
+            return "アクセス拒否";
+        case 404:
+            return "ページが見つかりません";
+        case 500:
+            return "サーバーエラー";
+        default:
+            return "不明なステータス";
+    }
+}
+?>
+```
+
+### match式（PHP 8+）- switchの改良版
+
+**match式の利点**
+```php
+<?php
+// switch文（従来）
+function getGradeSwitch($score) {
+    switch (true) {
+        case $score >= 90:
+            $grade = 'A';
+            break;
+        case $score >= 80:
+            $grade = 'B';
+            break;
+        case $score >= 70:
+            $grade = 'C';
+            break;
+        default:
+            $grade = 'F';
+    }
+    return $grade;
+}
+
+// match式（PHP 8+）- より安全で簡潔
+function getGradeMatch($score) {
+    return match (true) {
+        $score >= 90 => 'A',
+        $score >= 80 => 'B',
+        $score >= 70 => 'C',
+        default => 'F'
+    };
+}
+
+// 実用例：ユーザー権限の管理
+function getPermissions($role) {
+    return match ($role) {
+        'admin' => ['read', 'write', 'delete', 'manage'],
+        'editor' => ['read', 'write'],
+        'viewer' => ['read'],
+        'guest', 'anonymous' => [], // 複数値対応
+        default => throw new InvalidArgumentException("不明な役割：$role")
+    };
+}
+
+// 料金計算の例
+function calculateShippingFee($weight, $distance) {
+    $base_fee = match (true) {
+        $weight <= 1 => 500,
+        $weight <= 5 => 800,
+        $weight <= 10 => 1200,
+        default => 1500
+    };
+    
+    $distance_multiplier = match (true) {
+        $distance <= 50 => 1.0,
+        $distance <= 200 => 1.5,
+        default => 2.0
+    };
+    
+    return $base_fee * $distance_multiplier;
+}
+?>
+```
+
+### フォール・スルー動作の理解
+
+```php
+<?php
+// 意図的なフォール・スルー（同じ処理を実行）
+function getWorkDayType($day) {
+    switch ($day) {
+        case 'monday':
+        case 'tuesday':
+        case 'wednesday':
+        case 'thursday':
+            // 平日の共通処理
+            setupWorkEnvironment();
+            // フォール・スルー
+        case 'friday':
+            // 平日（金曜日含む）の処理
+            return "平日です";
+            
+        case 'saturday':
+        case 'sunday':
+            return "休日です";
+            
+        default:
+            return "不明な曜日";
+    }
+}
+
+// ❌ 危険：意図しないフォール・スルー
+function dangerousSwitch($action) {
+    switch ($action) {
+        case 'delete':
+            deleteRecord();
+            // break; が抜けている！
+        case 'update':
+            updateRecord(); // deleteの場合も実行されてしまう
+            break;
+    }
+}
+?>
+```
+
+### switch vs if-elseif の選択基準
+
+```php
+<?php
+// switchが適している場合：一つの変数の複数値比較
+function handleUserCommand($command) {
+    switch ($command) {
+        case 'start':
+        case 'begin':
+            return startProcess();
+        case 'stop':
+        case 'end':
+            return stopProcess();
+        case 'pause':
+            return pauseProcess();
+        case 'resume':
+            return resumeProcess();
+        default:
+            return "不明なコマンド";
+    }
+}
+
+// if-elseifが適している場合：複雑な条件
+function determineUserCategory($user) {
+    if (!$user || !$user['is_active']) {
+        return 'inactive';
+    }
+    
+    if ($user['age'] < 18 && $user['has_guardian_consent']) {
+        return 'minor_with_consent';
+    }
+    
+    if ($user['premium_member'] && $user['subscription_active']) {
+        return 'premium';
+    }
+    
+    if ($user['total_purchases'] > 100000) {
+        return 'vip';
+    }
+    
+    return 'standard';
+}
+?>
+```
+
+### エラーハンドリングと制御構文
+
+```php
+<?php
+// try-catchとの組み合わせ
+function processUserAction($action) {
+    $max_retries = 3;
+    $attempt = 0;
+    
+    while ($attempt < $max_retries) {
+        try {
+            switch ($action) {
+                case 'save':
+                    return saveData();
+                case 'send':
+                    return sendEmail();
+                case 'process':
+                    return processPayment();
+                default:
+                    throw new InvalidArgumentException("不明なアクション：$action");
+            }
+        } catch (TemporaryException $e) {
+            $attempt++;
+            if ($attempt >= $max_retries) {
+                throw new Exception("最大試行回数に達しました：" . $e->getMessage());
+            }
+            sleep(1); // 1秒待機してリトライ
+        }
+    }
+}
+
+// バリデーションと制御構文の組み合わせ
+function validateAndProcess($data) {
+    $errors = [];
+    
+    // バリデーションループ
+    foreach ($data as $field => $value) {
+        switch ($field) {
+            case 'email':
+                if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                    $errors[] = "無効なメールアドレス";
+                }
+                break;
+                
+            case 'age':
+                if (!is_numeric($value) || $value < 0 || $value > 150) {
+                    $errors[] = "無効な年齢";
+                }
+                break;
+                
+            case 'phone':
+                if (!preg_match('/^[0-9-]+$/', $value)) {
+                    $errors[] = "無効な電話番号";
+                }
+                break;
+        }
+    }
+    
+    if (!empty($errors)) {
+        return ['success' => false, 'errors' => $errors];
+    }
+    
+    return ['success' => true, 'data' => $data];
+}
+?>
+```
