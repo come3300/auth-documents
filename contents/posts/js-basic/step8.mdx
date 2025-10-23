@@ -1,0 +1,415 @@
+---
+title: 第8回： 関数とは
+category: js
+---
+
+## 関数とは
+
+関数とは、**特定の処理をまとめて名前をつけたもの**です。
+
+一度関数を定義すれば、何度でも呼び出して使うことができます。これにより、同じコードを何度も書く必要がなくなり、プログラムをわかりやすく整理できます。
+
+{/* TODO イメージ画像 */}
+
+### 関数を使うメリット
+
+1. **コードの再利用**: 同じ処理を何度も書かなくて済む
+2. **保守性の向上**: 修正が必要な時、一箇所を直せば良い
+3. **可読性の向上**: 処理に名前がついて、コードが読みやすくなる
+4. **バグの削減**: 同じコードを複数箇所に書かないので、ミスが減る
+
+### 関数の種類
+
+JavaScriptには、主に以下のような関数の書き方があります。
+
+1. **関数宣言（Function Declaration）**
+2. **関数式（Function Expression）**
+3. **アロー関数（Arrow Function）**
+
+それぞれの書き方を見ていきましょう。
+
+## 関数の書き方
+
+### 1. 関数宣言（Function Declaration）
+
+最も基本的な関数の書き方です。
+
+```javascript
+function 関数名(引数1, 引数2, ...) {
+  // 実行したい処理
+  return 戻り値;
+}
+```
+
+**例：挨拶する関数**
+
+```javascript
+function greet() {
+  console.log("こんにちは！");
+}
+
+// 関数を呼び出す
+greet(); // こんにちは！
+```
+
+### 2. 引数のある関数
+
+関数に値を渡すことができます。この値を**引数（ひきすう）**と呼びます。
+
+```javascript
+function greet(name) {
+  console.log("こんにちは、" + name + "さん！");
+}
+
+greet("太郎"); // こんにちは、太郎さん！
+greet("花子"); // こんにちは、花子さん！
+```
+
+**複数の引数を持つ関数**
+
+```javascript
+function add(a, b) {
+  console.log(a + b);
+}
+
+add(3, 5); // 8
+add(10, 20); // 30
+```
+
+### 3. 戻り値のある関数
+
+関数は処理結果を**return**で返すことができます。
+
+```javascript
+function add(a, b) {
+  return a + b;
+}
+
+const result = add(3, 5);
+console.log(result); // 8
+
+// 直接使うこともできる
+console.log(add(10, 20)); // 30
+```
+
+**returnの重要なポイント:**
+- `return`を実行すると、関数はそこで終了します
+- `return`がない関数は`undefined`を返します
+
+```javascript
+function multiply(a, b) {
+  return a * b;
+  console.log("この行は実行されません"); // returnの後なので実行されない
+}
+
+const result = multiply(4, 5);
+console.log(result); // 20
+```
+
+### 4. 関数式（Function Expression）
+
+関数を変数に代入する書き方です。
+
+```javascript
+const greet = function(name) {
+  return "こんにちは、" + name + "さん！";
+};
+
+console.log(greet("太郎")); // こんにちは、太郎さん！
+```
+
+### 5. アロー関数（Arrow Function）
+
+ES6（新しいJavaScript）から導入された、より簡潔な書き方です。
+
+```javascript
+const add = (a, b) => {
+  return a + b;
+};
+
+console.log(add(3, 5)); // 8
+```
+
+**さらに簡潔な書き方:**
+
+処理が1行の場合、`{}`と`return`を省略できます。
+
+```javascript
+const add = (a, b) => a + b;
+console.log(add(3, 5)); // 8
+
+const greet = (name) => "こんにちは、" + name + "さん！";
+console.log(greet("太郎")); // こんにちは、太郎さん！
+```
+
+**引数が1つの場合、()も省略できます:**
+
+```javascript
+const double = num => num * 2;
+console.log(double(5)); // 10
+```
+
+## 関数の使い方
+
+### 例1：消費税込みの価格を計算する関数
+
+```javascript
+function calculateTax(price) {
+  const taxRate = 0.1; // 10%
+  return price + (price * taxRate);
+}
+
+console.log(calculateTax(1000)); // 1100
+console.log(calculateTax(2500)); // 2750
+```
+
+### 例2：偶数かどうか判定する関数
+
+```javascript
+function isEven(number) {
+  if (number % 2 === 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// もっと簡潔に書くこともできます
+function isEven(number) {
+  return number % 2 === 0;
+}
+
+console.log(isEven(4));  // true
+console.log(isEven(7));  // false
+```
+
+### 例3：配列の合計を計算する関数
+
+```javascript
+function sum(numbers) {
+  let total = 0;
+  for (let i = 0; i < numbers.length; i++) {
+    total += numbers[i];
+  }
+  return total;
+}
+
+const scores = [85, 92, 78, 95, 88];
+console.log(sum(scores)); // 438
+```
+
+### 例4：最大値を見つける関数
+
+```javascript
+function findMax(numbers) {
+  let max = numbers[0];
+  for (let i = 1; i < numbers.length; i++) {
+    if (numbers[i] > max) {
+      max = numbers[i];
+    }
+  }
+  return max;
+}
+
+const scores = [85, 92, 78, 95, 88];
+console.log(findMax(scores)); // 95
+```
+
+### 例5：挨拶メッセージを作る関数
+
+```javascript
+function createGreeting(name, time) {
+  if (time < 12) {
+    return "おはようございます、" + name + "さん！";
+  } else if (time < 18) {
+    return "こんにちは、" + name + "さん！";
+  } else {
+    return "こんばんは、" + name + "さん！";
+  }
+}
+
+console.log(createGreeting("太郎", 9));  // おはようございます、太郎さん！
+console.log(createGreeting("花子", 14)); // こんにちは、花子さん！
+console.log(createGreeting("次郎", 20)); // こんばんは、次郎さん！
+```
+
+### デフォルト引数
+
+引数にデフォルト値を設定できます。
+
+```javascript
+function greet(name = "ゲスト") {
+  return "こんにちは、" + name + "さん！";
+}
+
+console.log(greet("太郎")); // こんにちは、太郎さん！
+console.log(greet());       // こんにちは、ゲストさん！
+```
+
+### スコープ（変数の有効範囲）
+
+関数の中で宣言した変数は、関数の外からは使えません。
+
+```javascript
+function test() {
+  const message = "関数の中の変数";
+  console.log(message); // 使える
+}
+
+test();
+// console.log(message); // エラー！関数の外では使えない
+```
+
+**グローバル変数とローカル変数:**
+
+```javascript
+const globalVar = "グローバル変数"; // どこからでも使える
+
+function test() {
+  const localVar = "ローカル変数"; // 関数の中でだけ使える
+  console.log(globalVar); // グローバル変数
+  console.log(localVar);  // ローカル変数
+}
+
+test();
+console.log(globalVar); // グローバル変数
+// console.log(localVar); // エラー！
+```
+
+### 関数を引数として渡す
+
+JavaScriptでは、関数を引数として渡すことができます。
+
+```javascript
+function executeFunction(func) {
+  func();
+}
+
+function sayHello() {
+  console.log("こんにちは！");
+}
+
+executeFunction(sayHello); // こんにちは！
+```
+
+**実用的な例:**
+
+```javascript
+const numbers = [1, 2, 3, 4, 5];
+
+// forEach: 配列の各要素に対して関数を実行
+numbers.forEach(function(num) {
+  console.log(num * 2);
+});
+// 出力: 2, 4, 6, 8, 10
+
+// アロー関数を使うとより簡潔
+numbers.forEach(num => console.log(num * 2));
+```
+
+## 実践問題
+
+### 問題1: 平均点を計算する関数
+配列で渡された点数の平均を計算して返す関数を作成してください。
+
+```javascript
+function calculateAverage(scores) {
+  let sum = 0;
+  for (let i = 0; i < scores.length; i++) {
+    sum += scores[i];
+  }
+  return sum / scores.length;
+}
+
+const testScores = [85, 92, 78, 95, 88];
+console.log(calculateAverage(testScores)); // 87.6
+```
+
+### 問題2: FizzBuzz関数
+数値を引数に取り、以下のルールで文字列を返す関数を作成してください。
+- 15の倍数なら「FizzBuzz」
+- 3の倍数なら「Fizz」
+- 5の倍数なら「Buzz」
+- それ以外はその数値を文字列で返す
+
+```javascript
+function fizzBuzz(num) {
+  if (num % 15 === 0) {
+    return "FizzBuzz";
+  } else if (num % 3 === 0) {
+    return "Fizz";
+  } else if (num % 5 === 0) {
+    return "Buzz";
+  } else {
+    return String(num);
+  }
+}
+
+console.log(fizzBuzz(3));  // Fizz
+console.log(fizzBuzz(5));  // Buzz
+console.log(fizzBuzz(15)); // FizzBuzz
+console.log(fizzBuzz(7));  // 7
+```
+
+### 問題3: パスワード検証関数
+パスワードが以下の条件を満たしているかチェックする関数を作成してください。
+- 8文字以上
+- 数字を含む
+
+```javascript
+function isValidPassword(password) {
+  // 8文字以上かチェック
+  if (password.length < 8) {
+    return false;
+  }
+
+  // 数字を含むかチェック
+  let hasNumber = false;
+  for (let i = 0; i < password.length; i++) {
+    if (password[i] >= '0' && password[i] <= '9') {
+      hasNumber = true;
+      break;
+    }
+  }
+
+  return hasNumber;
+}
+
+console.log(isValidPassword("abc123def")); // true
+console.log(isValidPassword("abcdefgh"));  // false（数字がない）
+console.log(isValidPassword("abc12"));     // false（8文字未満）
+```
+
+### 問題4: 配列をフィルタリングする関数
+配列と最小値を受け取り、最小値以上の要素だけを含む新しい配列を返す関数を作成してください。
+
+```javascript
+function filterByMin(numbers, min) {
+  const result = [];
+  for (let i = 0; i < numbers.length; i++) {
+    if (numbers[i] >= min) {
+      result.push(numbers[i]);
+    }
+  }
+  return result;
+}
+
+const scores = [45, 78, 92, 55, 88, 39, 100];
+console.log(filterByMin(scores, 60)); // [78, 92, 88, 100]
+```
+
+## まとめ
+
+今回学んだこと:
+
+1. **関数の定義**: `function`キーワードで処理をまとめられる
+2. **引数**: 関数に値を渡せる
+3. **戻り値**: `return`で結果を返せる
+4. **関数式**: 関数を変数に代入できる
+5. **アロー関数**: `=>`を使った簡潔な書き方
+6. **デフォルト引数**: 引数に初期値を設定できる
+7. **スコープ**: 変数の有効範囲
+8. **高階関数**: 関数を引数として渡せる
+
+関数を使いこなすことで、コードをわかりやすく整理し、再利用しやすくなります！
+次回は、DOMについて学んでいきます。

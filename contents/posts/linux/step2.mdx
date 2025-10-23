@@ -1,0 +1,162 @@
+---
+title: 📝 第2回：Linuxの基礎コマンド
+category: linux
+---
+
+{/* http://localhost:3000/documents/phase1/linux/basic-command */}
+
+## Linuxの基本的なコマンド
+
+***
+
+![Photo by Minh Pham](/images/documents/linux/linux_logo.png)
+
+このセクションではLinuxの基本的な操作方法について
+解説していきます。
+
+### 階層とは
+
+例えば下記のような構成のディレクトリがあったとします。
+
+![Photo by Minh Pham](/images/documents/linux/ディレクトリ.png)
+
+**階層**とはディレクトリの保存されている場所の階層のことをいいます。
+ファイルを保存する場所は**ディレクトリ**という単位で分けられています。
+
+***
+
+#### 階層の関係
+
+![Photo by Minh Pham](/images/documents/linux/second-explain.png)
+
+例えば上記図で言うと
+第2階層の親階層は第1階層になります。
+
+第2階層を基準として第1階層と第2階層の関係は
+> 親階層→第1階層
+> 子階層→第3階層
+
+となります。
+
+***
+
+### 絶対パス/相対パス
+
+ファイルの指定の基本相対パスと絶対パスを紹介します
+
+point:パスとは
+ファイルを開いたりコマンドを実行したりするためのファイルやコマンドの場所を指定するための指定方法になります。
+
+![Photo by Minh Pham](/images/documents/linux/絶対パス.png)
+
+#### 絶対パスとは
+
+![Photo by Minh Pham](/images/documents/linux/絶対パス.png)
+
+ルートディレクトリを基準点として指定する方法です。
+この表示方法は、カレントディレクトリ（現在表示しているディレクトリ）がどこであっても、
+間違いなく目的のファイルを指定できます。
+
+point:ルートディレクトリとは
+ルートディレクトリとは、対象のディレクトリがある最上位のディレクトリのことを指します。
+
+#### 相対パスとは
+
+![Photo by Minh Pham](/images/documents/linux/相対パス.png)
+
+カレントディレクトリを基準点として指定する方法になります。
+つまり、ある対象のディレクトリからどういったパスでファイルを指定すれば
+アクセスしたいファイルやディレクトリにアクセスできるかを示す方法です。
+
+### VSCでの参照の仕方
+
+皆さんがお使いのエディターであるVSCでのパスの参照のやり方を紹介します。
+
+1,左タブから指定したいファイルまたはディレクトリの上で右クリックをします。
+
+![Photo by Minh Pham](/images/documents/linux/VSCのパスの解説.png)
+
+2,表示されたメニューからパスのコピーまたは相対パスのコピーを選択することで
+パスをコピーすることができます。
+
+![Photo by Minh Pham](/images/documents/linux/VSCのパスの解説 ズーム.png)
+
+※パスのコピーを選択すると絶対パスがコピーされます。
+
+### Linuxの基本的なコマンド
+
+#### pwdコマンド
+
+```
+yonekuradaisuke@yonekuradaisukenoMacBook-Pro-2 ~ % pwd
+/Users/yonekuradaisuke
+```
+
+pwdコマンドはルートディレクトリから今いる階層までを絶対パスで表示してくれます
+
+#### lsコマンド
+
+```
+yonekuradaisuke@yonekuradaisukenoMacBook-Pro-2 ~ % ls
+Applications		Music			sample.txt
+Creative Cloud Files	Pictures		sample1
+Desktop			Postman			unimatrix
+Documents		Public			www
+Downloads		Sites			zshrc
+Library			go
+Movies			kouda
+```
+
+lsコマンドは今いる階層より一つ下にある階層のファイルや
+ディレクトリを表示してくれるコマンドになります。
+
+#### cdコマンド
+
+```
+$ cd  sample2
+```
+
+cdコマンドは階層を移動したい時に使用することができます。
+
+#### mkdirコマンド
+
+```
+$ mkdir sample4
+```
+
+mkdirコマンドはmake direcrotyの略です。
+mkdir ディレクトリ名
+でディレクトリを作成することのできるコマンドです。
+
+#### rmdirコマンド
+
+```
+$ rmdir sample2
+```
+
+空のディレクトリを削除できるコマンドです。
+
+#### rmコマンド
+
+```
+$ rm sample3
+```
+
+rmコマンド(removefile)コマンドは空のファイルやディレクトリを
+削除できるコマンドになります。
+
+```
+$ rm -r sample3
+```
+
+ちなみに、rmの右隣に半角スペース打って -r と入力することで
+中身のあるディレクトリやファイルも削除することができます。
+この-rをオプションコマンドと呼びます。
+
+#### catコマンド
+
+```
+$ cat sample2.txt
+```
+
+catコマンドはファイルの中身を閲覧できるコマンドになります。

@@ -120,7 +120,7 @@ export const courses = [
       'GitHubの基本的な考え方を学び、グローバルへプッシュするまでの一連の流れを実践していく。',
     views: '1.2K',
     comments: '6',
-    linksrc: '/courses/github/lessons',
+    linksrc: '/courses/github-basic/lessons',
   },
   {
     id: 13,
@@ -131,7 +131,7 @@ export const courses = [
       'インターネットがどのように動くかを学び、開発に必要な基礎力を高めていく。',
     views: '1.2K',
     comments: '6',
-    linksrc: '/courses/internet/lessons',
+    linksrc: '/courses/internet-basic/lessons',
   },
   {
     id: 14,
