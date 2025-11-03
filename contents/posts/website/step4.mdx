@@ -1,77 +1,450 @@
 ---
-title: 第4回： 実践問題
+title: 第4回： 実践問題（ポートフォリオサイトを作ろう）
 category: website
 ---
-{/* /documents/phase1/website/practice */}
 
+# 第4回： 実践問題（ポートフォリオサイトを作ろう）
 
-MySQLでデータベースを作成し、そのデータベースにテーブルを生成する手順を以下に具体的に示します。
-これにはMySQLコマンドラインクライアントやMySQLのデータベース管理ツールを使用します。
-まず、データベースを作成し、その後にテーブルを生成します。
+これまで学んだHTML/CSSの知識を使って、あなた自身のポートフォリオサイトを作成してみましょう！
 
-1. MySQLにログイン
+---
 
+## 🎯 このレッスンの目標
+
+これまでのレッスンで学んだことを総動員して、実際に使えるWebサイトを作ります。
+
+**作成するサイト:**
+- 自己紹介ポートフォリオサイト
+- プロフィール、スキル、作品紹介、お問い合わせの4セクション
+
+**学べること:**
+- セクション構成の設計
+- レイアウトの実践
+- カードデザインの作成
+- フォームの作成
+
+---
+
+## 📋 完成イメージ
+
+![ポートフォリオサイト完成イメージ](/images/documents/website/step4/portfolio-complete.png)
+
+---
+
+## 🛠️ 作成手順
+
+### Step 1: HTMLの骨組みを作る
+
+まず、4つのセクション（プロフィール、スキル、作品、お問い合わせ）の骨組みを作ります。
+
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#profile">Profile</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#works">Works</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- メインビジュアル -->
+    <section class="hero">
+        <h1>Your Name</h1>
+        <p>Web Developer</p>
+    </section>
+
+    <!-- プロフィールセクション -->
+    <section id="profile" class="section">
+        <div class="container">
+            <h2 class="section-title">Profile</h2>
+            <div class="profile-content">
+                <img src="images/profile.jpg" alt="プロフィール画像" class="profile-image">
+                <div class="profile-text">
+                    <p>ここに自己紹介文を書きます。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- スキルセクション -->
+    <section id="skills" class="section bg-gray">
+        <div class="container">
+            <h2 class="section-title">Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <h3>HTML/CSS</h3>
+                    <p>Webページの構造とスタイリング</p>
+                </div>
+                <div class="skill-card">
+                    <h3>JavaScript</h3>
+                    <p>インタラクティブな機能の実装</p>
+                </div>
+                <div class="skill-card">
+                    <h3>PHP</h3>
+                    <p>サーバーサイドの開発</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 作品セクション -->
+    <section id="works" class="section">
+        <div class="container">
+            <h2 class="section-title">Works</h2>
+            <div class="works-grid">
+                <div class="work-card">
+                    <img src="images/work1.jpg" alt="作品1">
+                    <h3>作品タイトル1</h3>
+                    <p>作品の説明文</p>
+                </div>
+                <div class="work-card">
+                    <img src="images/work2.jpg" alt="作品2">
+                    <h3>作品タイトル2</h3>
+                    <p>作品の説明文</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- お問い合わせセクション -->
+    <section id="contact" class="section bg-gray">
+        <div class="container">
+            <h2 class="section-title">Contact</h2>
+            <form class="contact-form">
+                <div class="form-group">
+                    <label for="name">お名前</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">メールアドレス</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">メッセージ</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">送信</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- フッター -->
+    <footer>
+        <p>&copy; 2025 Your Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>
 ```
-mysql -u your_username -p
+
+---
+
+### Step 2: CSSでスタイリングする
+
+次に、CSSで見た目を整えます。
+
+```css
+/* 基本設定 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.section {
+    padding: 80px 0;
+}
+
+.bg-gray {
+    background-color: #f5f5f5;
+}
+
+.section-title {
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+/* ヘッダー */
+header {
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+nav ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 20px 0;
+}
+
+nav ul li {
+    margin: 0 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: #007bff;
+}
+
+/* メインビジュアル */
+.hero {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin-top: 60px;
+}
+
+.hero h1 {
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 24px;
+}
+
+/* プロフィール */
+.profile-content {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.profile-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-text {
+    flex: 1;
+}
+
+/* スキル */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.skill-card {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.skill-card:hover {
+    transform: translateY(-5px);
+}
+
+.skill-card h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #667eea;
+}
+
+/* 作品 */
+.works-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+}
+
+.work-card {
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.work-card:hover {
+    transform: translateY(-5px);
+}
+
+.work-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.work-card h3 {
+    padding: 20px;
+    font-size: 22px;
+}
+
+.work-card p {
+    padding: 0 20px 20px;
+}
+
+/* お問い合わせフォーム */
+.contact-form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: #667eea;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #5568d3;
+}
+
+/* フッター */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 30px 0;
+}
 ```
 
-上記のコマンドを実行すると、ユーザー名 (your_username) を入力するプロンプトが表示され、
-その後にパスワードを求められます。正しい情報を入力してMySQLにログインします。
+---
 
-2. データベースの作成
+## 🎯 課題：自分なりにカスタマイズしてみよう
 
-```
-CREATE DATABASE your_database_name;
-```
+### 初級レベル
 
-上記のSQLコマンドを実行して、新しいデータベースを作成します。
-your_database_name の部分には作成したいデータベースの名前を入力します。3. 作成したデータベースを使用
+<InfoBox type="tip" title="初級課題">
 
-```
-USE your_database_name;
-```
+1. プロフィール画像を自分の写真に変更する
+2. スキルカードを4つに増やす
+3. フォントの色やサイズを変更する
 
-作成したデータベースを使用するために、上記のSQLコマンドを実行します。これにより、
-以後の操作がこのデータベース上で行われるようになります。4. テーブルの作成
-例として、ユーザーテーブルを作成します。
+</InfoBox>
 
-```
-CREATE TABLE users ( id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(50) NOT NULL, email VARCHAR(100) NOT NULL, password VARCHAR(255) NOT NULL );
-```
+### 中級レベル
 
-以下に、MySQLでテーブル（例: users）を操作するための基本的なコマンドの例を示します。
-これは、CRUD操作（Create, Read, Update, Delete）および条件指定の基本的な操作です。
+<InfoBox type="info" title="中級課題">
 
-1. データの挿入 (Create)
+4. Worksセクションに作品を4つ追加する
+5. ナビゲーションメニューをホバーした時にアニメーションを追加
+6. 各セクションにフェードインアニメーションを追加
 
-```
-INSERT INTO users (username, email, password) VALUES ('john_doe', 'john@example.com', 'hashed_password');
-```
+</InfoBox>
 
-これは新しいユーザーを挿入する例です。2. データの取得 (Read)
+### 上級レベル
 
-```
-SELECT * FROM users;
-```
+<InfoBox type="warn" title="上級課題">
 
-これはテーブル内の全てのユーザーを取得する例です。もしくは、
+7. スマホ対応（レスポンシブデザイン）にする
+8. ダークモード切り替え機能を追加
+9. スムーススクロールを実装
 
-```
-SELECT id, username, email FROM users WHERE username = 'john_doe';
-```
+</InfoBox>
 
-これはユーザー名が 'john_doe' のユーザーの一部の列のみを取得する例です。3. データの更新 (Update)
+<Note type="tip">
 
-```
-UPDATE users SET email = 'new_email@example.com' WHERE username = 'john_doe';
-```
+**ヒント：便利なリソース**
 
-これはユーザー名が 'john_doe' のユーザーのメールアドレスを更新する例です。4. データの削除 (Delete)
+- 配色は[Coolors](https://coolors.co/)で探せます
+- アイコンは[Font Awesome](https://fontawesome.com/)を使うと便利です
+- アニメーションは`@keyframes`と`animation`プロパティを調べてみましょう
 
-```
-DELETE FROM users WHERE username = 'john_doe';
-```
+</Note>
 
-{/* ここも編集が必要 */}
-{/* リンクも必要 */}
+---
 
+## まとめ
+
+このレッスンで実践したこと：
+
+✅ **セクション構成の設計**
+- 複数のセクションで構成されたページ
+- 各セクションの役割を明確に
+
+✅ **Flexbox と Grid の活用**
+- Flexboxで横並びレイアウト
+- CSS Gridでカードレイアウト
+
+✅ **カードデザインの作成**
+- box-shadowで立体感
+- hoverでインタラクティブ性
+
+✅ **フォームの作成**
+- input、textarea、buttonの配置
+- バリデーション（required属性）
+
+<InfoBox type="info" title="お疲れ様でした！">
+
+これであなたも自分のポートフォリオサイトを持つことができました。
+このサイトを土台に、どんどん機能を追加していきましょう！
+
+</InfoBox>
+
+<Note type="tip">
+
+**次のステップ**
+
+次のレッスンでは、レスポンシブデザインを学び、スマホでも見やすいサイトを作れるようになります！
+
+</Note>

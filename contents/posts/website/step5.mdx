@@ -1,78 +1,820 @@
 ---
 title: 第5回： レスポンシブデザイン実践問題
-category: webiste
+category: website
 ---
 
 {/* /documents/phase1/website/practice */}
 
+## 学習目標
 
-MySQLでデータベースを作成し、そのデータベースにテーブルを生成する手順を以下に具体的に示します。
-これにはMySQLコマンドラインクライアントやMySQLのデータベース管理ツールを使用します。
-まず、データベースを作成し、その後にテーブルを生成します。
+このレッスンでは、これまで作成してきたポートフォリオサイトをスマートフォンやタブレットでも快適に閲覧できるように改良します。レスポンシブデザインの実践を通して、以下のスキルを習得します。
 
-1. MySQLにログイン
+- メディアクエリを使った画面サイズ別のスタイル適用
+- ブレークポイントの設定と活用
+- モバイルファーストの考え方
+- フレキシブルなレイアウト設計
+- 実機での表示確認方法
 
-```
-mysql -u your_username -p
-```
+## レスポンシブデザインとは
 
-上記のコマンドを実行すると、ユーザー名 (your_username) を入力するプロンプトが表示され、
-その後にパスワードを求められます。正しい情報を入力してMySQLにログインします。
+レスポンシブデザインとは、PC、タブレット、スマートフォンなど、様々な画面サイズに対応したWebデザインの手法です。1つのHTMLファイルとCSSファイルで、デバイスに応じて最適なレイアウトを表示できます。
 
-2. データベースの作成
+<Note>
+現代のWebサイトでは、スマートフォンからのアクセスが半数以上を占めることも珍しくありません。レスポンシブデザインは必須のスキルです。
+</Note>
 
-```
-CREATE DATABASE your_database_name;
-```
+### レスポンシブデザインのメリット
 
-上記のSQLコマンドを実行して、新しいデータベースを作成します。
-your_database_name の部分には作成したいデータベースの名前を入力します。3. 作成したデータベースを使用
+1. **ユーザー体験の向上**: すべてのデバイスで快適に閲覧できる
+2. **管理の効率化**: 1つのサイトで複数デバイスに対応
+3. **SEO効果**: Googleもモバイルフレンドリーなサイトを優遇
+4. **将来への対応**: 新しいデバイスサイズにも柔軟に対応可能
 
-```
-USE your_database_name;
-```
+## メディアクエリの基本
 
-作成したデータベースを使用するために、上記のSQLコマンドを実行します。これにより、
-以後の操作がこのデータベース上で行われるようになります。4. テーブルの作成
-例として、ユーザーテーブルを作成します。
+メディアクエリは、デバイスの特性（主に画面幅）に応じてCSSを切り替える技術です。
 
-```
-CREATE TABLE users ( id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(50) NOT NULL, email VARCHAR(100) NOT NULL, password VARCHAR(255) NOT NULL );
-```
+### 基本的な構文
 
-以下に、MySQLでテーブル（例: users）を操作するための基本的なコマンドの例を示します。
-これは、CRUD操作（Create, Read, Update, Delete）および条件指定の基本的な操作です。
+```css
+/* 基本形 */
+@media (条件) {
+  /* この条件が真の場合に適用されるCSS */
+}
 
-1. データの挿入 (Create)
-
-```
-INSERT INTO users (username, email, password) VALUES ('john_doe', 'john@example.com', 'hashed_password');
-```
-
-これは新しいユーザーを挿入する例です。2. データの取得 (Read)
-
-```
-SELECT * FROM users;
+/* 具体例: 画面幅が768px以下の場合 */
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    padding: 10px;
+  }
+}
 ```
 
-これはテーブル内の全てのユーザーを取得する例です。もしくは、
+### 主な条件指定
 
-```
-SELECT id, username, email FROM users WHERE username = 'john_doe';
-```
+```css
+/* 最大幅（この幅以下の場合） */
+@media (max-width: 768px) { }
 
-これはユーザー名が 'john_doe' のユーザーの一部の列のみを取得する例です。3. データの更新 (Update)
+/* 最小幅（この幅以上の場合） */
+@media (min-width: 769px) { }
 
-```
-UPDATE users SET email = 'new_email@example.com' WHERE username = 'john_doe';
-```
-
-これはユーザー名が 'john_doe' のユーザーのメールアドレスを更新する例です。4. データの削除 (Delete)
-
-```
-DELETE FROM users WHERE username = 'john_doe';
+/* 範囲指定 */
+@media (min-width: 768px) and (max-width: 1024px) { }
 ```
 
-{/* ここも編集が必要 */}
-{/* リンクも必要 */}
+<InfoBox type="info" title="メディアクエリの記述位置">
+メディアクエリは通常、基本スタイルの後に記述します。後から書かれたスタイルが優先されるため、順序が重要です。
+</InfoBox>
 
+## ブレークポイントの設定
+
+ブレークポイントとは、レイアウトが切り替わる画面幅の境界点です。一般的によく使われる値を紹介します。
+
+### 一般的なブレークポイント
+
+```css
+/* スマートフォン（小）: 320px - 479px */
+@media (max-width: 479px) {
+  /* 小型スマホ向けスタイル */
+}
+
+/* スマートフォン（大）: 480px - 767px */
+@media (min-width: 480px) and (max-width: 767px) {
+  /* 大型スマホ向けスタイル */
+}
+
+/* タブレット: 768px - 1023px */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* タブレット向けスタイル */
+}
+
+/* PC: 1024px以上 */
+@media (min-width: 1024px) {
+  /* PC向けスタイル */
+}
+```
+
+<Note>
+これらは目安です。実際のプロジェクトでは、コンテンツに応じて最適なブレークポイントを設定することが重要です。
+</Note>
+
+## モバイルファーストアプローチ
+
+モバイルファーストとは、まずスマートフォン向けのデザインを基本として作成し、画面が大きくなるにつれて要素を追加・拡張していく設計手法です。
+
+### モバイルファーストの利点
+
+1. **パフォーマンス**: 小さなデバイスでも高速に動作
+2. **シンプル性**: 本当に必要な要素だけを残す設計になる
+3. **段階的な拡張**: 小さい画面から大きい画面へ無理なく拡張できる
+
+### 記述例の比較
+
+**デスクトップファースト（従来の方法）**
+
+```css
+.container {
+  width: 1200px; /* PC向けの幅 */
+  display: flex;
+}
+
+/* 小さい画面用に上書き */
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    display: block;
+  }
+}
+```
+
+**モバイルファースト（推奨）**
+
+```css
+.container {
+  width: 100%; /* モバイル向けの幅 */
+  display: block;
+}
+
+/* 大きい画面用に拡張 */
+@media (min-width: 769px) {
+  .container {
+    width: 1200px;
+    display: flex;
+  }
+}
+```
+
+<InfoBox type="tip" title="モバイルファーストを実践しよう">
+min-widthを使ってモバイルから段階的に拡張する方が、コードがシンプルで保守しやすくなります。現代のWeb開発ではモバイルファーストが標準的なアプローチです。
+</InfoBox>
+
+## 実践: ポートフォリオサイトをレスポンシブ化
+
+それでは、これまで作成してきたポートフォリオサイトを実際にレスポンシブ対応させていきましょう。
+
+### 1. viewportメタタグの設定
+
+まず、HTMLファイルの`<head>`内に以下のメタタグを追加します（まだ追加していない場合）。
+
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ポートフォリオサイト</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+```
+
+<InfoBox type="warn" title="viewportメタタグは必須">
+このメタタグがないと、スマートフォンでもPC向けの表示になってしまいます。レスポンシブデザインには必須の設定です。
+</InfoBox>
+
+### 2. 基本スタイルをモバイルファーストで記述
+
+まず、モバイル向けの基本スタイルを作成します。
+
+**style.css（基本部分）**
+
+```css
+/* リセットとベース設定 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+/* コンテナ（モバイル向け） */
+.container {
+  width: 100%;
+  padding: 0 20px;
+  margin: 0 auto;
+}
+
+/* ヘッダー（モバイル向け） */
+header {
+  background-color: #2c3e50;
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+header nav ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+header nav a {
+  color: white;
+  text-decoration: none;
+  padding: 10px;
+  display: block;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+header nav a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+```
+
+### 3. タブレット向けスタイルの追加
+
+画面幅が768px以上のタブレット向けスタイルを追加します。
+
+```css
+/* タブレット向けスタイル */
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+  }
+
+  header h1 {
+    font-size: 32px;
+  }
+
+  header nav ul {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  header nav a {
+    padding: 10px 20px;
+  }
+}
+```
+
+### 4. PC向けスタイルの追加
+
+画面幅が1024px以上のPC向けスタイルを追加します。
+
+```css
+/* PC向けスタイル */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 960px;
+  }
+
+  header {
+    text-align: left;
+  }
+
+  header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  header h1 {
+    font-size: 36px;
+    margin-bottom: 0;
+  }
+
+  header nav ul {
+    gap: 20px;
+  }
+}
+```
+
+### 5. メインコンテンツのレスポンシブ化
+
+プロフィールセクションやプロジェクト一覧もレスポンシブ対応させます。
+
+```css
+/* プロフィールセクション（モバイル） */
+.profile {
+  padding: 40px 0;
+  text-align: center;
+}
+
+.profile img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  object-fit: cover;
+}
+
+.profile h2 {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+.profile p {
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 15px;
+}
+
+/* プロジェクト一覧（モバイル） */
+.projects {
+  padding: 40px 0;
+  background-color: #f8f9fa;
+}
+
+.projects h2 {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #2c3e50;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.project-card {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.project-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.project-card h3 {
+  font-size: 20px;
+  padding: 15px;
+  color: #2c3e50;
+}
+
+.project-card p {
+  padding: 0 15px 15px;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* タブレット向け（プロジェクト2列表示） */
+@media (min-width: 768px) {
+  .profile img {
+    width: 200px;
+    height: 200px;
+  }
+
+  .profile h2 {
+    font-size: 28px;
+  }
+
+  .projects h2 {
+    font-size: 28px;
+  }
+
+  .project-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+  }
+}
+
+/* PC向け（プロジェクト3列表示） */
+@media (min-width: 1024px) {
+  .profile {
+    text-align: left;
+  }
+
+  .profile .container {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .profile img {
+    margin-bottom: 0;
+  }
+
+  .profile h2 {
+    font-size: 32px;
+  }
+
+  .projects h2 {
+    font-size: 32px;
+  }
+
+  .project-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+  }
+}
+```
+
+<InfoBox type="tip" title="グリッドレイアウトの活用">
+CSS Gridを使うことで、画面サイズに応じた柔軟なカラム数の変更が簡単に実現できます。モバイルは1列、タブレットは2列、PCは3列という設定が直感的に記述できます。
+</InfoBox>
+
+### 6. フッターのレスポンシブ化
+
+```css
+/* フッター（モバイル） */
+footer {
+  background-color: #2c3e50;
+  color: white;
+  padding: 30px 0;
+  text-align: center;
+}
+
+.footer-content {
+  margin-bottom: 20px;
+}
+
+.footer-content h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.social-links a {
+  color: white;
+  font-size: 24px;
+  transition: opacity 0.3s;
+}
+
+.social-links a:hover {
+  opacity: 0.7;
+}
+
+footer p {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* PC向けフッター */
+@media (min-width: 1024px) {
+  footer {
+    text-align: left;
+  }
+
+  footer .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .social-links {
+    margin-bottom: 0;
+  }
+}
+```
+
+## 画像のレスポンシブ対応
+
+画像も画面サイズに応じて適切に表示されるようにします。
+
+### 基本的な画像のレスポンシブ設定
+
+```css
+/* すべての画像をレスポンシブに */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+```
+
+<Note>
+max-width: 100%により、画像が親要素の幅を超えないようになります。height: autoで縦横比が保たれます。
+</Note>
+
+### 背景画像のレスポンシブ対応
+
+```css
+.hero {
+  background-image: url('images/hero-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .hero {
+    height: 500px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    height: 600px;
+  }
+}
+```
+
+## テキストのレスポンシブ対応
+
+文字サイズも画面サイズに応じて調整すると、より読みやすくなります。
+
+```css
+/* モバイル */
+body {
+  font-size: 14px;
+}
+
+h1 {
+  font-size: 24px;
+}
+
+h2 {
+  font-size: 20px;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+/* タブレット */
+@media (min-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+
+  h1 {
+    font-size: 32px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  h3 {
+    font-size: 20px;
+  }
+}
+
+/* PC */
+@media (min-width: 1024px) {
+  h1 {
+    font-size: 36px;
+  }
+
+  h2 {
+    font-size: 28px;
+  }
+
+  h3 {
+    font-size: 22px;
+  }
+}
+```
+
+## デベロッパーツールでの確認方法
+
+作成したレスポンシブデザインを確認する方法を紹介します。
+
+### Chrome DevToolsの使い方
+
+1. **デベロッパーツールを開く**
+   - Windows/Linux: `F12` または `Ctrl + Shift + I`
+   - Mac: `Command + Option + I`
+
+2. **デバイスモードに切り替え**
+   - ツールバーの「Toggle device toolbar」アイコンをクリック
+   - またはショートカット: `Ctrl + Shift + M`（Mac: `Command + Shift + M`）
+
+3. **様々なデバイスで確認**
+   - 上部のドロップダウンから「iPhone 12 Pro」「iPad」などを選択
+   - カスタムサイズでの確認も可能
+
+4. **レスポンシブモードで幅を変更**
+   - 画面端をドラッグして幅を自由に変更
+   - ブレークポイントの動作を確認
+
+<InfoBox type="info" title="実機での確認も重要">
+デベロッパーツールでの確認は便利ですが、可能であれば実際のスマートフォンやタブレットでも表示を確認しましょう。実機でないと気づかない問題が見つかることがあります。
+</InfoBox>
+
+## よくある問題と解決方法
+
+### 問題1: スマホで文字が小さすぎる
+
+**原因**: viewportメタタグが設定されていない、または文字サイズが固定されている
+
+**解決方法**:
+```html
+<!-- HTMLに追加 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+```
+
+```css
+/* 相対的なサイズ指定を使用 */
+body {
+  font-size: 16px; /* 固定サイズは最小限に */
+}
+
+h1 {
+  font-size: 1.5em; /* 相対サイズを活用 */
+}
+```
+
+### 問題2: 横スクロールが発生する
+
+**原因**: 要素の幅が画面幅を超えている
+
+**解決方法**:
+```css
+/* すべての要素にbox-sizingを適用 */
+* {
+  box-sizing: border-box;
+}
+
+/* コンテナの幅を100%に */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 20px;
+}
+
+/* 画像が親要素を超えないように */
+img {
+  max-width: 100%;
+  height: auto;
+}
+```
+
+### 問題3: ナビゲーションがスマホで見づらい
+
+**原因**: PC向けの横並びメニューがそのまま表示されている
+
+**解決方法**:
+```css
+/* モバイルでは縦並び */
+nav ul {
+  display: flex;
+  flex-direction: column;
+}
+
+/* タブレット以上で横並び */
+@media (min-width: 768px) {
+  nav ul {
+    flex-direction: row;
+  }
+}
+```
+
+<InfoBox type="tip" title="ハンバーガーメニューの実装">
+より本格的なレスポンシブサイトでは、スマホ表示時にハンバーガーメニュー（三本線のアイコン）を実装することが一般的です。これにはJavaScriptが必要になります。
+</InfoBox>
+
+## 実践課題
+
+以下の課題に取り組んで、レスポンシブデザインの理解を深めましょう。
+
+### 課題1: 基本的なレスポンシブ化
+
+これまで作成したポートフォリオサイトを以下の要件でレスポンシブ対応させてください。
+
+**要件**:
+1. モバイル（〜767px）、タブレット（768px〜1023px）、PC（1024px〜）の3段階で対応
+2. ヘッダーのナビゲーションをモバイルでは縦並び、タブレット以上で横並びに
+3. プロジェクト一覧をモバイルでは1列、タブレットでは2列、PCでは3列表示
+4. すべてのテキストと画像が画面幅に収まるように調整
+
+### 課題2: コンタクトフォームのレスポンシブ化
+
+コンタクトセクションを追加し、レスポンシブ対応させてください。
+
+**HTML例**:
+```html
+<section class="contact">
+  <div class="container">
+    <h2>お問い合わせ</h2>
+    <form>
+      <div class="form-group">
+        <label for="name">お名前</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="email">メールアドレス</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label for="message">メッセージ</label>
+        <textarea id="message" name="message" rows="5" required></textarea>
+      </div>
+      <button type="submit">送信</button>
+    </form>
+  </div>
+</section>
+```
+
+**CSS要件**:
+- モバイル: フォーム幅100%、余白最小限
+- タブレット以上: フォーム幅を最大600pxに制限、中央配置
+- すべての入力欄が使いやすいサイズで表示される
+
+<Note>
+モバイルでは特に、フォーム要素のサイズと配置に注意しましょう。タップしやすいサイズ（最低44px×44px）を確保することが重要です。
+</Note>
+
+### 課題3: スキルセクションのレスポンシブカード
+
+スキル一覧をカード形式で表示し、レスポンシブ対応させてください。
+
+**要件**:
+- モバイル: 1列表示
+- タブレット: 2列表示
+- PC: 4列表示
+- カードは均等なサイズで配置
+- ホバー時にアニメーションを追加
+
+**ヒント**:
+```css
+.skills-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .skills-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .skills-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+```
+
+## まとめ
+
+このレッスンでは、ポートフォリオサイトをレスポンシブ対応させる実践的な方法を学びました。
+
+### 重要ポイント
+
+1. **viewportメタタグ**: レスポンシブデザインの基礎
+2. **メディアクエリ**: 画面サイズに応じたスタイル切り替え
+3. **モバイルファースト**: min-widthを使った段階的な拡張
+4. **フレキシブルなレイアウト**: Flexbox・Grid・相対単位の活用
+5. **デベロッパーツール**: 開発中の確認方法
+
+### レスポンシブデザインのベストプラクティス
+
+<InfoBox type="tip" title="実践で役立つポイント">
+- コンテンツに基づいてブレークポイントを設定する
+- デバイスだけでなく、コンテンツの可読性を優先する
+- パフォーマンスを考慮し、不要な画像やスクリプトは遅延読み込みする
+- タッチデバイスを意識した十分なタップ領域を確保する
+- 実機での確認を怠らない
+</InfoBox>
+
+### 次のステップ
+
+レスポンシブデザインの基礎を習得したら、以下のトピックにも挑戦してみましょう：
+
+- CSSフレームワーク（Bootstrap、Tailwind CSS）の活用
+- レスポンシブな画像最適化（srcset、picture要素）
+- モバイル向けのタッチジェスチャー対応
+- パフォーマンス最適化とCore Web Vitals
+- アクセシビリティ対応
+
+<Note>
+レスポンシブデザインは、現代のWeb開発において必須のスキルです。様々なデバイスでの表示を確認しながら、ユーザーにとって最適な体験を提供できるサイトを作成していきましょう。
+</Note>
+
+## 参考リソース
+
+さらに学習を深めるための推奨リソース：
+
+- [MDN Web Docs - レスポンシブデザイン](https://developer.mozilla.org/ja/docs/Learn/CSS/CSS_layout/Responsive_Design)
+- [Google - モバイルフレンドリーテスト](https://search.google.com/test/mobile-friendly)
+- [Can I Use - ブラウザ対応状況の確認](https://caniuse.com/)
+- [CSS-Tricks - A Complete Guide to Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
+- [CSS-Tricks - A Complete Guide to Grid](https://css-tricks.com/snippets/css/complete-guide-grid/)
