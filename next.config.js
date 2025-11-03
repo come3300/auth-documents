@@ -10,6 +10,25 @@ const nextConfig = {
   images: {
     domains: ['rzdookoxyvgtmhbobnab.supabase.co'], //todo ここの設定が必要
   },
+  webpack: (config, { isServer }) => {
+    // Supabase関連のオプショナル依存関係の警告を抑制
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        bufferutil: false,
+        'utf-8-validate': false,
+      };
+    }
+
+    // wsモジュールの警告を抑制
+    config.externals = config.externals || [];
+    config.externals.push({
+      bufferutil: 'bufferutil',
+      'utf-8-validate': 'utf-8-validate',
+    });
+
+    return config;
+  },
   async redirects() {
     return [
       // 教材一覧のリダイレクト

@@ -5,6 +5,8 @@ import rehypeSlug from "rehype-slug";
 import Toc from "@/components/toc";
 import Link from "next/link";
 import CodeBlock from "@/components/code-block";
+import Note from "@/components/note";
+import InfoBox from "@/components/info-box";
 
 interface LessonPageProps {
   params: {
@@ -39,6 +41,8 @@ export default async function LessonPage({ params }: LessonPageProps) {
   };
 
   const components = {
+    Note,
+    InfoBox,
     pre: ({ children, ...props }: any) => {
       console.log('=== PRE TAG CALLED ===');
       console.log('children:', children);
