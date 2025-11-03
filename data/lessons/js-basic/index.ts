@@ -23,7 +23,7 @@ export const jsBasicLessons = [
   {
     id: 4,
     category: 'JavaScript入門',
-    title: 'js 関数について',
+    title: '関数について',
     description: 'JavaScriptの関数の使い方や特徴を学びます',
     linksrc: '/courses/js-basic/lessons/step4',
   },

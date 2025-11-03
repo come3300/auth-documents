@@ -1,0 +1,78 @@
+---
+title: 第5回： レスポンシブデザイン実践問題
+category: webiste
+---
+
+{/* /documents/phase1/website/practice */}
+
+
+MySQLでデータベースを作成し、そのデータベースにテーブルを生成する手順を以下に具体的に示します。
+これにはMySQLコマンドラインクライアントやMySQLのデータベース管理ツールを使用します。
+まず、データベースを作成し、その後にテーブルを生成します。
+
+1. MySQLにログイン
+
+```
+mysql -u your_username -p
+```
+
+上記のコマンドを実行すると、ユーザー名 (your_username) を入力するプロンプトが表示され、
+その後にパスワードを求められます。正しい情報を入力してMySQLにログインします。
+
+2. データベースの作成
+
+```
+CREATE DATABASE your_database_name;
+```
+
+上記のSQLコマンドを実行して、新しいデータベースを作成します。
+your_database_name の部分には作成したいデータベースの名前を入力します。3. 作成したデータベースを使用
+
+```
+USE your_database_name;
+```
+
+作成したデータベースを使用するために、上記のSQLコマンドを実行します。これにより、
+以後の操作がこのデータベース上で行われるようになります。4. テーブルの作成
+例として、ユーザーテーブルを作成します。
+
+```
+CREATE TABLE users ( id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(50) NOT NULL, email VARCHAR(100) NOT NULL, password VARCHAR(255) NOT NULL );
+```
+
+以下に、MySQLでテーブル（例: users）を操作するための基本的なコマンドの例を示します。
+これは、CRUD操作（Create, Read, Update, Delete）および条件指定の基本的な操作です。
+
+1. データの挿入 (Create)
+
+```
+INSERT INTO users (username, email, password) VALUES ('john_doe', 'john@example.com', 'hashed_password');
+```
+
+これは新しいユーザーを挿入する例です。2. データの取得 (Read)
+
+```
+SELECT * FROM users;
+```
+
+これはテーブル内の全てのユーザーを取得する例です。もしくは、
+
+```
+SELECT id, username, email FROM users WHERE username = 'john_doe';
+```
+
+これはユーザー名が 'john_doe' のユーザーの一部の列のみを取得する例です。3. データの更新 (Update)
+
+```
+UPDATE users SET email = 'new_email@example.com' WHERE username = 'john_doe';
+```
+
+これはユーザー名が 'john_doe' のユーザーのメールアドレスを更新する例です。4. データの削除 (Delete)
+
+```
+DELETE FROM users WHERE username = 'john_doe';
+```
+
+{/* ここも編集が必要 */}
+{/* リンクも必要 */}
+
