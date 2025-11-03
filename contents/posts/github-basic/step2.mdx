@@ -1,0 +1,363 @@
+---
+title: 📝 第2回： 環境構築について
+category: github
+---
+
+       {/* 35文字で改行される */}
+
+### 環境構築
+
+前回の講座で学んだコマンドラインを思い出しながら取り組んでいきましょう。
+まずHomebrewをインストールします。
+
+macOSをお使いの方は、
+こちらのリンクからHomebrewをインストールするためのコードを取得します。
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+コピーしてターミナルで実行して下さい。
+もし以下のようにパスワードを求められたらPCを立ち上げる際に入力するパスワードを入力して下さい。
+(ただこの時入力出来ていても画面には出力されてないので注意して下さい。)
+
+```bash
+==> Checking for `sudo` access (which may request your password)
+[Password: ここにパスワードを入力して下さい
+```
+
+Homebrewのインストールが終わったらGitインストールします。
+
+```bash
+$ brew install git
+```
+
+WindowsでUbuntuをお使いの方は、
+
+```bash
+$ apt install git
+```
+
+でインストールできます。インストールできたら、次のコマンドをコマンドラインで実行して
+正しくダウンロード出来ているか確認してください。
+
+```bash
+$ git --version
+```
+
+コマンドの結果がgit version ~.~~.~ ~になっていればダウンロード完了になります。
+
+### gitのセットアップ方法
+
+次に、GitHubで登録したユーザー名とメールアドレスを自分のパソコン(ローカル)に登録していきます。
+以下をコマンドライン上で入力してください。まずユーザー名です
+
+```bash
+$ git config --global user.name ~~~~~
+
+$ git config --global user.name codevllage
+```
+
+`~~~~`には登録したユーザー名を入れて下さい。
+その後
+
+```bash
+$ git config --global user.email ~~~~~~@~~~
+```
+
+### 例
+
+```bash
+$ git config --global user.email keishin0405.182@gmail.com
+```
+
+メールアドレスも同じように~~~~~には登録したメールアドレスを入れて下さい。
+
+#### Step1 リポジトリの作成
+
+では早速、Gitに触れていきます。
+まずディレクトリを作成します。
+今回はsampleディレクトリの中にintro-gitディレクトリを作成しましょう。
+
+```bash
+$ mkdir intro-git
+```
+
+#### ローカルリポジトリを作成する
+
+リポジトリとはファイルやディレクトリの状態を記録する場所です。リポジトリには、
+
+- ローカルリポジトリ
+- リモートリポジトリ
+  という2つのリポジトリがあります。
+
+リポジトリを作る時はまず、ローカルリポジトリから作成します。
+コマンドラインでintro-gitディレクトリに移動して以下のコマンドを実行してください
+
+```bash
+$ git init
+```
+
+そのあと
+
+```bash
+Initialized empty Git repository in /home/ユーザー名/intro-git/.git/ //Ubuntu
+Initialized empty Git repository in /Users/ユーザー名/intro-git/.git/ //Mac
+```
+
+と返ってきたら成功です。これでintro-gitディレクトリの中にgit.ファイルが作られました。
+しかしいつも中身を確認するlsコマンドだけでは今回は確認できません。
+試しにlsと入力して実行してみて下さい。何も表示されないと思います。
+なぜなら、この.gitファイルは隠しファイルと呼ばれ通常は変更をする事が一切ない
+ファイルの事を指します。このような隠しファイルなども表示するには
+
+```bash
+$ ls -a
+```
+
+point
+下記コマンドは、隠しファイルを含めて全てのファイルを表示するコマンドです。
+※lsだけだと隠しファイルは表示されません
+
+```bash
+$ ls -a
+```
+
+と実行する必要があります。これで
+
+```bash
+.CFUserTextEncoding			.vscode
+.DS_Store				.zprofile
+.Trash					.zsh_history
+.aws-sam				.zsh_sessions
+.bash_profile				.zshrc
+.bundle					Applications
+.cache					Desktop
+.config					Documents
+.dlv					Downloads
+```
+
+※Macのターミナル上では上記のような表記されます
+
+のように隠しファイルも確認することが出来ます。
+これでローカルリポジトリを作成出来ました。
+
+#### ステージエリアに追加する
+
+GitHub に上げたいファイルをステージングエリアに上げます。ステージングエリアとは、
+コミットしたいファイルの一時仮置場のようなものです。ここにコミットしたいファイルを追加して、
+それらをまとめてコミットする、という流れになります。ステージングエリアへの追加は一度に行う必要はないので、
+順次コミットしたいファイルを追加していって、最後にまとめてコミット、ということができます。
+
+試しにindex.htmlファイルを作成しましょう。
+
+```bash
+$ touch index.html
+```
+
+そしてそれをステージングエリアに追加してみます。
+
+```bash
+$ git add index.html
+```
+
+addの後に指定したファイルを上げます。また一括で上げたい場合は-Aでステージングエリアに上げる事が出来ます。
+
+#### コミットをするとは？
+
+コミットとはファイルの変更履歴の 1 つ 1 つまたそのコミットを作ることを「コミットする」などと言います。
+それでは実際にコミットしてみます。コミットには`git commit -m ""`を使います。
+
+```bash
+$ git commit -m '最初のコミットです'
+```
+
+そうすると以下のようなメッセージが返ってきます。
+
+```bash
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 index.html
+```
+
+このメッセージでは1つのファイルが変更され、index.htmlが作成されたと伝えてくれます。
+これでコミットが作られました。
+それでは練習としてmain.cssも追加してみましょう。
+
+```bash
+$ touch main.css
+```
+
+そしてVSCodeを立ち上げて下さい。
+そしたらindex.htmlで!を押した後にTabを押してください。
+そうすると以下の文が追加されるので追加したら保存を押して下さい。
+(もし追加されなかったら以下の分をコピー&ペーストして下さい。)
+
+````bash
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=A, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+
+</body>
+</html>
+```bash
+そうするとindex.htmlの隣にはM、main.cssの隣にはUと表示されています。
+これらはGitとかかわりがあります。
+* M...最後のコミットから変更がある(modifiedの略)
+* U...新規作成されステージングに追加されていない(untrackedの略)
+という意味を表しています。
+MやUが映らない方でwslを使用している方はVSCodeにWSLという拡張機能を入れてください。
+この状態でコミットまでしてみましょう。
+```bash
+$ git add -A
+````
+
+今回は全ファイルを一括でadd出来るよう-Aを最後につけました。
+
+#### 状態を確認する
+
+Gitの状態を確認するため新しいコマンドgit statusを実行してみて下さい。
+
+```bash
+$ git status
+```
+
+実行すると以下のようなメッセージが返ってきます。
+
+```bash
+On branch master
+Change to be commited:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   index.html
+        new file:   main.css
+```
+
+ここでは次のコミットで何が記録されるかを表示してます。
+上のメッセージではindex.htmlが修正され、
+main.cssが新規作成されることを示しています。
+これらを確認して自分が想定している変更の内容である事が確認出来たらコミットしましょう。
+
+```bash
+$ git commit -m "2回目のコミットです"
+```
+
+そうすると以下のメッセージが返ってきます。
+
+```bash
+[master d36e835] 2回目のコミットです
+ 2 files changed, 12 insertions(+)
+ create mode 100644 main.css
+```
+
+これは2つのファイルが変更され、12行の追記が行われました。
+またmain.cssが作成されたことを表示しています。
+
+#### リポジトリの変更を確認
+
+ここまで2回のコミットをしてきました。
+次はこの2つのコミットを確認してみたいと思います。
+
+```bash
+$ git log
+```
+
+と実行して下さい。
+そうすると以下のようにコミットの記録が表示されます。
+
+```bash
+[master d36e835] 2回目のコミットです
+ 2 files changed, 12 insertions(+)
+ create mode 100644 main.css
+~~~~~@LAPTOP-GAST3N5N:~/sample2$ git log
+commit d36e8357239db55084ad6a94f8b75237e37180bf (HEAD -> master)
+Author: ユーザー名 <メールアドレス>
+Date:   Sat Apr 17 22:25:46 2021 +0900
+```
+
+```bash
+commit 8e68b1da85a688cdbbe4c42559bde32c3f97447c
+Author: ユーザー名 <メールアドレス>
+Date:   Sat Apr 17 21:18:38 2021 +0900
+```
+
+git logを実行することでコミットの履歴を確認することが出来ます。
+このようにステージングとコミットを繰り返してGitを使っていきます。
+
+#### リモートリポジトリを作る
+
+後はプッシュするだけですが、まだリモートリポジトリを作ってないのでプッシュする先がありません。
+なのでリモートリポジトリを作成します。
+先ほど作ったアカウントで github にログインしてください。
+そしたら右上にある+をクリックしてnew repositoryを選択してください。
+そしたらcreate a new repositoryというページに飛びます。
+
+その 1 番上にあるrepository nameを今回はintro-gitにします。
+今回は他の所は触らずに一番下のcreate repositoryをクリックしてリモートリポジトリを作成します。
+リモートリポジトリとローカルリポジトリを紐づける
+後はリモートリポジトリと紐づけてブランチを作成したら
+プッシュの準備完了なのでもう一息だけ頑張りましょう！
+まずネット上にあるリモートリポジトリと手元にあるローカルリポジトリを紐づけます。
+以下のコマンドを実行してください。
+
+```bash
+git remote add origin https://github.com/(ユーザー名)/(リモートリポジトリ名).git
+```
+
+#### ブランチ名変更
+
+英語の「ブランチ」とは「枝」などの意味がある。
+git のブランチは「コミット履歴の流れを分ける機能」です。
+詳しい説明はこちら。今回はその大元になるブランチ名をmainに変更します。
+このコマンドはローカルにあるブランチを確認できるコマンドです。
+
+```bash
+$ git branch
+```
+
+ここで、上記コマンドを実行して、
+mainと出た方はこちらは飛ばしてpushへお進みください。
+
+```bash
+$ git branch -M main
+```
+
+上記のコマンドでmainブランチに名前を変更できました。
+push
+いよいよ push です
+プッシュすることでリモートリポジトリにこれまでのコミットを書き込みます。
+以下のコマンドを実行してください。
+
+```bash
+$ git push -u origin main
+```
+
+ここでpasswordを求められると思います。
+現在だとgithubのパスワードでの認証ができなくなっているため、
+個人用アクセストークン(classic)をpasswordの代わりに入力してあげる必要があります。
+こちらを参考に作成して使用してくださいトークン作成の際、Select scopesの項目で、
+]repoには必ずチェックを入れて下さい。
+（その他、workflow、user、write:discussion、admin:enterpriseなどは任意で入れておいても良いです。）
+pushができましたらリモートリポジトリに行き確認してみて下さい。
+htmlファイル等が上がっていたら成功です。
+
+#### git clone してみよう
+
+今プッシュしたものを別ディレクトリにクローンしてみます。
+クローンとは指定したリポジトリを複製することです。
+(元々の変更履歴なども残った状態で複製されます)
+まずsampleリポジトリに戻ってください。
+そこで
+
+```bash
+$ git clone https://github.com/ユーザー名/リポジトリ名.git intro-git2
+```
+
+を実行することでsampleディレクトリの中に
+intro-git2という名前でクローンすることが出来ます。
+
+

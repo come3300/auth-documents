@@ -1,0 +1,819 @@
+---
+title: 第３回：WEBSITEを作ってみよう！ その２
+category: website
+---
+{/* /documents/phase1/website/make-site2 */}
+
+
+## WEBサイトを作ってみよう その2
+***
+
+    前回はheader/footer、heroセクションを作成しました。
+    残りのセクションを全てコーディングしましょう。
+
+    ### about,blogセクション作成
+
+    最後にabout、blogセクションを作成していきましょう。
+    この2つのセクションではどのように要素を分けていくかが重要になります。
+
+    aboutセクション作成
+
+    ![Photo by Minh Pham](/images/documents/website/make-site2/practice1-about.png)
+
+    aboutセクションでは
+    - 全体セクション
+    - インナー(全体をまとめるボックス)
+        - タイトル
+        - 各コンテンツを格納するボックス
+        - コンテンツタイトル
+        - 画像のボックス
+            - 画像
+        - 本文
+
+    といった階層になっています。
+    インナーはいくつかのコンテンツ（aboutセクションであれば特徴の部分）が入る横幅を決め、
+    ```margin:0 auto;```をつけることで画面サイズが変わっても綺麗に表示できるようにしたものです。
+    詳しいことはレスポンシブ講座で説明するので、
+    今はセクションの次にinnerを入れると便利なんだなあ、
+    程度で覚えてもらえれば大丈夫です。
+    では早速先ほどの解説した階層を参考にしてHTMLを書いてみましょう!
+    about-contentなどは同じHTMLを6回書くHTMLだけなので、
+    1つ作ったらコピーアンドペースで複製すると作業効率が上がります。
+
+    ```html
+    <!--about-->
+    <section id="about">
+                <span>About&nbsp;</span>US
+                        <img src="./img/icon1.png">
+                    <p>テキストが入ります。テキストが入ります。テキストが入ります。</p>
+                        <img src="./img/icon2.png">
+                    <p>テキストが入ります。テキストが入ります。テキストが入ります。</p>
+                        <img src="./img/icon3.png">
+                    <p>テキストが入ります。テキストが入ります。テキストが入ります。</p>
+                        <img src="./img/icon4.png">
+                    <p>テキストが入ります。テキストが入ります。テキストが入ります。</p>
+                        <img src="./img/icon5.png">
+                    <p>テキストが入ります。テキストが入ります。テキストが入ります。</p>
+                        <img src="./img/icon6.png">
+                    <p>テキストが入ります。テキストが入ります。テキストが入ります。</p>
+    </section>
+    ```
+    HTMLができたらinnerのCSSを作っていきましょう。
+    先ほど軽く説明しましたが、innerは画面サイズが変わっても中央に表示させるためのもので、
+    about・newsセクションのように複数の子要素をまとめる場合によく使われます。
+    ではCSSの共通部分の場所にinnerのスタイルを入力していきましょう。
+
+    ```css
+    .inner{
+        /* about-itemの横幅と間隔の合計 */
+        width:1100px;
+        /* titleまでの幅 */
+        padding:90px 0;
+        /* innderが画面の中央に */
+        margin:0 auto;
+    }
+    ```
+    次はnewsセクションでも使うタイトルクラスのCSSを作成しましょう。
+    このタイトルの横にある線は擬似要素を用いて作成します。
+    擬似要素で線を作る方法はいくつかありますが、今回は擬似要素にborderをつけて実装していきます。
+    titleとtitleの擬似要素2つを::befroreと::afterで作ります。
+    そこにwidthを指定して```border-top```を付ければ線が出来上がります。
+    文字との間を作るためにwidthも追加しておきましょう。
+    擬似要素```（::before,::afeter）```は後で横並びに、
+    かつ横幅を指定しなければいけないので、inline-block要素にすることを忘れないようにしましょう。
+
+    ```css
+    /*共通パート*/
+    .title {
+        font-size: 18px;
+        /* 文字をイタリック体にイタリック体 */
+        font-style:italic;
+    }
+
+    .title-b{
+        /* Aboutの部分だけを太文字に */
+        font-weight: bold;
+    }
+
+    .title::before{
+        /* 擬似要素には必ずつける */
+        display:inline-block;
+        width:30px;
+        margin-right:20px;
+        border-top:1px solid #191919;
+    }
+
+    .title::after {
+        /* 擬似要素には必ずつける */
+        content:"";
+        display:inline-block;
+        width:30px;
+        margin-left:20px;
+        border-top:1px solid #191919;
+        content:"";
+    }
+    ```
+
+    デザイン部分ができたら要素を全て横並びにして、
+    線を文字中央に持ってこれるようにしましょう。titleと擬似要素（::before,::after）の3つの要素を
+    display:flex;で横並びにすることで、titleの横に線を作ることができます。
+    また横並びにできたら```align-items:center;```で線を文字の縦方向中央に配置できるようにしましょう。
+
+    ```css
+    /*共通パート*/
+    .title{
+        /* 擬似要素とtitleを横並びに */
+        display:flex;
+        padding-bottom:60px;
+        /* 要素全体を横方向に中央揃え */
+        justify-content: center;
+        /* 線を文字の縦方向に中央揃え */
+        align-items: center;
+        font-style:italic;
+        font-size: 18px;
+        text-align:center;
+    }
+    ```
+
+    タイトルのスタイルが完成したら、about-itemが綺麗に並ぶようにCSSを書いていきましょう。
+    ここでabout-wrapクラスにの中に内包している6つの子要素を横並びにするために、```display:flex;```を
+    つけるだけでは全て横並びになってしまい、親要素からaboutーitemが飛び出してしまいます。
+    そうならないように
+    * 子要素が折り返されるように.about-wrapクラスでflex-wrap:wrapをつける
+    * 内包されているクラスにwidthを指定するようにしましょう。
+    またaboutセクションの4つ目の子要素が1-3個目の子要素にくっついてしまうので、
+    :nth-child()でクラス指定でmarginで要素がくっつかないようにしましょう。
+    今回使う::nth-child(n+4):nth-child(-n+6)では
+    4~6個目のabout-itemを指定していることになります。
+
+    ```css
+    /* aboutのスタイル */
+    #about{
+        color:#191919;
+        background-color:#F8F8F8;
+    }
+
+    .about-wrap{
+        /* 子要素を横並びに */
+        display:flex;
+        /* 横幅が親要素を超える時に子要素を次の段に移す */
+        flex-wrap: wrap;
+        margin-top:60px;
+    }
+
+    .about-item{
+        width:300px;
+        height:315px;
+        padding:35px 50px 50px;
+        text-align: center;
+        background-color:#FFF;
+    }
+
+    .about-item:nth-child(n+4):nth-child(-n+6){
+        /* 4~6個目のabout-itemにmarginをつける */
+        margin-top:47px;
+    }
+
+    .about-title__title{
+        font-size: 22px;
+    }
+
+    .about-item__img img{
+        width:122px;
+        height:122px;
+        margin:20px 0 25px;
+    }
+
+    .about-item__desc{
+        font-size: 13px;
+    }
+    ```
+    これでaboutセクションは完成です。
+
+    ### blogセクションの作成
+    -画像-
+    blogセクションは先ほど作ったaboutセクションと同じような構成になっています。
+    まずは答えを見ずにHTMLとCSSを書いてみましょう。
+    また親要素から子要素が飛び出してきた場合は、
+    親要素に```overflow:hidden;```をつけると親要素の中に収めることができます。
+    またblogセクションではブロックの分け方が重要になってくるので、
+    まずどんな構造で作るか考えながらHTMLを書きましょう!
+    aboutセクションで作ったtitleクラスを転用しますが、
+    aboutセクションとは色が違うのでwhite-titleクラスを入れてblogセクションの
+    titleだけが色が変わるようにしましょう。
+    HTML解答
+
+    CSS解答
+
+    サイトが綺麗に表示されましたか？
+    もし配置がうまくいかない場合はHTMLの構造自体が間違っている可能性があるので、
+    一度HTMLを見直してみましょう。
+
+    ``` html
+    <!-- contact -->
+        <section id="contact">
+                <h2>
+                    <span>Contact</span>
+                </h2>
+                    <p><span>*</span> が付いたフィールドは必須項目です。</p>
+                        <p>お名前<span>*</span></p>
+                        <input type="text" name="contact-name" placeholder="名前をご記入ください">
+                        <p>メールアドレス<span>*</span></p>
+                        placeholder
+                        <input type="email" name="contact-mail" placeholder="メールアドレスをご記入ください">
+                        <pplaceholder="お問い合わせ内容を選択">お問い合わせ内容<span>*</span></p>
+                        <!-- セレクトボックス -->
+                        <select name="contact-select">
+                        <option value="service">サービスに関するお問い合わせ</option>
+                        <option value="recruit">採用に関するお問い合わせ</option>
+                        <option value="other">その他のお問い合わせ</option>
+                        </select>
+                        <p>お問い合わせ詳細<span>*</span></p>
+                        <textarea name="contact-text" placeholder="お問い合わせ内容の詳細をご記入ください"></textarea>
+        </section>
+    ```
+
+    HTMLが書けたら、まずは全体のスタイルとAbout,Newsセクションに共通する部分のコーディングをしていきます。
+    titleクラスと擬似要素の色を変更する際はこのように記述します。
+    contactセクションの画像を先に入れておくと、他の要素の文字色がわかりやすくなります。
+
+    ```css
+    #contact{
+        background-image: url("../img/bg3.png");
+        /* 画像が真ん中に表示される */
+        background-size: cover;
+        color:#fff;
+    }
+
+    .contact-wrap{
+        width:600px;
+        margin:0 auto;
+    }
+
+    /* titleクラスとその擬似要素の色を変える */
+    #contact .title::before,#contact .title::after{
+        border-color:#fff;
+    }
+    次に要素全体の位置を調整しましょう。
+    input,select,textareaタグは横幅と高さ、角の丸みなどが一緒なのでまとめてスタイルを記述しておきます。
+    CSS
+    .contact-caution{
+        margin:60px 0 25px;
+    }
+
+    .contact-box{
+        margin-bottom:33px;
+    }
+
+    .contact-text{
+        margin-bottom:10px;
+        font-size: 15px;
+    }
+
+    input,textarea,select{
+        width:100%;
+        border-radius: 7px;
+    }
+    ```
+    プルダウン型の選択式メニューであるセレクトボックスを作ります。
+    selectタグに元々ついている矢印アイコンを消し、矢印アイコン画像を貼ることでデザインを綺麗にしていきます。
+    nth-of-type()プロパティと擬似要素を使って、矢印アイコン画像を実装していきます。
+
+    ```css
+    select{
+        /* デフォルトでついている矢印アイコンを消す */
+        appearance: none;
+    }
+
+    .contact-box:nth-of-type(3){
+        position:relative;
+    }
+
+    .contact-box:nth-of-type(3)::after{
+        position:absolute;
+        background:url("../img/arrow.png");
+        background-size:100%;
+        display:block;
+        content:"";
+        width:15px;
+        height:15px;
+        top:60%;
+        right:15px;
+    }
+    ```
+
+    あとはお問い合わせ内容の詳細を記入するテキストボックスを綺麗に整えていきます。
+    input,selectタグのテキストボックスとは違い、縦方向のpaddingが違うこと、
+    ```margin-bottom```がいらないことに注意して記述します。
+
+    ```css
+    input,select,textarea{
+        width:100%;
+        border-radius:7px;
+        /* placeholderに余白をつける */
+        padding:15px;
+    }
+
+    textarea{
+        height:185px;
+    }
+
+    .contact-box:nth-of-type(4){
+        margin-bottom:0px;
+    }
+    ```
+
+    最後に*を赤色にして余白をつけましょう。
+    redクラスにはmargin-leftをつけると良いですが、
+    ```contact-cautionクラス```と*の余白だけデザイン通りになりません。
+    なのでcontact-cautionクラス内のredクラスにcaution-redクラスを追加してスタイルをつけましょう。
+    ```html
+    <p><span>*</span></p>
+    ```
+    が付いたフィールドは必須項目です。
+    ```css
+    .red{
+        color:red;
+        margin-left:8px;
+    }
+
+    .caution-red{
+        margin-left:0;
+        margin-right:8px;
+    }
+    ```
+
+    ```html
+    <!DOCTYPE html>
+    <html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>鈴木です</title>
+        <link rel="stylesheet" href="CSS/style.css">
+        <script src="https://kit.fontawesome.com/f22ebea2a0.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <!-- header -->
+        <header>
+            <nav>
+                <ul>
+                    <li>TOP</li>
+                    <li>ABOUT</li>
+                    <li>NEWS</li>
+                    <li>SERVICE</li>
+                    <li>CONTACT</li>
+                </ul>
+            </nav>
+        </header>
+            <!-- first-v -->
+            <section id="first-v">
+                    <h2>A life-changing</h2>
+                    <button><i></i>ENTRY</button>
+            </section>
+
+            <!-- about -->
+            <section id="about">
+                        <span>About &nbsp;</span> US
+                                <img src="./img/icon1.png">
+                            <p>テキストが入ります。テキストが入ります。テキストが入ります。</p>
+                                <img src="./img/icon2.png">
+                            <p>テキストが入ります。テキストが入ります。テキストが入ります。</p>
+                                <img src="./img/icon3.png">
+                            <p>テキストが入ります。テキストが入ります。テキストが入ります。</p>
+                                <img src="./img/icon4.png">
+                            <p>テキストが入ります。テキストが入ります。テキストが入ります。</p>
+                                <img src="./img/icon5.png">
+                            <p>テキストが入ります。テキストが入ります。テキストが入ります。</p>
+                                <img src="./img/icon6.png">
+                            <p>テキストが入ります。テキストが入ります。テキストが入ります。</p>
+            </section>
+
+            <!-- news -->
+            <section id="news">
+                        <span>News</span>
+                                <img src="img/news1.jpg">
+                                <p>2019/7/21</p>
+                                <p>タイトルが入ります。タイトルが入ります。</p>
+                                <p>テキストが入ります。テキストが入ります。テキストが入ります。テキストが入ります。テキストが入ります。テキストが入ります。テキストが入ります。テキストが入ります。</p>
+                                <img src="img/news2.jpg">
+                                <p>2019/7/21</p>
+                                <p>タイトルが入ります。タイトルが入ります。</p>
+                                <p>テキストが入ります。テキストが入ります。テキストが入ります。テキストが入ります。テキストが入ります。テキストが入ります。テキストが入ります。テキストが入ります。</p>
+                                <img src="img/news3.jpg">
+                                <p>2019/7/21</p>
+                                <p>タイトルが入ります。タイトルが入ります。</p>
+                                <p>テキストが入ります。テキストが入ります。テキストが入ります。テキストが入ります。テキストが入ります。テキストが入ります。テキストが入ります。テキストが入ります。</p>
+            </section>
+
+            <!-- entry  -->
+            <section id="entry">
+                    <h2>“今すぐ人生を変える”</h2>
+                    <button><i></i>ENTRY</button>
+            </section>
+
+            <!-- contact  -->
+            <section id="contact">
+                    <h2>
+                        <span>Contact</span>
+                    </h2>
+                        <p><span>*</span>が付いたフィールドは必須項目です。</p>
+                            <p>名前<span>*</span></p>
+                            <input type="text" name="contact-name" placeholder="名前をご記入ください">
+                            <p>メールアドレス<span>*</span></p>
+                            <input type="email" name="contact-mail" placeholder="メールアドレスをご記入ください">
+                            <p>お問い合わせ内容<span>*</span></p>
+                            <select name="contact-select">
+                                <option value="service">サービスに関するお問い合わせ</option>
+                                <option value="recruit">採用に関するお問い合わせ</option>
+                                <option value="other">その他のお問い合わせ</option>
+                            </select>
+                            <p>お問い合わせ詳細<span>*</span></p>
+                            <textarea name="contact-text" placeholder="お問い合わせ内容の詳細をご記入ください"></textarea>
+            </section>
+        <!-- footer  -->
+        <footer>
+            <p>© 2017-2021 MOSQIIIT inc.</p>
+        </footer>
+    </body>
+    </html>
+    ```
+
+    ```css
+    /*全体のスタイル（CSSリセット用）*/
+    *{
+        /* padding,borderが要素の中に入る */
+        box-sizing:border-box;
+    }
+    ul{
+        /* リストの・を消す */
+        list-style: none;
+        margin:0;
+    }
+
+    h1,h2,h3,h4,h5,h6,p,span,button{
+        margin:0;
+        padding:0;
+        font-weight:normal;
+    }
+
+    a{
+        color:inherit;
+        /* 文字の下の線を消す */
+        text-decoration:none;
+    }
+
+    body{
+        color:#555;
+        margin:0;
+        line-height:1.6;
+    }
+
+    /* 共通のスタイル */
+    .inner{
+        width:1100px;
+        padding:90px 0;
+        margin:0 auto;
+    }
+    .title{
+        display:flex;
+        width:200px;
+        align-items:center;
+        font-size: 18px;
+        font-style: italic;
+        margin:0 auto;
+        text-align: center;
+    }
+
+    .title-b{
+        font-weight:bold;
+    }
+
+
+    /* header  */
+
+    header{
+        width:100%;
+        display:flex;
+        justify-content: space-between;
+        padding:0 20px;
+        color:#fff;
+        background-color:inherit;
+        position:absolute;
+        z-index:10;
+    }
+
+    .header-logo{
+        padding:20px 0;
+        font-weight:bold;
+        font-size:18px;
+    }
+
+    .header-nav ul{
+        display:flex;
+        padding:22px 0;
+    }
+
+    .header-nav ul li{
+        margin-left:55px;
+        font-size:15px;
+    }
+
+    /* footer  */
+
+    footer{
+        background-color:#191919;
+        height:50px;
+    }
+    .company-info{
+        text-align:center;
+        line-height:50px;
+        font-weight:bold;
+        font-size:12px;
+        color:#fff;
+    }
+
+    /* first-v */
+    #first-v{
+        height:770px;
+        background-image: url("../img/bg1.png");
+        background-size:cover;
+        color:#fff;
+        position:relative;
+    }
+
+    .first-v-wrap{
+        padding:285px 0 255px;
+        margin:0 auto;
+        width:250px;
+        text-align:center;
+    }
+
+    .first-v-title{
+        margin-bottom:150px;
+        font-weight:bold;
+        font-size:27px;
+    }
+
+    .first-v-title::after{
+        display:block;
+        content:"";
+        width:100px;
+        border-top:1px solid #fff;
+        margin:20px auto 0;
+    }
+
+    .first-v-btn{
+        width:200px;
+        height:50px;
+        text-align: center;
+        font-weight:bold;
+        border:none;
+        border-radius:5px;
+        background:linear-gradient(-90deg,#283C86,#06BEB6);
+        box-shadow:0 5px #070707;
+        font-weight:bold;
+        font-size:15px;
+        color:#fff;
+    }
+
+    .fa-door-open{
+        margin-right:4px;
+    }
+
+    /* about */
+
+    #about{
+        background-color:#F8F8F8;
+    }
+
+
+    .title::before{
+        content:"";
+        width:30px;
+        margin-right:20px;
+        border-top:1px solid #191919;
+    }
+
+    .title::after{
+        content:"";
+        width:30px;
+        margin-left:20px;
+        border-top:1px solid #191919;
+    }
+
+    .about-wrap{
+        margin-top:60px;
+        display:flex;
+        flex-wrap:wrap;
+    }
+
+    .about-item{
+        background-color:#fff;
+        width:300px;
+        height:312px;
+        padding:35px 50px 50px;
+        text-align: center;
+        margin-right:100px;
+    }
+
+    .about-item:nth-child(3),.about-item:nth-child(6){
+        margin-right:0;
+    }
+
+    .about-item:nth-child(n+4):nth-child(-n+6){
+        margin-top:47px;
+    }
+
+
+    .about-item__title{
+        font-size:22px;
+    }
+
+    .about-item__img{
+        margin:20px auto 25px;
+        width:122px;
+        height:122px;
+    }
+
+    .about-item__img img{
+        width:100%;
+    }
+
+    .about-item__desc{
+        font-size:13px;
+    }
+
+    /* news */
+
+    #news{
+        background-image: url("../img/bg2.png");
+        background-size:cover;
+    }
+
+    .news-wrap{
+        display:flex;
+        justify-content: space-between;
+    }
+
+    .white-title{
+        color:#fff;
+        width:150px;
+    }
+
+    .white-title::before{
+        content:"";
+        width:30px;
+        margin-right:20px;
+        border-top:1px solid #fff;
+    }
+
+    .white-title::after{
+        content:"";
+        width:30px;
+        margin-left:20px;
+        border-top:1px solid #fff;
+    }
+
+    .news-item{
+        width:336px;
+        margin-top:60px;
+    }
+
+    .news-img{
+        width:100%;
+        height:207px;
+    }
+
+    .news-img img{
+        width:100%;
+        height:100%;
+    }
+
+    .news-content{
+        padding:20px;
+        background-color:#fff;
+    }
+
+    .news-date{
+        font-size: 10px;
+        font-weight: bold;
+    }
+
+    .news-title{
+        padding:8px 0 20px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .news-txt{
+        font-size: 12px;
+    }
+
+    /* entry */
+
+    .entry-wrap{
+        padding:175px 0;
+        width:400px;
+        margin:0 auto;
+        text-align: center;
+    }
+
+    .entry-title{
+        margin-bottom:55px;
+        font-weight:bold;
+        font-size:18px;
+        color:#191919;
+    }
+
+    .entry-btn{
+        width:320px;
+    }
+
+
+    /* contact */
+
+    #contact{
+        background-image: url("../img/bg3.png");
+        background-size:cover;
+        color:#fff;
+    }
+
+    #contact .title::before, #contact .title::after{
+        border-color:#fff;
+    }
+
+    .contact-wrap{
+        width:600px;
+        margin:0 auto;
+    }
+
+    input,select,textarea{
+        width:100%;
+        border-radius:7px;
+        padding:15px;
+    }
+
+    input,select{
+        height:55px;
+    }
+
+    textarea{
+        height:185px;
+    }
+
+    select{
+        appearance:none;
+    }
+
+    .contact-box:nth-of-type(3){
+        position:relative;
+    }
+
+    .contact-box:nth-of-type(3)::after{
+        position:absolute;
+        background-image: url("../img/arrow.png");
+        background-size:100%;
+        display:block;
+        content:"";
+        width:15px;
+        height:15px;
+        top:60%;
+        right:20px;
+    }
+
+    .contact-caution{
+        margin:60px 0 25px;
+        font-size: 15px;
+    }
+
+    .contact-box{
+        margin-bottom:33px;
+    }
+
+    .contact-box:nth-of-type(4){
+        margin-bottom:0px;
+    }
+
+    .contact-text{
+        margin-bottom:10px;
+        font-size: 15px;
+    }
+
+    .red{
+        color:red;
+        margin-left:8px;
+    }
+
+    .caution-red{
+        margin-left:0;
+        margin-right:8px;
+    }
+
+    ```
+
+{/* TODO git hubにサンプルコードを掲載するべきもう一度見直す必要あり */}
+{/* ファイルの場所もコードごとに書いてあげる */}
+
+

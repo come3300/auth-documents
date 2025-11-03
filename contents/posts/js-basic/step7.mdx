@@ -1,0 +1,562 @@
+---
+title: 第7回： 制御文とは(while.switch)
+category: js
+---
+
+## 制御文とは（復習）
+
+前回はif文とfor文を学びました。今回は、さらに便利な制御文である**while文**と**switch文**について学んでいきます。
+
+これらの制御文を使いこなすことで、より効率的で読みやすいコードが書けるようになります。
+
+{/* TODO イメージ画像 */}
+
+## while文とは
+
+while文は、**条件がtrueの間、処理を繰り返し実行する**制御文です。
+
+for文と似ていますが、繰り返し回数が事前に決まっていない場合に便利です。
+
+{/* TODO while文のフローチャート画像 */}
+
+### while文の書き方
+
+#### 基本形
+
+```javascript
+while (条件式) {
+  // 条件がtrueの間、繰り返し実行される処理
+}
+```
+
+```javascript
+let count = 0;
+
+while (count < 5) {
+  console.log(count);
+  count++;
+}
+// 出力:
+// 0
+// 1
+// 2
+// 3
+// 4
+```
+
+**動作の流れ:**
+1. `count < 5`をチェック（trueなら続行）
+2. `console.log(count)`を実行
+3. `count++`でcountを1増やす
+4. 1に戻る（条件がfalseになるまで）
+
+### while文の使い方
+
+#### 例1：カウントアップ
+
+```javascript
+let i = 1;
+
+while (i <= 5) {
+  console.log(i + "回目");
+  i++;
+}
+// 出力:
+// 1回目
+// 2回目
+// 3回目
+// 4回目
+// 5回目
+```
+
+#### 例2：ユーザー入力を待つ（概念）
+
+```javascript
+let password = "";
+
+// パスワードが正しくなるまで繰り返す
+while (password !== "1234") {
+  // 実際のアプリケーションではここで入力を受け取る
+  console.log("パスワードが違います");
+  break; // 無限ループ防止（実際の実装では不要）
+}
+
+console.log("ログイン成功！");
+```
+
+#### 例3：合計が100を超えるまで加算
+
+```javascript
+let sum = 0;
+let number = 1;
+
+while (sum < 100) {
+  sum += number;
+  console.log(number + "を加算: 合計 = " + sum);
+  number++;
+}
+
+console.log("最終合計: " + sum);
+// 出力:
+// 1を加算: 合計 = 1
+// 2を加算: 合計 = 3
+// 3を加算: 合計 = 6
+// ...
+// 14を加算: 合計 = 105
+// 最終合計: 105
+```
+
+### do...while文
+
+do...while文は、**最低1回は処理を実行してから条件をチェックする**制御文です。
+
+```javascript
+do {
+  // 処理（最低1回は実行される）
+} while (条件式);
+```
+
+```javascript
+let count = 0;
+
+do {
+  console.log(count);
+  count++;
+} while (count < 3);
+// 出力:
+// 0
+// 1
+// 2
+```
+
+**while文との違い:**
+
+```javascript
+// while文の場合（1回も実行されない）
+let i = 10;
+while (i < 5) {
+  console.log("実行されません");
+}
+
+// do...while文の場合（1回は実行される）
+let j = 10;
+do {
+  console.log("1回実行されます");
+} while (j < 5);
+```
+
+### break文とcontinue文
+
+#### break文
+ループを途中で終了します。
+
+```javascript
+let i = 0;
+
+while (i < 10) {
+  if (i === 5) {
+    break; // i が 5 の時にループを終了
+  }
+  console.log(i);
+  i++;
+}
+// 出力: 0, 1, 2, 3, 4
+```
+
+#### continue文
+その回の処理をスキップして、次のループに進みます。
+
+```javascript
+let i = 0;
+
+while (i < 5) {
+  i++;
+  if (i === 3) {
+    continue; // i が 3 の時はスキップ
+  }
+  console.log(i);
+}
+// 出力: 1, 2, 4, 5
+```
+
+### for文とwhile文の使い分け
+
+**for文が向いている場合:**
+- 繰り返し回数が決まっている
+- 配列の全要素を処理する
+
+```javascript
+// 配列の全要素を処理
+const fruits = ["りんご", "バナナ", "みかん"];
+for (let i = 0; i < fruits.length; i++) {
+  console.log(fruits[i]);
+}
+```
+
+**while文が向いている場合:**
+- 繰り返し回数が決まっていない
+- 条件を満たすまで繰り返す
+
+```javascript
+// ランダムな数が5になるまで繰り返す
+let randomNumber = 0;
+while (randomNumber !== 5) {
+  randomNumber = Math.floor(Math.random() * 10);
+  console.log(randomNumber);
+}
+```
+
+## switch文とは
+
+switch文は、**一つの値に対して複数の選択肢から処理を選ぶ**制御文です。
+
+if...else if...elseの連続を、よりわかりやすく書けます。
+
+{/* TODO switch文のフローチャート画像 */}
+
+### switch文の書き方
+
+```javascript
+switch (式) {
+  case 値1:
+    // 式が値1と等しい時の処理
+    break;
+  case 値2:
+    // 式が値2と等しい時の処理
+    break;
+  default:
+    // どの値にも当てはまらない時の処理
+}
+```
+
+```javascript
+const fruit = "りんご";
+
+switch (fruit) {
+  case "りんご":
+    console.log("りんごが選ばれました");
+    break;
+  case "バナナ":
+    console.log("バナナが選ばれました");
+    break;
+  case "みかん":
+    console.log("みかんが選ばれました");
+    break;
+  default:
+    console.log("その他の果物です");
+}
+// 出力: りんごが選ばれました
+```
+
+**⚠️ breakを忘れずに！**
+
+`break`を書かないと、次のcaseの処理も実行されてしまいます。
+
+```javascript
+const number = 1;
+
+switch (number) {
+  case 1:
+    console.log("1です");
+    // break がない！
+  case 2:
+    console.log("2です");
+    break;
+}
+// 出力:
+// 1です
+// 2です（意図しない出力）
+```
+
+### switch文の使い方
+
+#### 例1：曜日の判定
+
+```javascript
+const day = 3;
+let dayName;
+
+switch (day) {
+  case 1:
+    dayName = "月曜日";
+    break;
+  case 2:
+    dayName = "火曜日";
+    break;
+  case 3:
+    dayName = "水曜日";
+    break;
+  case 4:
+    dayName = "木曜日";
+    break;
+  case 5:
+    dayName = "金曜日";
+    break;
+  case 6:
+    dayName = "土曜日";
+    break;
+  case 7:
+    dayName = "日曜日";
+    break;
+  default:
+    dayName = "不正な値";
+}
+
+console.log(dayName); // 水曜日
+```
+
+#### 例2：成績の判定
+
+```javascript
+const grade = "B";
+
+switch (grade) {
+  case "A":
+    console.log("優秀です！");
+    break;
+  case "B":
+    console.log("良好です");
+    break;
+  case "C":
+    console.log("合格です");
+    break;
+  case "D":
+    console.log("不合格です");
+    break;
+  default:
+    console.log("不正な成績");
+}
+// 出力: 良好です
+```
+
+#### 例3：複数の値をまとめて処理
+
+同じ処理をする値は、caseを連続して書けます。
+
+```javascript
+const month = 4;
+let season;
+
+switch (month) {
+  case 3:
+  case 4:
+  case 5:
+    season = "春";
+    break;
+  case 6:
+  case 7:
+  case 8:
+    season = "夏";
+    break;
+  case 9:
+  case 10:
+  case 11:
+    season = "秋";
+    break;
+  case 12:
+  case 1:
+  case 2:
+    season = "冬";
+    break;
+  default:
+    season = "不正な月";
+}
+
+console.log(season); // 春
+```
+
+#### 例4：計算機
+
+```javascript
+const num1 = 10;
+const num2 = 5;
+const operator = "+";
+let result;
+
+switch (operator) {
+  case "+":
+    result = num1 + num2;
+    break;
+  case "-":
+    result = num1 - num2;
+    break;
+  case "*":
+    result = num1 * num2;
+    break;
+  case "/":
+    result = num1 / num2;
+    break;
+  default:
+    result = "不正な演算子";
+}
+
+console.log(result); // 15
+```
+
+### if文とswitch文の使い分け
+
+**if文が向いている場合:**
+- 範囲で判定する（`>=`, `<=` など）
+- 複雑な条件式
+
+```javascript
+const age = 25;
+
+if (age < 13) {
+  console.log("子供");
+} else if (age < 20) {
+  console.log("10代");
+} else {
+  console.log("大人");
+}
+```
+
+**switch文が向いている場合:**
+- 一つの値に対して複数の選択肢がある
+- 等値比較（`===`）のみ
+
+```javascript
+const color = "red";
+
+switch (color) {
+  case "red":
+    console.log("赤");
+    break;
+  case "blue":
+    console.log("青");
+    break;
+  case "yellow":
+    console.log("黄色");
+    break;
+}
+```
+
+## 実践問題
+
+### 問題1: パスワード認証
+正しいパスワードが入力されるまで繰り返すプログラムを作成してください。
+
+```javascript
+const correctPassword = "secret123";
+let inputPassword = "";
+let attemptCount = 0;
+
+// 実際のプログラムでは入力を受け取りますが、
+// ここでは3回試行してから正解とします
+while (inputPassword !== correctPassword && attemptCount < 3) {
+  attemptCount++;
+  console.log(attemptCount + "回目の試行");
+
+  if (attemptCount === 3) {
+    inputPassword = correctPassword; // 3回目で正解とする
+  }
+}
+
+if (inputPassword === correctPassword) {
+  console.log("ログイン成功！");
+} else {
+  console.log("ログイン失敗");
+}
+```
+
+### 問題2: 曜日による営業時間
+曜日に応じて営業時間を表示してください。
+
+```javascript
+const dayOfWeek = "土曜日";
+let openingHours;
+
+switch (dayOfWeek) {
+  case "月曜日":
+  case "火曜日":
+  case "水曜日":
+  case "木曜日":
+  case "金曜日":
+    openingHours = "10:00 - 20:00";
+    break;
+  case "土曜日":
+  case "日曜日":
+    openingHours = "10:00 - 18:00";
+    break;
+  default:
+    openingHours = "不正な曜日";
+}
+
+console.log(dayOfWeek + "の営業時間: " + openingHours);
+// 出力: 土曜日の営業時間: 10:00 - 18:00
+```
+
+### 問題3: じゃんけんゲーム
+プレイヤーの手とコンピュータの手で勝敗を判定してください。
+
+```javascript
+const player = "グー";
+const computer = "チョキ";
+let result;
+
+switch (player) {
+  case "グー":
+    switch (computer) {
+      case "グー":
+        result = "引き分け";
+        break;
+      case "チョキ":
+        result = "勝ち";
+        break;
+      case "パー":
+        result = "負け";
+        break;
+    }
+    break;
+  case "チョキ":
+    switch (computer) {
+      case "グー":
+        result = "負け";
+        break;
+      case "チョキ":
+        result = "引き分け";
+        break;
+      case "パー":
+        result = "勝ち";
+        break;
+    }
+    break;
+  case "パー":
+    switch (computer) {
+      case "グー":
+        result = "勝ち";
+        break;
+      case "チョキ":
+        result = "負け";
+        break;
+      case "パー":
+        result = "引き分け";
+        break;
+    }
+    break;
+}
+
+console.log("プレイヤー: " + player);
+console.log("コンピュータ: " + computer);
+console.log("結果: " + result);
+```
+
+## まとめ
+
+今回学んだこと:
+
+### while文
+1. **while文**: 条件がtrueの間、処理を繰り返す
+2. **do...while文**: 最低1回は処理を実行してから条件をチェック
+3. **break**: ループを途中で終了
+4. **continue**: その回の処理をスキップ
+5. **使い分け**: 繰り返し回数が決まっていない時に便利
+
+### switch文
+1. **switch文**: 一つの値に対して複数の選択肢から処理を選ぶ
+2. **break**: 次のcaseに処理が流れないようにする
+3. **default**: どの値にも当てはまらない時の処理
+4. **まとめて処理**: 同じ処理をする値はcaseを連続して書ける
+5. **使い分け**: 等値比較が多い時、複数の選択肢がある時に便利
+
+これで制御文の基本はすべて学びました！次は関数について学んでいきます。

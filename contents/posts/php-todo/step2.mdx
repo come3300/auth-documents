@@ -1,5 +1,5 @@
 ---
-title: 🧑‍🏫 第1回：PHPとは？&開発環境（Docker）の準備
+title: 🧑‍🏫 第2回：TODOの追加機能を作ろう
 category: php
 ---
 
@@ -46,20 +46,27 @@ todo-app/
 
 ### **📝 ファイルを作成しよう**
 
-1️⃣ **docker-compose.yml**
+1️⃣ ** Dockerfile（DocumentRootと.htaccessの有効化）**
 
 ```
-version: '3.8'
-services:
-  app:
-    build: ./php
-    ports:
-      - "8000:80"
-    volumes:
-      - ./php:/var/www/html
+FROM php:8.2-apache
+
+# DocumentRoot を public に変更
+RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
+
+# AllowOverride All を追加（.htaccess 有効化）
+RUN echo '<Directory /var/www/html/public>\n\
+    AllowOverride All\n\
+</Directory>' >> /etc/apache2/apache2.conf
+
+# mod_rewrite を有効化
+RUN a2enmod rewrite
+
+# ソースコードを配置
+COPY . /var/www/html/
 ```
 
-2️⃣ **php/Dockerfile**
+2️⃣ ** public/.htaccess（新規作成）**
 
 ```
 FROM php:8.2-apache

@@ -1,0 +1,481 @@
+---
+title: 第9回： DOM
+category: js
+---
+
+## DOMとは
+
+**DOM（Document Object Model）**とは、HTMLやXMLの文書を**JavaScriptから操作するための仕組み**です。
+
+簡単に言うと、JavaScriptを使ってWebページの内容を**動的に変更**したり、**イベントに反応**させたりできるようにする技術です。
+
+{/* TODO イメージ画像 */}
+
+### DOMでできること
+
+- 文字や画像を変更する
+- スタイル（色やサイズなど）を変更する
+- 要素を追加・削除する
+- ユーザーの操作（クリックなど）に反応する
+
+**具体例:**
+- ボタンをクリックすると文字が変わる
+- フォームに入力するとリアルタイムでエラーチェック
+- 画像をクリックすると拡大表示
+
+### DOMの仕組み
+
+HTMLは**ツリー構造**で表現されます。これを**DOMツリー**と呼びます。
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>サンプルページ</title>
+  </head>
+  <body>
+    <h1>見出し</h1>
+    <p>段落のテキスト</p>
+  </body>
+</html>
+```
+
+このHTMLは、以下のようなツリー構造になります：
+
+```
+Document
+  └─ html
+      ├─ head
+      │   └─ title
+      │       └─ "サンプルページ"
+      └─ body
+          ├─ h1
+          │   └─ "見出し"
+          └─ p
+              └─ "段落のテキスト"
+```
+
+{/* TODO DOMツリーのイメージ図 */}
+
+JavaScriptは、このツリー構造の各要素（**ノード**と呼びます）にアクセスして、内容を読んだり変更したりできます。
+
+## DOMの操作方法
+
+### 1. 要素を取得する
+
+HTMLの要素をJavaScriptで操作するには、まず**要素を取得**する必要があります。
+
+#### getElementById - IDで要素を取得
+
+```html
+<h1 id="title">こんにちは</h1>
+
+<script>
+  const titleElement = document.getElementById("title");
+  console.log(titleElement); // <h1 id="title">こんにちは</h1>
+</script>
+```
+
+#### querySelector - CSSセレクタで要素を取得
+
+```html
+<p class="message">メッセージです</p>
+
+<script>
+  const messageElement = document.querySelector(".message");
+  console.log(messageElement); // <p class="message">メッセージです</p>
+</script>
+```
+
+#### querySelectorAll - 複数の要素を取得
+
+```html
+<li>項目1</li>
+<li>項目2</li>
+<li>項目3</li>
+
+<script>
+  const items = document.querySelectorAll("li");
+  console.log(items.length); // 3
+</script>
+```
+
+### 2. テキストを変更する
+
+#### textContent - テキストを取得・変更
+
+```html
+<p id="text">元のテキスト</p>
+
+<script>
+  const textElement = document.getElementById("text");
+
+  // テキストを取得
+  console.log(textElement.textContent); // 元のテキスト
+
+  // テキストを変更
+  textElement.textContent = "新しいテキスト";
+</script>
+```
+
+#### innerHTML - HTMLを含めて変更
+
+```html
+<div id="content">元の内容</div>
+
+<script>
+  const contentElement = document.getElementById("content");
+
+  // HTMLを含めて変更
+  contentElement.innerHTML = "<strong>太字のテキスト</strong>";
+</script>
+```
+
+### 3. スタイルを変更する
+
+```html
+<p id="text">このテキストの色を変えます</p>
+
+<script>
+  const textElement = document.getElementById("text");
+
+  // 文字色を変更
+  textElement.style.color = "red";
+
+  // 文字サイズを変更
+  textElement.style.fontSize = "24px";
+
+  // 背景色を変更
+  textElement.style.backgroundColor = "yellow";
+</script>
+```
+
+### 4. 属性を変更する
+
+```html
+<img id="image" src="old.png" alt="画像">
+
+<script>
+  const imageElement = document.getElementById("image");
+
+  // src属性を変更
+  imageElement.src = "new.png";
+
+  // alt属性を変更
+  imageElement.alt = "新しい画像";
+</script>
+```
+
+### 5. クラスを追加・削除する
+
+```html
+<style>
+  .highlight {
+    background-color: yellow;
+  }
+</style>
+
+<p id="text">このテキストをハイライトします</p>
+
+<script>
+  const textElement = document.getElementById("text");
+
+  // クラスを追加
+  textElement.classList.add("highlight");
+
+  // クラスを削除
+  // textElement.classList.remove("highlight");
+
+  // クラスのトグル（あれば削除、なければ追加）
+  // textElement.classList.toggle("highlight");
+</script>
+```
+
+### 6. 要素を作成・追加・削除する
+
+#### 要素を作成して追加
+
+```html
+<ul id="list">
+  <li>項目1</li>
+  <li>項目2</li>
+</ul>
+
+<script>
+  // 新しい要素を作成
+  const newItem = document.createElement("li");
+  newItem.textContent = "項目3";
+
+  // リストに追加
+  const listElement = document.getElementById("list");
+  listElement.appendChild(newItem);
+</script>
+```
+
+#### 要素を削除
+
+```html
+<div id="container">
+  <p id="message">このメッセージを削除します</p>
+</div>
+
+<script>
+  const messageElement = document.getElementById("message");
+  messageElement.remove();
+</script>
+```
+
+### 7. イベントリスナーを追加する
+
+ユーザーの操作（クリック、入力など）に反応させることができます。
+
+#### クリックイベント
+
+```html
+<button id="btn">クリックしてください</button>
+<p id="result"></p>
+
+<script>
+  const btnElement = document.getElementById("btn");
+  const resultElement = document.getElementById("result");
+
+  btnElement.addEventListener("click", function() {
+    resultElement.textContent = "ボタンがクリックされました！";
+  });
+</script>
+```
+
+#### アロー関数を使った書き方
+
+```javascript
+btnElement.addEventListener("click", () => {
+  resultElement.textContent = "ボタンがクリックされました！";
+});
+```
+
+### 主なイベントの種類
+
+| イベント | 説明 |
+|---------|------|
+| `click` | 要素がクリックされた時 |
+| `dblclick` | 要素がダブルクリックされた時 |
+| `input` | 入力フィールドの値が変更された時 |
+| `change` | フォームの値が変更された時 |
+| `submit` | フォームが送信された時 |
+| `keydown` | キーが押された時 |
+| `keyup` | キーが離された時 |
+| `mouseover` | マウスが要素の上に乗った時 |
+| `mouseout` | マウスが要素から離れた時 |
+
+### 実践例
+
+#### 例1：カウンター
+
+```html
+<h1 id="count">0</h1>
+<button id="increment">+1</button>
+<button id="decrement">-1</button>
+<button id="reset">リセット</button>
+
+<script>
+  let count = 0;
+  const countElement = document.getElementById("count");
+
+  document.getElementById("increment").addEventListener("click", () => {
+    count++;
+    countElement.textContent = count;
+  });
+
+  document.getElementById("decrement").addEventListener("click", () => {
+    count--;
+    countElement.textContent = count;
+  });
+
+  document.getElementById("reset").addEventListener("click", () => {
+    count = 0;
+    countElement.textContent = count;
+  });
+</script>
+```
+
+#### 例2：入力フォームの検証
+
+```html
+<input type="text" id="username" placeholder="ユーザー名を入力">
+<p id="error" style="color: red;"></p>
+
+<script>
+  const usernameElement = document.getElementById("username");
+  const errorElement = document.getElementById("error");
+
+  usernameElement.addEventListener("input", () => {
+    const value = usernameElement.value;
+
+    if (value.length === 0) {
+      errorElement.textContent = "";
+    } else if (value.length < 3) {
+      errorElement.textContent = "3文字以上入力してください";
+    } else {
+      errorElement.textContent = "OK!";
+      errorElement.style.color = "green";
+    }
+  });
+</script>
+```
+
+#### 例3：ToDoリスト
+
+```html
+<style>
+  .completed {
+    text-decoration: line-through;
+    color: gray;
+  }
+</style>
+
+<input type="text" id="todoInput" placeholder="タスクを入力">
+<button id="addBtn">追加</button>
+<ul id="todoList"></ul>
+
+<script>
+  const todoInput = document.getElementById("todoInput");
+  const addBtn = document.getElementById("addBtn");
+  const todoList = document.getElementById("todoList");
+
+  addBtn.addEventListener("click", () => {
+    const text = todoInput.value;
+
+    if (text === "") {
+      return; // 空の場合は何もしない
+    }
+
+    // 新しいリスト項目を作成
+    const li = document.createElement("li");
+    li.textContent = text;
+
+    // クリックで完了/未完了を切り替え
+    li.addEventListener("click", () => {
+      li.classList.toggle("completed");
+    });
+
+    // リストに追加
+    todoList.appendChild(li);
+
+    // 入力欄をクリア
+    todoInput.value = "";
+  });
+
+  // Enterキーでも追加できるようにする
+  todoInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      addBtn.click();
+    }
+  });
+</script>
+```
+
+#### 例4：色の変更
+
+```html
+<div id="box" style="width: 200px; height: 200px; background-color: blue;"></div>
+<button id="red">赤</button>
+<button id="green">緑</button>
+<button id="blue">青</button>
+
+<script>
+  const box = document.getElementById("box");
+
+  document.getElementById("red").addEventListener("click", () => {
+    box.style.backgroundColor = "red";
+  });
+
+  document.getElementById("green").addEventListener("click", () => {
+    box.style.backgroundColor = "green";
+  });
+
+  document.getElementById("blue").addEventListener("click", () => {
+    box.style.backgroundColor = "blue";
+  });
+</script>
+```
+
+## 実践問題
+
+### 問題1: テキスト変更ボタン
+ボタンをクリックすると、段落のテキストが変わるプログラムを作成してください。
+
+```html
+<p id="text">こんにちは</p>
+<button id="changeBtn">テキストを変更</button>
+
+<script>
+  const textElement = document.getElementById("text");
+  const changeBtnElement = document.getElementById("changeBtn");
+
+  changeBtnElement.addEventListener("click", () => {
+    textElement.textContent = "テキストが変更されました！";
+  });
+</script>
+```
+
+### 問題2: 表示/非表示の切り替え
+ボタンをクリックすると、要素の表示/非表示を切り替えるプログラムを作成してください。
+
+```html
+<p id="message">このメッセージを表示/非表示します</p>
+<button id="toggleBtn">表示/非表示</button>
+
+<script>
+  const messageElement = document.getElementById("message");
+  const toggleBtnElement = document.getElementById("toggleBtn");
+
+  toggleBtnElement.addEventListener("click", () => {
+    if (messageElement.style.display === "none") {
+      messageElement.style.display = "block";
+    } else {
+      messageElement.style.display = "none";
+    }
+  });
+</script>
+```
+
+### 問題3: 簡単な計算機
+2つの数値を入力して、足し算の結果を表示するプログラムを作成してください。
+
+```html
+<input type="number" id="num1" placeholder="数値1">
++
+<input type="number" id="num2" placeholder="数値2">
+<button id="calcBtn">=</button>
+<p id="result"></p>
+
+<script>
+  const num1Element = document.getElementById("num1");
+  const num2Element = document.getElementById("num2");
+  const calcBtnElement = document.getElementById("calcBtn");
+  const resultElement = document.getElementById("result");
+
+  calcBtnElement.addEventListener("click", () => {
+    const num1 = Number(num1Element.value);
+    const num2 = Number(num2Element.value);
+    const sum = num1 + num2;
+
+    resultElement.textContent = "結果: " + sum;
+  });
+</script>
+```
+
+## まとめ
+
+今回学んだこと:
+
+1. **DOM**: HTMLをJavaScriptから操作する仕組み
+2. **要素の取得**: `getElementById()`, `querySelector()`
+3. **テキストの変更**: `textContent`, `innerHTML`
+4. **スタイルの変更**: `element.style.プロパティ名`
+5. **クラスの操作**: `classList.add()`, `classList.remove()`
+6. **要素の作成・追加**: `createElement()`, `appendChild()`
+7. **イベントリスナー**: `addEventListener()`でユーザーの操作に反応
+
+DOMを使いこなすことで、動的でインタラクティブなWebページを作ることができます！
+これでJavaScriptの基本は一通り学びました。次はこれらを組み合わせて、より実践的なアプリケーションを作っていきましょう！

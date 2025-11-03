@@ -1,0 +1,457 @@
+---
+title: 第6回： 制御文とは(if.for)
+category: js
+---
+
+## 制御文とは
+
+制御文とは、プログラムの実行の流れを制御するための文のことです。
+
+プログラムは基本的に上から下へ順番に実行されますが、制御文を使うことで:
+- **条件によって実行する処理を変える**（条件分岐）
+- **同じ処理を繰り返し実行する**（繰り返し）
+
+ということができるようになります。
+
+{/* TODO イメージ画像 */}
+
+今回は、代表的な制御文である**if文**と**for文**について学びます。
+
+## if文とは
+
+if文は、**条件によって実行する処理を変える**ための制御文です。
+
+「もし〜なら、〇〇する」という条件分岐を実現できます。
+
+{/* TODO if文のフローチャート画像 */}
+
+### if文の書き方
+
+#### 基本形：if文
+
+```javascript
+if (条件式) {
+  // 条件がtrueの時に実行される処理
+}
+```
+
+```javascript
+const age = 20;
+
+if (age >= 18) {
+  console.log("成人です");
+}
+// 出力: 成人です
+```
+
+#### if-else文
+
+「条件がtrueの時」と「falseの時」で異なる処理を実行します。
+
+```javascript
+if (条件式) {
+  // 条件がtrueの時に実行される処理
+} else {
+  // 条件がfalseの時に実行される処理
+}
+```
+
+```javascript
+const age = 15;
+
+if (age >= 18) {
+  console.log("成人です");
+} else {
+  console.log("未成年です");
+}
+// 出力: 未成年です
+```
+
+#### if-else if-else文
+
+複数の条件を順番にチェックします。
+
+```javascript
+if (条件式1) {
+  // 条件式1がtrueの時の処理
+} else if (条件式2) {
+  // 条件式2がtrueの時の処理
+} else {
+  // すべての条件がfalseの時の処理
+}
+```
+
+```javascript
+const score = 75;
+
+if (score >= 80) {
+  console.log("優秀です！");
+} else if (score >= 60) {
+  console.log("合格です");
+} else {
+  console.log("不合格です");
+}
+// 出力: 合格です
+```
+
+### if文の使い方
+
+#### 例1：年齢による分類
+
+```javascript
+const age = 25;
+
+if (age < 13) {
+  console.log("子供");
+} else if (age < 20) {
+  console.log("10代");
+} else if (age < 65) {
+  console.log("大人");
+} else {
+  console.log("シニア");
+}
+// 出力: 大人
+```
+
+#### 例2：複数の条件を組み合わせる
+
+```javascript
+const age = 16;
+const hasLicense = false;
+
+if (age >= 18 && hasLicense) {
+  console.log("運転できます");
+} else if (age >= 18 && !hasLicense) {
+  console.log("免許を取得してください");
+} else {
+  console.log("18歳になってから免許を取得してください");
+}
+// 出力: 18歳になってから免許を取得してください
+```
+
+#### 例3：ログインチェック
+
+```javascript
+const username = "taro";
+const password = "1234";
+
+if (username === "taro" && password === "1234") {
+  console.log("ログイン成功！");
+} else {
+  console.log("ユーザー名またはパスワードが間違っています");
+}
+// 出力: ログイン成功！
+```
+
+#### 例4：割引の適用
+
+```javascript
+const price = 3000;
+const isMember = true;
+let finalPrice = price;
+
+if (isMember) {
+  finalPrice = price * 0.9; // 10%割引
+  console.log("会員割引が適用されました");
+}
+
+console.log("お支払い金額: " + finalPrice + "円");
+// 出力:
+// 会員割引が適用されました
+// お支払い金額: 2700円
+```
+
+#### 例5：ネストしたif文
+
+if文の中にさらにif文を入れることもできます。
+
+```javascript
+const age = 25;
+const hasTicket = true;
+
+if (age >= 18) {
+  if (hasTicket) {
+    console.log("入場できます");
+  } else {
+    console.log("チケットを購入してください");
+  }
+} else {
+  console.log("18歳未満は入場できません");
+}
+// 出力: 入場できます
+```
+
+##  for文とは
+
+for文は、**同じ処理を繰り返し実行する**ための制御文です。
+
+「〇回繰り返す」「配列の全要素を処理する」といった反復処理を実現できます。
+
+{/* TODO for文のフローチャート画像 */}
+
+### for文の書き方
+
+#### 基本形
+
+```javascript
+for (初期化; 条件式; 更新処理) {
+  // 繰り返し実行される処理
+}
+```
+
+**各部分の説明:**
+- **初期化**: 最初に1回だけ実行される（カウンター変数の初期化など）
+- **条件式**: 繰り返しを続けるかどうかの条件（falseになったら終了）
+- **更新処理**: 各ループの最後に実行される（カウンターの増減など）
+
+```javascript
+for (let i = 0; i < 5; i++) {
+  console.log(i);
+}
+// 出力:
+// 0
+// 1
+// 2
+// 3
+// 4
+```
+
+**動作の流れ:**
+1. `let i = 0`で初期化（最初だけ）
+2. `i < 5`をチェック（trueなら続行）
+3. `console.log(i)`を実行
+4. `i++`でiを1増やす
+5. 2に戻る（i < 5がfalseになるまで）
+
+{/* TODO for文の動作フロー図 */}
+
+### for文の使い方
+
+#### 例1：1から10まで表示
+
+```javascript
+for (let i = 1; i <= 10; i++) {
+  console.log(i);
+}
+// 出力: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+```
+
+#### 例2：偶数だけ表示
+
+```javascript
+for (let i = 0; i <= 10; i += 2) {
+  console.log(i);
+}
+// 出力: 0, 2, 4, 6, 8, 10
+```
+
+#### 例3：カウントダウン
+
+```javascript
+for (let i = 5; i >= 1; i--) {
+  console.log(i);
+}
+console.log("発射！");
+// 出力:
+// 5
+// 4
+// 3
+// 2
+// 1
+// 発射！
+```
+
+#### 例4：配列の全要素を表示
+
+```javascript
+const fruits = ["りんご", "バナナ", "みかん", "いちご"];
+
+for (let i = 0; i < fruits.length; i++) {
+  console.log((i + 1) + "番目: " + fruits[i]);
+}
+// 出力:
+// 1番目: りんご
+// 2番目: バナナ
+// 3番目: みかん
+// 4番目: いちご
+```
+
+#### 例5：合計を計算
+
+```javascript
+const numbers = [10, 20, 30, 40, 50];
+let sum = 0;
+
+for (let i = 0; i < numbers.length; i++) {
+  sum += numbers[i];
+}
+
+console.log("合計: " + sum);
+// 出力: 合計: 150
+```
+
+### for...of文（簡易版）
+
+配列の全要素を順番に処理したい時は、`for...of`文を使うとより簡単に書けます。
+
+```javascript
+const fruits = ["りんご", "バナナ", "みかん"];
+
+for (const fruit of fruits) {
+  console.log(fruit);
+}
+// 出力:
+// りんご
+// バナナ
+// みかん
+```
+
+### if文とfor文を組み合わせる
+
+if文とfor文を組み合わせることで、より複雑な処理ができます。
+
+#### 例1：偶数だけ表示
+
+```javascript
+for (let i = 1; i <= 10; i++) {
+  if (i % 2 === 0) {
+    console.log(i + "は偶数");
+  }
+}
+// 出力:
+// 2は偶数
+// 4は偶数
+// 6は偶数
+// 8は偶数
+// 10は偶数
+```
+
+#### 例2：条件に合う要素を数える
+
+```javascript
+const scores = [85, 92, 78, 95, 88, 72, 90];
+let passCount = 0;
+
+for (let i = 0; i < scores.length; i++) {
+  if (scores[i] >= 80) {
+    passCount++;
+  }
+}
+
+console.log("80点以上の人数: " + passCount + "人");
+// 出力: 80点以上の人数: 5人
+```
+
+#### 例3：最大値を見つける
+
+```javascript
+const numbers = [45, 23, 89, 12, 67, 34];
+let max = numbers[0];
+
+for (let i = 1; i < numbers.length; i++) {
+  if (numbers[i] > max) {
+    max = numbers[i];
+  }
+}
+
+console.log("最大値: " + max);
+// 出力: 最大値: 89
+```
+
+#### 例4：九九の表
+
+```javascript
+for (let i = 1; i <= 9; i++) {
+  for (let j = 1; j <= 9; j++) {
+    console.log(i + " × " + j + " = " + (i * j));
+  }
+}
+```
+
+## 実践問題
+
+### 問題1: 成績判定プログラム
+点数によって成績を判定するプログラムを作成してください。
+
+- 90点以上: S
+- 80点以上: A
+- 70点以上: B
+- 60点以上: C
+- 60点未満: D
+
+```javascript
+const score = 85;
+let grade;
+
+// ここに成績判定のコードを書いてください
+if (score >= 90) {
+  grade = "S";
+} else if (score >= 80) {
+  grade = "A";
+} else if (score >= 70) {
+  grade = "B";
+} else if (score >= 60) {
+  grade = "C";
+} else {
+  grade = "D";
+}
+
+console.log("成績: " + grade);
+// 出力: 成績: A
+```
+
+### 問題2: FizzBuzz
+1から30までの数字を表示します。ただし:
+- 3の倍数の時は「Fizz」
+- 5の倍数の時は「Buzz」
+- 15の倍数の時は「FizzBuzz」
+と表示してください。
+
+```javascript
+for (let i = 1; i <= 30; i++) {
+  if (i % 15 === 0) {
+    console.log("FizzBuzz");
+  } else if (i % 3 === 0) {
+    console.log("Fizz");
+  } else if (i % 5 === 0) {
+    console.log("Buzz");
+  } else {
+    console.log(i);
+  }
+}
+```
+
+### 問題3: 配列の平均値
+配列内の数値の平均値を求めてください。
+
+```javascript
+const scores = [85, 92, 78, 95, 88];
+let sum = 0;
+
+// ここに平均値を求めるコードを書いてください
+for (let i = 0; i < scores.length; i++) {
+  sum += scores[i];
+}
+
+const average = sum / scores.length;
+console.log("平均点: " + average);
+// 出力: 平均点: 87.6
+```
+
+## まとめ
+
+今回学んだこと:
+
+### if文
+1. **if文**: 条件によって処理を分岐できる
+2. **else**: 条件がfalseの時の処理を書ける
+3. **else if**: 複数の条件を順番にチェックできる
+4. **ネスト**: if文の中にif文を入れられる
+
+### for文
+1. **for文**: 処理を繰り返し実行できる
+2. **初期化・条件・更新**: ループの制御に使う
+3. **for...of**: 配列の全要素を簡単に処理できる
+4. **組み合わせ**: if文とfor文を組み合わせて複雑な処理ができる
+
+制御文を使いこなすことで、様々な条件や繰り返し処理ができるようになります！

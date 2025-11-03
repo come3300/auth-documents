@@ -43,7 +43,8 @@ export const courses = [
   },
   {
     id: 5,
-    imgSrc: 'images/home-imgs/js応用_ホーム画像.png',
+    imgSrc: 'images/home-imgs/building-img.png',
+    // imgSrc: 'images/home-imgs/js応用_ホーム画像.png',
     category: 'material2',
     title: 'JavaScript応用',
     description:
@@ -54,7 +55,8 @@ export const courses = [
   },
   {
     id: 6,
-    imgSrc: 'images/home-imgs/php基礎_ホーム画像.png',
+    imgSrc: 'images/home-imgs/building-img.png',
+    // imgSrc: 'images/home-imgs/php基礎_ホーム画像.png',
     category: 'PHP入門',
     title: 'PHP基礎',
     description:
@@ -63,7 +65,8 @@ export const courses = [
   },
   {
     id: 7,
-    imgSrc: 'images/home-imgs/php応用_ホーム画像.png',
+    imgSrc: 'images/home-imgs/building-img.png',
+    // imgSrc: 'images/home-imgs/php応用_ホーム画像.png',
     category: 'material2',
     title: 'php実践',
     description:
@@ -74,7 +77,8 @@ export const courses = [
   },
   {
     id: 8,
-    imgSrc: 'images/home-imgs/SQL_ホーム画像.png',
+    imgSrc: 'images/home-imgs/building-img.png',
+    // imgSrc: 'images/home-imgs/SQL_ホーム画像.png',
     category: 'material2',
     title: 'SQL入門',
     description: 'SQLの基礎的な使い方、考え方、書き方を学んでいく。',
@@ -84,7 +88,8 @@ export const courses = [
   },
   {
     id: 9,
-    imgSrc: 'images/home-imgs/React基礎_ホーム画像.png',
+    imgSrc: 'images/home-imgs/building-img.png',
+    // imgSrc: 'images/home-imgs/React基礎_ホーム画像.png',
     category: 'material3',
     title: 'React.js基礎',
     description:
@@ -120,7 +125,7 @@ export const courses = [
       'GitHubの基本的な考え方を学び、グローバルへプッシュするまでの一連の流れを実践していく。',
     views: '1.2K',
     comments: '6',
-    linksrc: '/courses/github/lessons',
+    linksrc: '/courses/github-basic/lessons',
   },
   {
     id: 13,
@@ -131,11 +136,12 @@ export const courses = [
       'インターネットがどのように動くかを学び、開発に必要な基礎力を高めていく。',
     views: '1.2K',
     comments: '6',
-    linksrc: '/courses/internet/lessons',
+    linksrc: '/courses/internet-basic/lessons',
   },
   {
     id: 14,
-    imgSrc: 'images/home-imgs/Laravel基礎_ホーム画像.png',
+    imgSrc: 'images/home-imgs/building-img.png',
+    // imgSrc: 'images/home-imgs/Laravel基礎_ホーム画像.png',
     category: 'material3',
     title: 'Laravel基礎',
     description:
@@ -146,7 +152,8 @@ export const courses = [
   },
   {
     id: 15,
-    imgSrc: 'images/home-imgs/Laravel実践_ホーム画像.png',
+    imgSrc: 'images/home-imgs/building-img.png',
+    // imgSrc: 'images/home-imgs/Laravel実践_ホーム画像.png',
     category: 'material3',
     title: 'Laravel実践',
     description:
@@ -157,7 +164,8 @@ export const courses = [
   },
   {
     id: 16,
-    imgSrc: 'images/home-imgs/React実践_ホーム画像.png',
+    imgSrc: 'images/home-imgs/building-img.png',
+    // imgSrc: 'images/home-imgs/React実践_ホーム画像.png',
     category: 'material3',
     title: 'React.js実践',
     description:
@@ -168,7 +176,8 @@ export const courses = [
   },
   {
     id: 17,
-    imgSrc: 'images/home-imgs/ポートフォリオ_ホーム画像.png',
+    imgSrc: 'images/home-imgs/building-img.png',
+    // imgSrc: 'images/home-imgs/ポートフォリオ_ホーム画像.png',
     category: 'material4',
     title: 'Aurora Glow',
     description: 'ポートフォリオの作り方、アイデアの探し方を学ぶ。',
@@ -178,7 +187,8 @@ export const courses = [
   },
   {
     id: 18,
-    imgSrc: 'images/home-imgs/就活対策_ホーム画像.png',
+    imgSrc: 'images/home-imgs/building-img.png',
+    // imgSrc: 'images/home-imgs/就活対策_ホーム画像.png',
     category: 'material4',
     title: 'Celestial Journey',
     description:

@@ -127,4 +127,28 @@ export const phpMemoLessons = [
     description: 'タイトルと本文を編集して更新ボタンをクリックで保存する機能を実装します',
     linksrc: '/courses/php-memo/lessons/step16',
   },
+  {
+    id: 17,
+    imgSrc: 'images/home-imgs/php_todo.png',
+    category: 'PHP入門',
+    title: '🗑 第16回:メモ削除機能の実装',
+    description: 'メモ投稿画面の削除ボタンをクリックすると、選択中のメモが削除される機能を実装します',
+    linksrc: '/courses/php-memo/lessons/step17',
+  },
+  {
+    id: 18,
+    imgSrc: 'images/home-imgs/php_todo.png',
+    category: 'PHP入門',
+    title: '🚪 第17回:ログアウト機能を実装',
+    description: 'メモ投稿画面のログアウトボタンをクリックしてログイン画面へ戻る処理を実装します',
+    linksrc: '/courses/php-memo/lessons/step18',
+  },
+  {
+    id: 19,
+    imgSrc: 'images/home-imgs/php_todo.png',
+    category: 'PHP入門',
+    title: '🔄 第18回:ログイン時に最新のメモ選択を実装',
+    description: 'ログイン直後にそのユーザーの最終更新メモが自動で選択・表示される機能を実装します',
+    linksrc: '/courses/php-memo/lessons/step19',
+  },
 ];

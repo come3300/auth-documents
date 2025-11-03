@@ -16,12 +16,28 @@ const getCourseKey = (course: string): keyof typeof lessons | null => {
     'nextjs-basic': 'nextjs-basic',
     'php-todo': 'php-todo',
     'php-memo': 'php-memo',
+    'linux': 'linux',
+    'github-basic': 'github-basic',
+    'internet-basic': 'internet-basic',
+    'tutorial': 'tutorial',
+    'website': 'website',
   };
   return courseMapping[course] || null;
 };
 
 export async function generateStaticParams() {
-  const courses = ['js-basic', 'php-basic', 'nextjs-basic', 'php-todo', 'php-memo'];
+  const courses = [
+    'js-basic',
+    'php-basic',
+    'nextjs-basic',
+    'php-todo',
+    'php-memo',
+    'linux',
+    'github-basic',
+    'internet-basic',
+    'tutorial',
+    'website',
+  ];
   return courses.map((course) => ({
     course,
   }));

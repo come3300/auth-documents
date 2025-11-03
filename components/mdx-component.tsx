@@ -71,6 +71,57 @@ const components = {
       {children}
     </li>
   ),
+  // 表（Table）
+  table: ({ children, ...props }: any) => (
+    <div className="overflow-x-auto my-6">
+      <table className="min-w-full border-collapse border border-gray-300" {...props}>
+        {children}
+      </table>
+    </div>
+  ),
+  thead: ({ children, ...props }: any) => (
+    <thead className="bg-gray-100" {...props}>
+      {children}
+    </thead>
+  ),
+  tbody: ({ children, ...props }: any) => (
+    <tbody {...props}>
+      {children}
+    </tbody>
+  ),
+  tr: ({ children, ...props }: any) => (
+    <tr className="border-b border-gray-300" {...props}>
+      {children}
+    </tr>
+  ),
+  th: ({ children, ...props }: any) => (
+    <th className="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-900" {...props}>
+      {children}
+    </th>
+  ),
+  td: ({ children, ...props }: any) => (
+    <td className="border border-gray-300 px-4 py-2 text-gray-700" {...props}>
+      {children}
+    </td>
+  ),
+  // 引用（Blockquote）
+  blockquote: ({ children, ...props }: any) => (
+    <blockquote className="border-l-4 border-gray-300 pl-4 py-2 my-4 italic text-gray-700 bg-gray-50" {...props}>
+      {children}
+    </blockquote>
+  ),
+  // リンク（Link）
+  a: ({ children, href, ...props }: any) => (
+    <a
+      href={href}
+      className="text-blue-600 underline hover:text-blue-800 transition-colors"
+      target={href?.startsWith('http') ? '_blank' : undefined}
+      rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+      {...props}
+    >
+      {children}
+    </a>
+  ),
 };
 
 export default function Mdx({ code }: { code: string }) {

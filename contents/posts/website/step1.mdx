@@ -1,0 +1,96 @@
+---
+title: 第1回：Hello World!!と出力してみよう！
+category: js
+---
+## Hello World!!と出力してみよう！
+
+***
+
+![Photo by Minh Pham](/images/documents/website/hello-world/helloworld.png)
+
+### Hello Worldとは？
+Hello Worldとは？環境構築が完了した上でブラウザ上に
+しっかりと出力できるかを確かめるための手段です。
+
+場合によってはこれが最初の関門だったりします。
+HTML/CSSの場合はそこまで難しくはありませんが、システムやアプリを作成する
+となるとより難しくなります。
+
+まずはhtml/cssを出力できるようになりましょう。
+
+### ディレクトリを作成しよう
+
+ではHTML/CSSを出力できるようにするためにディレクトを
+作りましょう。
+
+#### GUIで作成してみる
+
+まずはGUIでの作成をしていきましょう。
+ディレクトリを作成する場所はどこでもいいので
+
+1,新規フォルダを作成>helloという名前のディレクトリを作成
+![Photo by Minh Pham](/images/documents/website/hello-world/new-folder.png)
+
+2,helloディレクトリをVSCにドラックアンドドロップ
+![Photo by Minh Pham](/images/documents/website/hello-world/new-folder-mv.png)
+
+3,helloディレクトリ内にhello.htmlというファイルを作成する
+
+下記をボタンをクリックして
+![Photo by Minh Pham](/images/documents/website/hello-world/new-folder-click.png)
+
+画像のようになっていれば問題ないです。
+![Photo by Minh Pham](/images/documents/website/hello-world/new-folder.png)
+
+下記画像のようになっていれば問題ないです。
+![Photo by Minh Pham](/images/documents/website/hello-world/new-folder-mv-confirm.png)
+
+#### CUIで作成してみる
+
+こちらは余裕がある人が挑戦してもらえればと思います。
+最初のうちはGUIの方で作成できれば問題ありません。
+
+```bash
+$ mkdir hello
+//helloディクレトリの作成
+
+$ ls
+//helloというディレクトリが作成されいてるか確認
+
+$ cd hello
+//helloディレクトリに移動する
+
+$ touch hello.html
+hello.htmlというファイルを作成する
+
+yonekuradaisuke@yonekuradaisukenoMacBook-Pro-2 hello % tree
+
+hello
+└── hello.html
+//このようになっていれば問題なく作成できています。
+
+```
+
+### Hello Worldの出力方法
+
+では、ディレクトリの作成が完了したので
+HelloWorldと出力していきましょう。
+
+まずはVSCを開いてhelloディレクトリを
+ドラックアンドドロップしましょう。
+
+次にhello.htmlに下記のコードを書きます。
+
+```html
+<p>Hello World</p>
+```
+
+そしてhello.htmlをブラウザに
+ドラックアンドドロップしてみましょう。
+
+![Photo by Minh Pham](/images/documents/website/hello-world/helloworld.png)
+
+ブラウザに上記画像のようにHello Worldと表示されれば成功です。
+
+
+
