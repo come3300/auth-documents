@@ -21,6 +21,7 @@ const getCourseKey = (course: string): keyof typeof lessons | null => {
     'internet-basic': 'internet-basic',
     'tutorial': 'tutorial',
     'website': 'website',
+    'laravel-memo': 'laravel-memo',
   };
   return courseMapping[course] || null;
 };
@@ -37,6 +38,7 @@ export async function generateStaticParams() {
     'internet-basic',
     'tutorial',
     'website',
+    'laravel-memo',
   ];
   return courses.map((course) => ({
     course,
