@@ -197,4 +197,16 @@ export const courses = [
     comments: '9',
     linksrc: '/courses/career/lessons',
   },
+  {
+    id: 19,
+    imgSrc: 'images/home-imgs/laravel-memo-img.png',
+    // imgSrc: 'images/home-imgs/就活対策_ホーム画像.png',
+    category: 'material4',
+    title: 'Laravelでメモアプリを作ってみよう',
+    description:
+      'Laravelを使ってメモアプリを開発してみましょう',
+    views: '1.7K',
+    comments: '9',
+    linksrc: '/courses/laravel-memo/lessons',
+  },
 ];
