@@ -19,10 +19,48 @@ category: js
 ウェブサイトに動きと機能を与えるプログラミング言語です。
 例として、自動販売機で考えてみましょう！
 
-{/* TODO 画像を添付 */}
-HTMLが骨組み、CSSが見た目を担当するなら、JavaScriptは「動きと制御」の役割を果たします。
+<Note type="info">
+テストを書いておるのだ！
+</Note>
 
-{/* TODO 画像を添付 */}
+<Note type="warn">
+テストを書いておるのだ！
+</Note>
+
+<Note type="tip">
+テストを書いておるのだ！
+</Note>
+
+
+<Note type="danger">  
+**自動販売機で理解するHTML・CSS・JavaScript**
+
+Webサイトは自動販売機に例えることができます：
+
+- **HTML**：自動販売機の骨組み（本体、ボタン、取り出し口など）
+- **CSS**：自動販売機の見た目（色、デザイン、照明など）
+- **JavaScript**：自動販売機の動き（お金を入れる、ボタンを押す、商品が出てくる）
+
+HTMLとCSSだけでは「見た目」しか作れませんが、
+JavaScriptを使うことで初めて「動く」サイトが作れるのです。
+</Note>
+
+<InfoBox type="info">
+hogehoge
+</InfoBox>
+
+<InfoBox type="warn">
+hogehoge
+</InfoBox>
+
+<InfoBox type="tip">
+hogehoge
+</InfoBox>
+
+<InfoBox type="danger">
+hogehoge
+</InfoBox>
+
 例えば：
 - 飲み物がなくなると「売り切れ」の表示に切り替える
 - 飲み物を買った人にくじゲームを発生させる
@@ -40,11 +78,24 @@ HTMLが骨組み、CSSが見た目を担当するなら、JavaScriptは「動き
 
 ### JavaScriptとJavaは別物
 
-{/* TODO 画像を添付 */}
-名前が似ていますが、JavaScriptとJavaは全く異なる言語です。
-よく初学者さんがJavaScriptのことをJavaと略すことがありますが、間違いです笑。(私も最初は間違えてました)
+<InfoBox>
+**よくある勘違い：JavaScriptとJavaは全く別物！**
 
-JavaScriptを略して表現するならJSが一般的かと思われます。
+名前が似ていますが、JavaScriptとJavaは全く異なる言語です。
+よく初学者さんがJavaScriptのことをJavaと略すことがありますが、間違いです。
+（私も最初は間違えてました笑）
+
+**正しい略し方：**
+- JavaScript → **JS** （これが正解）
+- JavaScript → Java （これは間違い！）
+
+**例えるなら：**
+- ハムスター と ハム（肉）くらい違う
+- インド と インドネシアくらい違う
+
+全く別の言語なので、間違えないように気をつけましょう。
+JavaScriptを略して表現するなら**JS**が一般的です。
+</InfoBox>
 
 ## JavaScriptの特徴
 
@@ -97,17 +148,44 @@ JavaScriptを学ぶ人は非常に多いため情報が多く、不明点があ�
 
 ## 3Dアニメーションが作れちゃう
 
-{/* TODO 画像を貼る */}
-画像のような3DアニメーションをJavaScriptで作ることができます。
-こういった3Dアニメーションを駆使することでアプリケーションやWebサイトがよりリッチになるため
+JavaScriptを使えば、ブラウザ上で3Dアニメーションを作ることができます。
+こういった3Dアニメーションを駆使することでアプリケーションやWebサイトがよりリッチになるため、
 チャレンジしてみるのも良いかもしれません。
 
-下記の記事よりThree.jsというライブラリを使って作った3Dアニメーションをみることができます。
-ぜひ、時間がある時にでも観てみてください！
-[https://freefrontend.com/three-js/](https://freefrontend.com/three-js/)
+<Note>
+**Three.jsで作る3Dの世界**
 
-{/* TODO 後もう一つアプリを紹介したい */}
-## 
+Three.jsというJavaScriptライブラリを使うと、ブラウザ上で
+本格的な3D空間を作ることができます。
+
+例えば：
+- 回転する地球儀
+- 3Dのプロダクト展示
+- インタラクティブなゲーム空間
+- 建築物のバーチャルツアー
+
+下記のサイトでThree.jsを使った作品例を見ることができます。
+ぜひ時間がある時に見てみてください。どれもブラウザだけで動いています。
+
+[Three.js Examples](https://freefrontend.com/three-js/)
+</Note>
+
+## Webアプリケーションも作れる
+
+JavaScriptは単なるWebページの装飾だけでなく、本格的なWebアプリケーションも作れます。
+
+<Note>
+**JavaScriptで作られた有名なアプリケーション**
+
+意外かもしれませんが、これらのサービスもJavaScriptで作られています：
+
+- **Visual Studio Code**：プログラマーが使う人気のエディタ
+- **Slack**：チームコミュニケーションツール
+- **Discord**：ゲーマー向けチャットアプリ
+- **Figma**：デザインツール
+
+JavaScriptを学べば、こうした本格的なアプリケーションも作れるようになります。
+</Note> 
 
 ## **実際に動かしてみよう！**
 
@@ -120,4 +198,211 @@ JavaScriptを学ぶ人は非常に多いため情報が多く、不明点があ�
 ```javascript
 console.log("Hello World!");
 ```
+
+### 方法2：HTMLファイルを作って実行（推奨）
+
+実際の開発に近い形でJavaScriptを動かしてみましょう。
+
+#### 1. HTMLファイルを作成する
+
+テキストエディタ（メモ帳やVSCodeなど）を開いて、以下のコードをコピーして貼り付けます。
+
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>はじめてのJavaScript</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+        button {
+            font-size: 18px;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        #message {
+            font-size: 24px;
+            margin: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>JavaScriptを体験しよう！</h1>
+    <div id="message">ボタンを押してみてください</div>
+    <button onclick="showMessage()">メッセージを表示</button>
+
+    <script>
+        function showMessage() {
+            document.getElementById('message').textContent = 'こんにちは、JavaScript！';
+            alert('JavaScriptが動いています！');
+        }
+    </script>
+</body>
+</html>
+```
+
+#### 2. ファイルを保存する
+
+- ファイル名：`index.html`
+- 保存場所：デスクトップやドキュメントフォルダなど、わかりやすい場所
+
+<InfoBox>
+**保存のポイント**
+
+- 拡張子は必ず `.html` にする
+- ファイル名は半角英数字で（日本語は避ける）
+- 保存したフォルダの場所を覚えておく
+</InfoBox>
+
+#### 3. ブラウザで開く
+
+保存した`index.html`ファイルをダブルクリックするか、
+ブラウザにドラッグ&ドロップすると、ブラウザで開けます。
+
+#### 4. ボタンを押してみる
+
+「メッセージを表示」ボタンを押すと、
+- 画面のテキストが変わる
+- ポップアップ（アラート）が表示される
+
+これがJavaScriptの動きです！
+
+### コンソールの使い方
+
+開発者ツールのコンソールは、JavaScriptの動作確認やエラーチェックに使います。
+
+<Note>
+**コンソールを開く方法**
+
+**Windows / Linux:**
+- `F12` キー
+- `Ctrl + Shift + I`
+- 右クリック → 「検証」または「要素を調査」
+
+**Mac:**
+- `Command + Option + I`
+- 右クリック → 「検証」
+
+開いたら「Console」タブをクリックしましょう。
+</Note>
+
+コンソールでは以下のようなことができます：
+
+```javascript
+// 計算してみる
+1 + 1
+
+// 変数を作ってみる
+let name = "太郎";
+console.log("こんにちは、" + name + "さん");
+
+// 現在の時刻を表示
+console.log(new Date());
+```
+
+試しにコンソールに上記のコードを1行ずつ入力してEnterを押してみてください。
+
+## 実践課題：自分で改造してみよう！
+
+先ほど作ったHTMLファイルを改造して、JavaScriptの動きを体験しましょう。
+
+### 課題1：クリックカウンター
+
+ボタンを押した回数を数えるカウンターを作ってみましょう。
+
+<InfoBox>
+**ヒント：以下のコードに置き換えてみよう**
+
+`<script>`タグの中身を以下に書き換えてみてください。
+
+```javascript
+let count = 0;  // カウントを記録する変数
+
+function showMessage() {
+    count = count + 1;  // カウントを1増やす
+    document.getElementById('message').textContent =
+        'ボタンが押された回数: ' + count + '回';
+}
+```
+
+保存してブラウザを更新（F5キー）すると、
+ボタンを押すたびに数字が増えていきます！
+</InfoBox>
+
+### 課題2：背景色を変更する
+
+ボタンを押すと背景色が変わるようにしてみましょう。
+
+<InfoBox>
+**ヒント：背景色を変更するコード**
+
+ボタンのHTMLを追加：
+```html
+<button onclick="changeColor()">背景色を変える</button>
+```
+
+`<script>`タグの中に関数を追加：
+```javascript
+function changeColor() {
+    // ランダムな色を生成
+    let colors = ['#FFB6C1', '#87CEEB', '#98FB98', '#FFD700', '#DDA0DD'];
+    let randomColor = colors[Math.floor(Math.random() * colors.length)];
+    document.body.style.backgroundColor = randomColor;
+}
+```
+
+何度も押すと色が変わります！
+</InfoBox>
+
+### 課題3：時刻を表示する
+
+現在の時刻を表示するボタンを作ってみましょう。
+
+<InfoBox>
+**ヒント：時刻を表示するコード**
+
+```javascript
+function showTime() {
+    let now = new Date();
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    let seconds = now.getSeconds();
+
+    document.getElementById('message').textContent =
+        '現在の時刻: ' + hours + '時' + minutes + '分' + seconds + '秒';
+}
+```
+
+ボタンに `onclick="showTime()"` を設定してみましょう。
+</InfoBox>
+
+<Note>
+**うまく動かないときは**
+
+- コンソールを開いてエラーメッセージを確認する（赤い文字で表示される）
+- スペルミスがないか確認する（JavaScriptは大文字小文字を区別します）
+- セミコロン（`;`）や括弧（`()`、`{}`）の閉じ忘れがないか確認する
+- ブラウザを更新（F5キー）してみる
+
+わからないことがあったら、エラーメッセージをコピーして検索してみましょう。
+</Note>
+
+## まとめ
+
+この記事では、JavaScriptの基本を学びました：
+
+- JavaScriptは「動き」を作るプログラミング言語
+- ブラウザさえあれば、すぐに試せる
+- ゲームや3D、本格的なアプリケーションも作れる
+- HTML・CSS・JavaScriptを組み合わせてWebサイトを作る
+
+次のステップでは、変数や関数など、JavaScriptの文法を詳しく学んでいきます。
+まずは今回作ったHTMLファイルを色々いじって、JavaScriptの動きに慣れていきましょう！
 

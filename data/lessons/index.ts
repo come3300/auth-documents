@@ -8,6 +8,7 @@ import { githubBasicLessons } from './github-basic';
 import { internetBasicLessons } from './internet-basic';
 import { tutorialLessons } from './tutorial';
 import { websiteLessons } from './website';
+import { laravelMemoLessons } from './laravel-memo';
 
 export const lessons = {
   'js-basic': jsBasicLessons,
@@ -20,6 +21,7 @@ export const lessons = {
   'internet-basic': internetBasicLessons,
   tutorial: tutorialLessons,
   website: websiteLessons,
+  'laravel-memo': laravelMemoLessons,
 };
 
 // 型定義のエクスポート
