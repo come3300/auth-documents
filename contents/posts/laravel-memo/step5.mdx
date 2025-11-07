@@ -4,15 +4,17 @@ date: "2024-01-05"
 category: "laravel-memo"
 ---
 
-# ユーザー登録画面を Blade で整える
+# 【Laravel】ユーザー登録画面を Blade で整える（`register.blade.php` とレイアウトの作成）
+
 
 ## 🎯 目標物
 
-- `/user` にアクセスすると、**ユーザー登録画面**が表示される
-- 画面のヘッダーやスクリプト読込は **共通レイアウト**で管理
+- `/user` にアクセスすると、**ユーザー登録画面**が表示される  
+- 画面のヘッダーやスクリプト読込は **共通レイアウト**で管理  
 - `.env` の `APP_NAME` を変更すると**画面上のアプリ名**が変わる
 
-![完成イメージ（変更前）](/images/laravel-memo/before.png)
+> 参考イメージ（省略）
+![完成イメージ](/images/documents/laravel-memo/step5/before.png)
 
 ---
 
@@ -25,7 +27,7 @@ category: "laravel-memo"
 
 ---
 
-## 1) `resources/views/auth/register.blade.php` を上書き
+## 1 `resources/views/auth/register.blade.php` を上書き
 
 ```php
 @extends('layouts.app')
@@ -73,16 +75,16 @@ category: "laravel-memo"
 @endsection
 ```
 
-<InfoBox type="info" title="Blade のポイント">
-- `@extends('layouts.app')`：共通レイアウトを継承
-- `@section('content') ... @endsection`：レイアウトの `@yield('content')` に差し込まれる
-- `{{ route('memo.index') }}`：`routes/web.php` の `name('memo.index')` に紐づく URL を生成
-- `{{ asset('...') }}`：`public` を起点に静的ファイルの URL を生成
-- `{{ config('app.name') }}`：`config/app.php` → `.env` の `APP_NAME` を参照
-</InfoBox>
+補足（Blade のポイント）
+```php
+- @extends('layouts.app')：共通レイアウトを継承
+- @section('content') ... @endsection：レイアウトの @yield('content') に差し込まれる
+- {{ route('memo.index') }}：routes/web.php の name('memo.index') に紐づく URL を生成
+- {{ asset('...') }}：public を起点に静的ファイルの URL を生成
+- {{ config('app.name') }}：config/app.php → .env の APP_NAME を参照
+```
 
 例：routes/web.php
-
 ```php
 Route::get('/memo', function () {
     return view('memo');
@@ -91,8 +93,7 @@ Route::get('/memo', function () {
 
 ---
 
-## 2) `resources/views/layouts/app.blade.php` を上書き（共通レイアウト）
-
+## 2 resources/views/layouts/app.blade.php を上書き（共通レイアウト）
 ```php
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -119,17 +120,16 @@ Route::get('/memo', function () {
     </body>
 </html>
 ```
-
-<InfoBox type="info" title="レイアウトのポイント">
-- `@yield('content')` に各画面の `@section('content')` が入る
-- `<meta name="csrf-token"...>` で CSRF 対策トークンを埋め込む（Laravel 標準）
-- `{{ asset('css/app.css') }}` / `{{ asset('js/app.js') }}` は `public/css`, `public/js` のビルド済みを参照（`npm run dev` / `npm run build` 等で出力）
-</InfoBox>
-
+補足（レイアウトのポイント）
+```php
+- @yield('content') に各画面の @section('content') が入る
+- <meta name="csrf-token"...> で CSRF 対策トークンを埋め込む（Laravel 標準）
+- {{ asset('css/app.css') }} / {{ asset('js/app.js') }} は public/css, public/js のビルド済みを参照
+（npm run dev / npm run build 等で出力）
+```
 ---
 
-## 3) ルーティングの追加
-
+## 3 ルーティングの追加
 ```php
 Route::get('/', 'App\Http\Controllers\Auth\LoginController@showLoginForm')->name('login.index');
 Route::get('/user', 'App\Http\Controllers\Auth\RegisterController@showRegistrationForm')->name('user.register');
@@ -142,69 +142,52 @@ Auth::routes();
 
 ---
 
-## 4) `.env` の `APP_NAME` を変更してアプリ名を差し替え
+## 4 .env の APP_NAME を変更してアプリ名を差し替え
 
 変更前
-
 ```.env
 APP_NAME=Laravel
 ```
-
 変更後
-
 ```.env
 APP_NAME=SimpleMemoLaravel
 ```
+config('app.name') → config/app.php の
 
-`config('app.name')` → `config/app.php` の
-
-```php
 'name' => env('APP_NAME', 'Laravel'),
-```
 
-を通じて `.env` の値を反映します。
-ブラウザのタブタイトルや画面内の表示が `SimpleMemoLaravel` に変われば成功です。
+を通じて .env の値を反映します。
+ブラウザのタブタイトルや画面内の表示が SimpleMemoLaravel に変われば成功です。
 
-![完成後](/images/laravel-memo/after.png)
+![完成後](/images/documents/laravel-memo/step5/after.png)
 
-<Note type="tip">
-変更が反映されない場合は、キャッシュをクリアしてください。
-</Note>
-
+変更が反映されない場合は、キャッシュをクリア：
 ```bash
 php artisan config:clear
 php artisan cache:clear
 ```
 
----
+## 5 動作確認
 
-## 5) 動作確認
-
-- ブラウザで **http://127.0.0.1:8085/user** にアクセス
+- ブラウザで http://127.0.0.1:8085/user にアクセス
 - ユーザー登録画面が表示されれば OK
 
-![完成後](/images/laravel-memo/after.png)
+![完成後](/images/documents/laravel-memo/step5/after.png)
 
 ---
 
-## 🔍 よくある質問（FAQ）
-
-<InfoBox type="warn" title="画像が表示されない">
-`public/images/animal_stand_zou.png` が存在するか、パスが合っているかを確認してください。
-</InfoBox>
-
-<InfoBox type="warn" title="スタイルが当たらない">
-`public/css/app.css` のビルド済みファイルがあるか、`npm install && npm run dev` を実行済みか確認してください。
-</InfoBox>
-
-<InfoBox type="warn" title="アプリ名が変わらない">
-`.env` の `APP_NAME` 修正後に `php artisan config:clear` を実行してください。
-</InfoBox>
+🔍 よくある質問（FAQ）
+- 画像が表示されない
+→ public/images/animal_stand_zou.png が存在するか、パスが合っているかを確認。
+- スタイルが当たらない
+→ public/css/app.css のビルド済みファイルがあるか、npm install && npm run dev を実行済みか確認。
+- アプリ名が変わらない
+→ .env の APP_NAME 修正後に php artisan config:clear を実行。
 
 ---
 
-## 🧾 まとめ
+🧾 まとめ
+- register.blade.php は layouts/app.blade.php を継承して画面を構成
+- ルート名・アセット・アプリ名は route / asset / config ヘルパで安全に参照
+- .env の APP_NAME を変えるだけで、画面上のアプリ名を簡単に切り替え可能
 
-- ✅ `register.blade.php` は `layouts/app.blade.php` を継承して画面を構成
-- ✅ ルート名・アセット・アプリ名は `route` / `asset` / `config` ヘルパで安全に参照
-- ✅ `.env` の `APP_NAME` を変えるだけで、画面上のアプリ名を簡単に切り替え可能

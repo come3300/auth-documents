@@ -1,5 +1,5 @@
 ---
-title: "🚀 Laravelプロジェクトを立ち上げよう"
+title: "📂 Laravelのディレクトリ構成と処理の流れ"
 date: "2024-01-02"
 category: "laravel-memo"
 ---
@@ -10,11 +10,10 @@ category: "laravel-memo"
 
 以下のように **LaravelのWelcome画面** がブラウザで表示される状態を目指します。
 
-<Note type="tip">
-これが表示されれば、Laravelの環境構築は成功です！
-</Note>
+> 💡 これが表示されれば、Laravelの環境構築は成功です！
+> 
 
-![Laravel Welcome画面](/images/laravel-memo/welcome.png)
+![image.png](/images/documents/laravel-memo/step2/image.png)
 
 ---
 
@@ -39,41 +38,39 @@ $ cd docker_simple_memo_laravel
 
 次に、Laravel用のDocker環境を起動します。
 
-```bash
+```
 $ docker-compose -f .docker_memo_laravel/docker-compose.yml up -d
 ```
 
-<Note type="info">
-もし初めて立ち上げる場合は、イメージのビルドや依存関係のダウンロードに少し時間がかかります。
-</Note>
+※ もし初めて立ち上げる場合は、**イメージのビルドや依存関係のダウンロードに少し時間がかかります。**
 
 ---
 
-## 🧩 2. Dockerコンテナに入る
+## **🧩 2. Dockerコンテナに入る**
 
 LaravelのPHPコンテナに入って、そこで作業を行います。
 
-```bash
+```
 $ docker-compose exec php bash
 ```
 
 実行すると、下記のような状態になります。
 
-```bash
+```
 root@de4777a86bb5:/var/www/html#
 ```
 
 ---
 
-## 🧱 3. Laravelプロジェクトを作成する
+## **🧱 3. Laravelプロジェクトを作成する**
 
 次に、Composerを使ってLaravelのプロジェクトを作成します。
 
-```bash
+```
 composer create-project laravel/laravel=8.1.0 .
 ```
 
-### 🧠 補足
+### **🧠 補足**
 
 - laravel/laravel=8.1.0 → Laravelのバージョンを指定
 
@@ -97,17 +94,17 @@ Application key set successfully.
 
 ---
 
-## 📂 4. ディレクトリ構成を確認する
+## **📂 4. ディレクトリ構成を確認する**
 
 作成したディレクトリに移動します。
 
-```bash
+```
 cd src
 ```
 
 次に ls コマンドで中身を確認します。
 
-```bash
+```
 ls
 ```
 
@@ -123,7 +120,7 @@ artisan    composer.lock  package.json  resources  storage  webpack.mix.js
 
 ---
 
-## 🌐 5. ブラウザで動作確認
+## **🌐 5. ブラウザで動作確認**
 
 ブラウザを開いて以下にアクセスします。
 
@@ -131,19 +128,18 @@ artisan    composer.lock  package.json  resources  storage  webpack.mix.js
 
 すると、以下のようなWelcome画面が表示されます。
 
-<Note type="info">
-PCの設定（OSやブラウザのダークモード設定）によって背景色が異なる場合があります。
-</Note>
+> ※ PCの設定（OSやブラウザのダークモード設定）によって背景色が異なる場合があります。
+> 
 
-![Laravel Welcome画面](/images/laravel-memo/welcome.png)
+![image.png](/images/documents/laravel-memo/step2/image.png)
 
 ---
 
-## 🔚 6. コンテナから抜ける
+## **🔚 6. コンテナから抜ける**
 
 作業が終わったら、Dockerコンテナから抜けてローカル環境に戻ります。
 
-```bash
+```
 exit
 ```
 
@@ -151,7 +147,7 @@ exit
 
 ---
 
-## 🎉 まとめ
+## **🎉 まとめ**
 
 - ✅ Docker環境を立ち上げた
 - ✅ LaravelプロジェクトをComposerで作成
