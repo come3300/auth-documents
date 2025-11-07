@@ -5,6 +5,10 @@ import rehypeSlug from "rehype-slug";
 import Toc from "@/components/toc";
 import Link from "next/link";
 import CodeBlock from "@/components/code-block";
+import ScrollToTopButton from "@/components/scroll-to-top-button";
+import { IoListOutline } from 'react-icons/io5';
+import Note from "@/components/note";
+import InfoBox from "@/components/info-box";
 
 interface LessonPageProps {
   params: {
@@ -39,6 +43,8 @@ export default async function LessonPage({ params }: LessonPageProps) {
   };
 
   const components = {
+    Note,
+    InfoBox,
     pre: ({ children, ...props }: any) => {
       console.log('=== PRE TAG CALLED ===');
       console.log('children:', children);
@@ -207,6 +213,9 @@ export default async function LessonPage({ params }: LessonPageProps) {
 
   return (
     <div>
+      {/* スクロールトップボタン */}
+      <ScrollToTopButton />
+
       <div className="prose-xl flex justify-center mx-auto p-8 bg-[#EDF2F7]">
         <div className="w-9/12">
           <h1 className="flex justify-left mt-8 font-bold text-5xl">{data.title}</h1>
@@ -232,9 +241,32 @@ export default async function LessonPage({ params }: LessonPageProps) {
               </Link>
             ) : <span />}
           </div>
+
+          {/* 教材一覧へ戻るボタン */}
+          <div className="flex justify-center mt-6">
+            <Link
+              href={`/courses/${params.course}/lessons`}
+              className="px-6 py-3 bg-gray-100 font-bold text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center gap-2"
+            >
+              <IoListOutline className="text-xl" />
+              この教材の一覧へ戻る
+            </Link>
+          </div>
         </div>
         <div className="w-3/12">
-          <Toc />
+          <div className="sticky top-0 pt-16 ml-8">
+            <Toc />
+
+            {/* サイドバー固定ナビゲーション */}
+            <div className="mt-6 p-4 bg-white rounded-lg shadow">
+              <Link
+                href={`/courses/${params.course}/lessons`}
+                className="block px-4 py-2 bg-blue-50 text-blue-700 rounded hover:bg-blue-100 transition-colors text-center font-medium"
+              >
+                📚 教材一覧へ
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>
