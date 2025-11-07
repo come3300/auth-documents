@@ -4,10 +4,14 @@ import { useMDXComponent } from "next-contentlayer/hooks";
 import Image from "next/image";
 import Callout from "./callout";
 import CodeBlock from "./code-block";
+import Note from "./note";
+import InfoBox from "./info-box";
 
 const components = {
   Image,
   Callout,
+  Note,
+  InfoBox,
   pre: ({ children, ...props }: any) => {
     // preタグの中のcodeタグを取得
     const codeElement = children?.props;
