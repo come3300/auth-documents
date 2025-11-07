@@ -8,13 +8,12 @@ category: "laravel-memo"
 
 ## 🎯 本パートの目標
 
-Laravelのプロジェクトに自動で作成されたディレクトリやファイルの意味を理解し、
+Laravelのプロジェクトに自動で作成されたディレクトリやファイルの意味を理解し、  
 「どのファイルにどんな処理を書くのか」が分かるようになります。
 
 ---
 
 ## 🧱 Laravelのディレクトリ構成（2階層）
-
 ```
 ├── app
 │   ├── Console
@@ -70,7 +69,6 @@ Laravelのプロジェクトに自動で作成されたディレクトリやフ�
 ├── tests
 ├── vendor
 ```
-
 ---
 
 ## 📚 各ディレクトリの役割
@@ -94,22 +92,21 @@ Laravelのプロジェクトに自動で作成されたディレクトリやフ�
 
 下記のような流れで、ブラウザからのアクセスが処理されます。
 
-例）ブラウザから **`http://localhost:8085/memo`** にアクセスした場合
+例）ブラウザから **`http://localhost:8085/memo`** にアクセスした場合  
 （ログイン済みの想定）
 
-![リクエスト処理の流れ](/images/laravel-memo/welcome.png)
+
+![リクエスト処理](/images/documents/laravel-memo/step3/image.png)
 
 ---
 
 ### 🧩 1. 初期処理（Bootstrap）
-
-ブラウザからのリクエストを受けて、Laravelの初期設定・環境読み込みが行われます。
+ブラウザからのリクエストを受けて、Laravelの初期設定・環境読み込みが行われます。  
 その後、**URLルーティング**の処理へ進みます。
 
 ---
 
 ### 🌐 2. URLルーティング（`routes/web.php`）
-
 リクエストされたURLを判定し、実行すべきコントローラーを決定します。
 
 ```php
@@ -117,16 +114,13 @@ Laravelのプロジェクトに自動で作成されたディレクトリやフ�
 Route::get('/memo', 'MemoController@index')->name('memo.index');
 ```
 
-<Note type="info">
-/memo にアクセスしたとき、MemoController の index() メソッドを呼び出す設定です。
-</Note>
+➡ /memo にアクセスしたとき、MemoController の index() メソッドを呼び出す設定です。
 
 ---
 
-### 🧠 3. コントローラーにアクセス（app/Http/Controllers）
+# 🧠 3. コントローラーにアクセス（app/Http/Controllers）
 
 ルートで指定されたコントローラーに処理が渡されます。
-
 ```php
 class MemoController extends Controller {
     public function index() {
@@ -140,10 +134,9 @@ class MemoController extends Controller {
 
 ---
 
-### 💾 4. モデルにアクセス（app/Models）
+# 💾 4. モデルにアクセス（app/Models）
 
 コントローラーからモデルを経由してデータベースへアクセスします。
-
 ```php
 class Memo extends Model {
     protected $table = 'memos';
@@ -152,22 +145,19 @@ class Memo extends Model {
 
 ---
 
-### 🗃️ 5. テーブルからデータを取得
+# 🗃️ 5. テーブルからデータを取得
 
 Eloquent ORM（Laravel標準のDB操作機能）を通して、
 memos テーブルから必要なデータを取得します。
 
 ---
 
-### 🧭 6. ビューにデータを渡す（resources/views）
+# 🧭 6. ビューにデータを渡す（resources/views）
 
 コントローラーで取得したデータを、Bladeテンプレートに渡します。
-
 ```php
 return view('memo.index', ['memos' => $memos]);
-```
 
-```blade
 {{-- resources/views/memo/index.blade.php --}}
 @foreach ($memos as $memo)
     <p>{{ $memo->title }}</p>
@@ -176,46 +166,46 @@ return view('memo.index', ['memos' => $memos]);
 
 ---
 
-### 🖥️ 7. ブラウザへレスポンスを返す
+# 🖥️ 7. ブラウザへレスポンスを返す
 
 Bladeで生成されたHTMLがレスポンスとしてブラウザに返され、
 メモ一覧が画面に表示されます。
 
 ---
 
-## 🧩 MVCの関係とLaravelでの配置場所
+# 🧩 MVCの関係とLaravelでの配置場所
 
-| 役割 | Laravelでの配置場所 | 説明 |
-|------|---------------------|------|
-| **Model** | app/Models | データベースとのやり取りを担当 |
-| **View** | resources/views | 画面表示（HTML＋Blade構文）を担当 |
-| **Controller** | app/Http/Controllers | リクエストを受け、ModelとViewを繋ぐ |
+役割	Laravelでの配置場所	説明
+Model	app/Models	データベースとのやり取りを担当
+View	resources/views	画面表示（HTML＋Blade構文）を担当
+Controller	app/Http/Controllers	リクエストを受け、ModelとViewを繋ぐ
+
 
 ---
 
-## 🔄 処理のイメージ図
+# 🔄 処理のイメージ図
 
-```
 Browser
    ↓
-Route（routes/web.php）
+ Route（routes/web.php）
    ↓
-Controller（app/Http/Controllers）
+ Controller（app/Http/Controllers）
    ↓
-Model（app/Models）
+ Model（app/Models）
    ↓
-Database（memosテーブル）
+ Database（memosテーブル）
    ↑
-View（resources/views）
+ View（resources/views）
    ↑
-BrowserにHTMLを返す
-```
+ BrowserにHTMLを返す
+
 
 ---
 
-## 💡 まとめ
+# 💡 まとめ
+- Laravelではディレクトリの役割が明確に分かれており、MVC構造に基づいて開発を行う。
+- Controllerが中心となり、Modelでデータを取得し、Viewで表示する。
+- routes/web.php でURLと処理の関連付けを行う。
+- ログやエラーは storage/logs/laravel.log に出力される。
 
-- ✅ Laravelではディレクトリの役割が明確に分かれており、MVC構造に基づいて開発を行う
-- ✅ Controllerが中心となり、Modelでデータを取得し、Viewで表示する
-- ✅ routes/web.php でURLと処理の関連付けを行う
-- ✅ ログやエラーは storage/logs/laravel.log に出力される
+
