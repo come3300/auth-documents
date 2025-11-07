@@ -9,15 +9,15 @@ export const laravelMemoLessons = [
   {
     id: 2,
     category: 'Laravel入門',
-    title: '📂 Laravelのディレクトリ構成と処理の流れ',
-    description: 'Laravelのディレクトリ構造とMVCアーキテクチャを理解します',
+    title: '🚀 Laravelプロジェクトを立ち上げよう',
+    description: 'Docker環境でLaravelプロジェクトを作成し、Welcome画面を表示します',
     linksrc: '/courses/laravel-memo/lessons/step2',
   },
   {
     id: 3,
     category: 'Laravel入門',
-    title: '🚀 Laravelプロジェクトを立ち上げよう',
-    description: 'Docker環境でLaravelプロジェクトを作成し、Welcome画面を表示します',
+    title: '📂 Laravelのディレクトリ構成と処理の流れ',
+    description: 'Laravelのディレクトリ構造とMVCアーキテクチャを理解します',
     linksrc: '/courses/laravel-memo/lessons/step3',
   },
   {
