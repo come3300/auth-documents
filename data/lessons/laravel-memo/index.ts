@@ -30,8 +30,29 @@ export const laravelMemoLessons = [
   {
     id: 5,
     category: 'Laravel入門',
-    title: 'ユーザー登録画面を Blade で整える',
-    description: 'Bladeテンプレートを使ってユーザー登録画面を作成します',
+    title: '🔐 ユーザー登録画面をBladeで整える',
+    description: 'Bladeテンプレートを使ってユーザー登録画面を作成し、共通レイアウトを管理します',
     linksrc: '/courses/laravel-memo/lessons/step5',
+  },
+  {
+    id: 6,
+    category: 'Laravel入門',
+    title: '📝 メモ投稿画面を作成しよう',
+    description: 'Bladeテンプレートでメモ一覧と編集エリアを持つ2カラム構成の画面を作成します',
+    linksrc: '/courses/laravel-memo/lessons/step6',
+  },
+  {
+    id: 7,
+    category: 'Laravel入門',
+    title: '📦 ユーザーテーブルをマイグレーションで作成する',
+    description: 'Laravelのマイグレーション機能を使ってMySQLにusersテーブルを作成します',
+    linksrc: '/courses/laravel-memo/lessons/step7',
+  },
+  {
+    id: 8,
+    category: 'Laravel入門',
+    title: '✅ ユーザー登録機能を実装',
+    description: 'RegisterControllerを実装し、フォームからDBへのユーザー登録処理を完成させます',
+    linksrc: '/courses/laravel-memo/lessons/step8',
   },
 ];
