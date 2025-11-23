@@ -1,0 +1,396 @@
+---
+title: 基礎コマンド実践問題
+category: linux
+---
+
+# 基礎コマンド実践問題
+
+この章では、これまで学んだ基礎コマンド（cd、ls、pwd、touch、mkdir、rmdir、rm、echo、cat、mv、cp）を使った実践問題に取り組みます。
+
+実際に手を動かして、コマンドの使い方を体で覚えましょう！
+
+---
+
+## 問題1：現在地の確認
+
+**問題：**
+現在いるディレクトリ（カレントディレクトリ）の絶対パスを表示してください。
+
+<details>
+<summary>ヒント</summary>
+
+「Print Working Directory」の略称のコマンドを使います。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+$ pwd
+```
+
+**解説：**
+`pwd`コマンドは、現在のカレントディレクトリの絶対パスを表示します。
+迷子になったときに、今どこにいるか確認するのに便利です。
+
+</details>
+
+---
+
+## 問題2：ディレクトリの作成
+
+**問題：**
+カレントディレクトリに「practice」という名前のディレクトリを作成してください。
+
+<details>
+<summary>ヒント</summary>
+
+「Make Directory」の略称のコマンドを使います。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+$ mkdir practice
+```
+
+**解説：**
+`mkdir ディレクトリ名`で新しいディレクトリを作成できます。
+作成されたか確認するには`ls`コマンドを使いましょう。
+
+```bash
+$ ls
+practice
+```
+
+</details>
+
+---
+
+## 問題3：ディレクトリの移動
+
+**問題：**
+先ほど作成した「practice」ディレクトリに移動してください。
+移動後、`pwd`コマンドで現在地を確認してください。
+
+<details>
+<summary>ヒント</summary>
+
+「Change Directory」の略称のコマンドを使います。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+$ cd practice
+$ pwd
+/home/user/practice  # ← パスの最後にpracticeが追加されている
+```
+
+**解説：**
+`cd ディレクトリ名`でディレクトリを移動できます。
+`pwd`で確認すると、パスの最後に「practice」が追加されていることがわかります。
+
+</details>
+
+---
+
+## 問題4：ファイルの作成
+
+**問題：**
+practiceディレクトリ内に「test.txt」という名前のファイルを作成してください。
+作成後、`ls`コマンドでファイルが存在するか確認してください。
+
+<details>
+<summary>ヒント</summary>
+
+ファイルを新規作成する`touch`コマンドを使います。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+$ touch test.txt
+$ ls
+test.txt
+```
+
+**解説：**
+`touch ファイル名`で空のファイルを作成できます。
+`ls`で確認すると、作成したファイルが表示されます。
+
+</details>
+
+---
+
+## 問題5：複数のファイル作成
+
+**問題：**
+一度のコマンドで「file1.txt」「file2.txt」「file3.txt」の3つのファイルを作成してください。
+
+<details>
+<summary>ヒント</summary>
+
+touchコマンドは、スペースで区切って複数のファイル名を指定できます。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+$ touch file1.txt file2.txt file3.txt
+$ ls
+file1.txt  file2.txt  file3.txt  test.txt
+```
+
+**解説：**
+`touch ファイル1 ファイル2 ファイル3...`のように、スペースで区切って複数指定できます。
+効率的にファイルを作成できますね！
+
+</details>
+
+---
+
+## 問題6：ファイルへの書き込み
+
+**問題：**
+「test.txt」ファイルに「Hello Linux!」という文字列を書き込んでください。
+書き込み後、`cat`コマンドで内容を確認してください。
+
+<details>
+<summary>ヒント</summary>
+
+`echo`コマンドとリダイレクト`>`を使います。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+$ echo "Hello Linux!" > test.txt
+$ cat test.txt
+Hello Linux!
+```
+
+**解説：**
+- `echo "文字列"`：文字列を表示
+- `>`：リダイレクト（出力をファイルに書き込む）
+- `cat ファイル名`：ファイルの内容を表示
+
+**注意：**
+`>`は上書き、`>>`は追記です。
+
+```bash
+$ echo "Hello Linux!" > test.txt   # 上書き
+$ echo "Welcome!" >> test.txt      # 追記
+$ cat test.txt
+Hello Linux!
+Welcome!
+```
+
+</details>
+
+---
+
+## 問題7：ファイル名の変更
+
+**問題：**
+「test.txt」を「memo.txt」にファイル名を変更してください。
+変更後、`ls`コマンドで確認してください。
+
+<details>
+<summary>ヒント</summary>
+
+「Move」の略称である`mv`コマンドを使います。
+右側にファイル名を指定すると、名前変更になります。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+$ mv test.txt memo.txt
+$ ls
+file1.txt  file2.txt  file3.txt  memo.txt
+```
+
+**解説：**
+`mv 元のファイル名 新しいファイル名`でファイル名を変更できます。
+test.txtが消えて、memo.txtが表示されていればOKです。
+
+</details>
+
+---
+
+## 問題8：ファイルのコピー
+
+**問題：**
+「memo.txt」を「backup.txt」という名前でコピーしてください。
+コピー後、両方のファイルが存在することを確認してください。
+
+<details>
+<summary>ヒント</summary>
+
+「Copy」の略称である`cp`コマンドを使います。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+$ cp memo.txt backup.txt
+$ ls
+backup.txt  file1.txt  file2.txt  file3.txt  memo.txt
+
+# 両方のファイルの内容を確認
+$ cat memo.txt
+Hello Linux!
+$ cat backup.txt
+Hello Linux!
+```
+
+**解説：**
+`cp コピー元 コピー先`でファイルをコピーできます。
+`mv`と違い、元のファイルは残ります。
+
+</details>
+
+---
+
+## 問題9：ファイルの削除
+
+**問題：**
+「file1.txt」「file2.txt」「file3.txt」の3つのファイルを削除してください。
+
+<details>
+<summary>ヒント</summary>
+
+「Remove」の略称である`rm`コマンドを使います。
+複数のファイルを一度に削除できます。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+$ rm file1.txt file2.txt file3.txt
+$ ls
+backup.txt  memo.txt
+```
+
+**解説：**
+`rm ファイル名`でファイルを削除できます。
+複数のファイルをスペースで区切って指定することも可能です。
+
+**注意：**
+`rm`で削除したファイルは復元できません！重要なファイルを削除する前は必ず確認しましょう。
+
+</details>
+
+---
+
+## 問題10：総合問題
+
+**問題：**
+以下の手順を実行してください。
+
+1. 親ディレクトリ（1つ上の階層）に戻る
+2. 「project」という名前のディレクトリを作成
+3. 「project」ディレクトリに移動
+4. 「README.md」ファイルを作成
+5. 「README.md」に「# My First Project」と書き込む
+6. ファイルの内容を表示して確認
+
+<details>
+<summary>ヒント</summary>
+
+- 親ディレクトリに戻るには`cd ..`を使います
+- 「..」は「1つ上の階層」を表す特別な記号です
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+# 1. 親ディレクトリに戻る
+$ cd ..
+$ pwd
+/home/user
+
+# 2. projectディレクトリを作成
+$ mkdir project
+
+# 3. projectディレクトリに移動
+$ cd project
+$ pwd
+/home/user/project
+
+# 4. README.mdファイルを作成
+$ touch README.md
+
+# 5. README.mdに文字列を書き込む
+$ echo "# My First Project" > README.md
+
+# 6. ファイルの内容を表示
+$ cat README.md
+# My First Project
+```
+
+**解説：**
+この問題では、これまで学んだコマンドを組み合わせて使いました。
+
+- `cd ..`：親ディレクトリ（1つ上）に移動
+- `mkdir`：ディレクトリ作成
+- `cd`：ディレクトリ移動
+- `touch`：ファイル作成
+- `echo > ファイル名`：ファイルに書き込み
+- `cat`：ファイル内容表示
+
+実際の開発でも、この流れはよく使います！
+
+</details>
+
+---
+
+## まとめ
+
+お疲れ様でした！基礎コマンドの実践問題をクリアできましたか？
+
+**この章で習得したコマンド：**
+
+| コマンド | 用途 | 例 |
+|---------|------|---|
+| `pwd` | 現在地確認 | `pwd` |
+| `ls` | ファイル一覧 | `ls` |
+| `cd` | ディレクトリ移動 | `cd Documents` |
+| `mkdir` | ディレクトリ作成 | `mkdir project` |
+| `touch` | ファイル作成 | `touch test.txt` |
+| `echo` | 文字列表示・書き込み | `echo "Hello" > file.txt` |
+| `cat` | ファイル内容表示 | `cat file.txt` |
+| `mv` | ファイル移動・名前変更 | `mv old.txt new.txt` |
+| `cp` | ファイルコピー | `cp file.txt backup.txt` |
+| `rm` | ファイル削除 | `rm file.txt` |
+
+**次のステップ：**
+これらの基礎コマンドに慣れたら、次は応用コマンド（grep、find、sortなど）に挑戦しましょう！
+
+**練習のコツ：**
+1. 何度も繰り返し実行する
+2. わからなくなったら`pwd`と`ls`で現在地とファイル一覧を確認
+3. 間違えても大丈夫！practiceディレクトリなら何度でもやり直せる
+4. 慣れてきたら、オプション（`ls -l`など）も試してみる
+
+頑張ってください！

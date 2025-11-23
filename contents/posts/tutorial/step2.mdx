@@ -1,0 +1,704 @@
+---
+title: 第2回：講座を受けるための環境構築
+category: tutorial
+---
+このパートでは環境構築を行なっていきます。
+
+## 環境構築とは？
+
+![Photo by Minh Pham](/images/documents/tutorial/install-tools.png)
+
+環境構築とは一言で言うと『これから開発するために必要なものを準備する』ことです。
+では、もっとわかりやすく皆さんが『勉強を机でする』を例に挙げてみましょう。
+皆さん、一度は中学、高校でテスト対策に机に向かって勉強したことがあると思います。
+その時に自身で机に散らばっている漫画やゲーム、スマホを片付けてより
+勉強しやすい環境を作り上げたのではないでしょうか。
+プログラミングで開発を行うときも同じです。プログラミングで開発をよりしやすくするために
+必要なアプリ、ブラウザ、ソフト、プラグインをインストールしていきます。
+{/* ちょっと例えがわかりづらい */}
+
+## Webブラウザのダウンロード
+
+まだダウンロードしていない方はこちらから対応ください。
+当スクールでは、Google Chrome をメインに使用します。
+まだダウンロードしていない方は下記のリンクからダウンロードしてください。
+
+https://www.google.com/chrome
+
+## 各OS別によるセットアップ
+
+ではここからはOSによってセットアップの手順が異なりますので、
+それぞれのOSに合わせてセットアップを行なっていきます。
+
+[Macの方はこちらから](#from-Mac)
+
+[Windowsの方はこちらから](#from-win)
+
+<section id="from-Mac">
+
+## Macの方はこちらから
+
+MacBookをお持ちの方はこちらからセットアップを行なって行きます。
+
+### ターミナル
+
+![ターミナルの画像](/images/documents/tutorial/terminal-img.png)
+
+ターミナルとは、Macに標準で搭載されているコマンドラインアプリです。
+普段皆さんがPCを操作する時はマウスやクリックで操作していると思いますが、
+（これを『GUI』と言います）
+
+ターミナルは文字の入力だけで操作することができます。
+（イメージとしては映画で凄腕ハッカーが表示させている画面です）
+
+ターミナル等のコマンドラインツールを使ってPCを操作することを「CUI」と言います。
+
+{/* TODO ターミナルの開き方も追記すること */}
+
+### VSCのセットアップ
+
+次にVisualStudioCodeをダウンロードしていきます。
+（以下VSCと呼びます）
+
+下記画像のようにリンクからVSCをインストールしてみましょう。
+
+![Photo by Minh Pham](/images/documents/tutorial/vsc-Mac.png)
+
+下記のようにGoogleChromeでダウンロードした場合は、左下にダウンロード中のファイルが表示されます。
+ダウンロードが完了したら.zipファイルをクリックして解凍してみましょう。
+
+![Photo by Minh Pham](/images/documents/tutorial/vsc-install-zip.avif)
+
+解凍したら、VSCのアイコンをアプリケーションの方に移動してみましょう。
+
+![Photo by Minh Pham](/images/documents/tutorial/vsc-app-mv.avif)
+
+そしてクリックしてVSCアプリを起動してみましょう。
+
+![Photo by Minh Pham](/images/documents/tutorial/vsc-open-app.avif)
+
+認証ボタンが表示された場合は『認証』を押してください。
+
+![Photo by Minh Pham](/images/documents/tutorial/vsc-admin-auth.avif)
+
+下記のような画面が表示されたらVSCのインストール完了です。
+
+![Photo by Minh Pham](/images/documents/tutorial/vsc-Mac-init-window.avif)
+
+Macのしたメニューバーにセットアップしておくとすぐに開けるので便利です。
+
+![Photo by Minh Pham](/images/documents/tutorial/vsc-set-underber.png)
+
+### Gitをダウンロードしよう
+
+まずは皆さんのPCにgitがインストールされているか確認してみましょう。
+
+```
+$ git --version
+```
+
+このように入力してみて
+
+```
+git version 2.30.1
+```
+
+このように表示されたらgitがインストールされています。
+その場合は以降スキップしてもらって問題ありません。
+
+### Gitのインストール方法
+
+もしインストールされていない場合は下記のリンクからダウンロードしてください。
+
+https://git-scm.com
+
+①「Download for Mac」をクリック。
+
+![Photo by Minh Pham](/images/documents/tutorial/git-Mac-dl1.png)
+
+②Binnary Installer を選択し、ディスクイメージを入手する。
+
+![Photo by Minh Pham](/images/documents/tutorial/git-Mac-dl2.png)
+
+Githubへ登録
+Githubアカウントをまだ持ってない方は下記リンクからアカウント作成をしてみましょう。
+※アカウント作成の際に使用した情報は忘れずにメモしておいてください。
+
+Git のインストール
+Git のディスクイメージに収納されているpkgファイルをダブルクリックしてインストールする。
+
+![Photo by Minh Pham](/images/documents/tutorial/git-Mac-dl3.png)
+
+インストールの確認
+インストールされているGitのバージョンを確認する。
+
+```
+$ git --version
+```
+
+このように入力してみて
+
+```
+$ git --version
+git version 2.30.1
+```
+
+このように表示されたらGitがインストールされています。
+c
+3. 個人識別情報の設定
+ユーザー情報の設定を行う。
+
+terminal
+
+```
+$ # ユーザー名の設定
+$ git config --global user.name "foo"
+```
+
+```
+$ # メールアドレスの設定
+$ git config --global user.email foo@example.com
+```
+
+```
+$ # ユーザー情報の確認
+$ git config --global user.name
+$ git config --global user.email
+```
+
+4. GitHub にSSH接続
+SSHで利用する認証用の鍵を生成する。
+
+🖥️ terminal
+
+```
+$ # SSHの公開鍵と秘密鍵を作成
+$ ssh-keygen -t ed25519 -C "foo@example.com"
+
+$ # 生成した公開鍵をクリップボードにコピー
+$ pbcopy < ~/.ssh/id_ed25519.pub
+```
+
+①GitHub のサイトより公開鍵の登録画面を開く。
+下記をクリックしてみましょう
+https://github.com/settings/ssh/new
+
+②クライアントの公開鍵を登録する。
+先ほどの①をクリックすると下記のような画面が表示されると思います。
+
+![Photo by Minh Pham](/images/documents/tutorial/git-Mac-dl4.png)
+
+③SSH接続のオプション等を設定して接続確認を行う。（※詳細は公式ガイドを参照）
+
+🖥️ terminal
+
+```
+$ # SSH設定ファイルの作成（または追記）
+$ cat <<EOF >> ~/.ssh/config
+Host *.github.com
+AddKeysToAgent yes
+UseKeychain yes
+IdentityFile ~/.ssh/id_ed25519
+EOF
+
+$ # パスフレーズをキーチェーンに格納
+$ ssh-add --apple-use-keychain ~/.ssh/id_ed25519
+
+$ # SSH接続確認
+$ ssh -T git@github.com
+```
+
+接続に成功すると以下のように表示される。
+
+```
+Hi foo! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+### Docker DeskTopのインストール
+
+最後にDocker Desktop for Macをインストールしていきます。
+
+#### Dockerサイトにアクセスする
+
+Docker Desktop for Macのインストールを始めるには、
+まず公式のDockerのサイトにアクセスし、インストーラをダウンロードします。
+まず、以下のリンクからDocker for Macのダウンロードページにアクセスしましょう。
+
+https://docs.docker.com/desktop/install/Mac-install/
+
+![Photo by Minh Pham](/images/documents/tutorial/Mac-docker-dl1.png.webp)
+
+#### CPUを選択してインストーラをダウンロードする
+
+Dockerのダウンロードページにアクセスすると、最初に「Intel chip」または「Apple silicon」を
+選択するよう求められます。これは、使用するMacのCPUの種類により適したインストーラをダウンロードするためです。
+
+「Intel chip」と「Apple silicon」は、MacのパソコンのCPUの違いを指します。適切なCPUを選択した後、
+画面の指示に従ってインストーラをダウンロードしましょう。
+
+![Photo by Minh Pham](/images/documents/tutorial/Mac-docker-dl2.png.webp)
+
+#### Intel chipかApple siliconか確認する方法
+
+MacのCPUには、「Intel chip」と「Apple silicon」の2種類が存在します。
+これらは、コンピュータの心臓部とも呼ばれるプロセッサの種類を指しています。
+旧来のMacにはIntelのCPUが搭載されていましたが、2020年後期からApple自身が設計した「Apple silicon」
+（Apple M1）チップが搭載されたモデルが発売されるようになりました。
+さらに、2022年以降にはApple M2のCPUが搭載されたモデルの発売も始まっています。
+
+自分のMacが「Intel chip」なのか「Apple silicon」なのか調べるには以下にようにします。
+
+1.メニューバーのリンゴマークをクリックする
+メニューバーのいちばん左にあるApple（リンゴ）マークをクリックしましょう。
+
+2.「このMacについて」をクリックする
+メニューのいちばん上にある「このMacについて」をクリックします
+
+![Photo by Minh Pham](/images/documents/tutorial/Mac-docker-dl3.png.webp)
+
+3.ハードウェアのスペックを確認する
+「チップ」または「プロセッサ」という項目を見ましょう。
+Intel製プロセッサの名前が書かれていたら「Intel chip」、Apple製チップの名前が書かれていたら
+「Apple silicon」です。
+
+![Photo by Minh Pham](/images/documents/tutorial/Mac-docker-dl4.png.webp)
+
+#### インストーラを実行する
+
+ダウンロードが完了したら、インストーラを実行してDocker Desktopをインストールします
+
+1.ダウンロードした「Docker.dmg」を開く
+まず、ダウンロードした「Docker.dmg」を開きます。ダウンロードフォルダから以下のアイコンのファイルを探しましょう。
+
+![Photo by Minh Pham](/images/documents/tutorial/Mac-docker-dl5.png.webp)
+
+2.「Docker.app」のアイコンを「Appllications」にドラッグ&ドロップする
+Docker.dmgを開くと以下のようなウィンドウが出てきます。矢印の通り、
+左側にあるDockerという名前の船のアイコンを右側のApplicationsフォルダにD&Dします。
+
+![Photo by Minh Pham](/images/documents/tutorial/Mac-docker-dl6.png.webp)
+
+#### Docker Desktopを起動する
+
+インストールが完了したら、まず下記の手順で起動確認を行いましょう。
+
+1.アプリケーション一覧から「Docker.app」を開く
+Finderを開き、メニューバーの「移動」から「アプリケーション」を開きます。
+アプリケーションフォルダが開いたら、その中からDockerをダブルクリックして起動しましょう。
+
+![Photo by Minh Pham](/images/documents/tutorial/Mac-docker-dl7.jpg.webp)
+
+2.セキュリティ警告に対して「開く」をクリックする
+MacOSでは、App Store以外からダウンロードしたアプリを開こうとすると以下のような警告がでる場合があります。
+この場合、「開く」をクリックするとアプリを開けます。
+
+![Photo by Minh Pham](/images/documents/tutorial/Mac-docker-dl8.png.webp)
+
+3.アクセス権限の要求に対して「OK」をクリックしてパスワードを入力する
+ここで「Docker Desktop needs privileged access.」というメッセージが出たらOKをクリックしましょう。
+パスワードを入力する画面が出るので、Macのパスワードを入力します。
+
+![Photo by Minh Pham](/images/documents/tutorial/Mac-docker-dl9.png.webp)
+
+4.規約を確認して「Accept」をクリックする
+その次に利用規約が表示されます。内容を確認の上で同意する場合は「Accept」を押します。
+
+![Photo by Minh Pham](/images/documents/tutorial/Mac-docker-dl10.jpg.webp)
+
+承認画面
+⑤Setting画面が表示されるので「Finish」をクリックする。
+規約に同意すると、以下のようなSetting画面が表示されます。特に理由が無い限り「recommended settings」で
+良いでしょう。そのまま「Finish」を押します。
+
+![Photo by Minh Pham](/images/documents/tutorial/Mac-docker-dl11.jpg.webp)
+
+ここまでを完了し、正常に起動できた場合には以下のような「ダッシュボード」が表示されます。
+
+![Photo by Minh Pham](/images/documents/tutorial/Mac-docker-dl12.png.webp)
+
+Docker Desktop for Macのダッシュボード
+⑤動作確認をする
+Docker Desktop for Macが起動できたら、以下の手順で動作確認をしましょう。
+
+1.ターミナルを立ち上げる
+動作確認はターミナルで行います。ターミナルとは、MacOS上でUNIXベースのCUI(コマンドライン・インターフェース)を
+提供するアプリケーションです。ユーザーはコマンドと呼ばれる文字列を入力してシステムの操作やファイル管理を行います。
+ターミナルはMacのアプリケーションフォルダの中にあるユーティリティフォルダから簡単に開くことができます。
+
+![Photo by Minh Pham](/images/documents/tutorial/Mac-docker-dl13.jpg.webp)
+
+Docker Desktop for Macの動作確認
+2.コマンドを入力・実行する
+ターミナルを開いたら、まずは「docker version」というコマンドを入力してみてください。
+これにより、インストールされたDockerのバージョン情報が表示されます。
+
+docker version（Dockerのバージョンを確認）
+Dockerが正常に動作している場合は、以下のような結果が出力されるはずです。
+
+![Photo by Minh Pham](/images/documents/tutorial/Mac-docker-dl14.jpg.webp)
+
+</section>
+
+<section id="from-win">
+
+## Windowsの方はこちらから
+
+Windowsの方はこちらからセットアップを開始していきます。
+
+### コマンドラインのセットアップ
+
+これから皆さんはWSL2というものをコマンドラインとして主に使用していきます
+
+Windows10とWindows11でセットアップ方法が変わってきますので、
+それぞれの手順に従ってセットアップを行なっていきます。
+
+### Windows10でのセットアップ方法
+
+#### 1.Linuxインストール前の準備を行う
+
+何かわからないことがあれば、個別指導にお越しください。
+Windows では、Web 開発のためのコマンドライン端末は別途インストールする必要があります。
+* Windows Subsystem for Linux
+        * Windows10 以前の方「コントロールパネル」→「Windows のプログラムと機能」→
+        「Windows の機能の有効化または無効化」を開く。
+        * Windows11 の方画面下の「Windowsマークを右クリック」→「設定」→「アプリ」 →
+        「オプション機能」→「Windowsのその他の機能」→Windows の機能の有効化または無効化」を開く。
+    1. リストから「Windows Subsystem for Linux」または「Linux用Windowsサブシステム」を探し、
+        チェックを入れる
+
+![Photo by Minh Pham](/images/documents/tutorial/win-wsl-dl1.webp)
+
+2. 画面の指示に従い、再起動する
+
+#### 2.WSL2用Linuxカーネルをインストールする
+
+WSL2用Linuxカーネルをインストールします。以下手順に従い作業を行ってください。
+
+【1】ブラウザで「https://aka.ms/wsl2kernel」にアクセスする
+
+【2】「x64マシン用WSL2 Linuxカーネル更新プログラムパッケージ」をクリックして、インストーラをダウンロードする
+
+【3】ダウンロードしたインストーラをダブルクリックして起動させる
+
+【4】インストーラが起動したら「Next」をクリックしてインストールをすすめる
+
+#### 3.WSL2を既定のバージョンで利用できるようにする
+
+初期設定では、Linuxディストリビューションを動作させる既定のバージョンとしてWSL1が選択されています。
+WSL2を既定のバージョンとするため、以下の操作を実行して下さい。
+
+【1】「Windows」+「R」キーを押す。
+
+【2】「ファイル名を指定して実行」メニューが表示されたら、検索欄に「cmd」と入力し、「OK」をクリックする
+
+【3】コマンドプロンプト（黒い画面）が表示されたら、以下コマンドを入力し「Enter」キーをクリックする
+
+```
+wsl --set-default-version 2
+```
+
+![Photo by Minh Pham](/images/documents/tutorial/win-wsl-dl2.webp)
+
+#### 4.Linuxディストリビューションをインストールする
+
+「Microsoft Store」にアクセスしてLinuxディストリビューションをインストールします。手順は以下の通りです。
+※今回はLinuxディストリビューションのなかでも「Ubuntu」をインストールする手順を紹介します。
+
+【1】Windowsの「スタートボタン」→「Microsoft Store」と進む
+
+![Photo by Minh Pham](/images/documents/tutorial/win-wsl-dl3.webp)
+
+【2】検索欄に「ubuntu」と入力して検索を実行する
+
+【3】検索結果の中から「ubuntu」を選択して、次の画面で「入手」をクリックする
+
+![Photo by Minh Pham](/images/documents/tutorial/win-wsl-dl4.webp)
+
+【4】表示された画面で「開く」をクリックする※インストールが開始されます。
+
+【5】以下のように、ubuntuの初期設定画面が表示される
+
+![Photo by Minh Pham](/images/documents/tutorial/win-wsl-dl5.webp)
+
+画面に従い、以下の順番で入力を進める
+
+1「Enter new UNIX username」新しく作成するユーザー名を入力します
+2「New password」パスワードを入力します
+3「Retype new password」同じパスワードをもう一度入力します
+この入力まで終えたら、ubuntuのインストール作業は完了です。
+お手元のWindowsにて、ubuntuが使えるようになっています。
+
+#### 5.WSL2用Linuxカーネルをインストールする
+
+このままでは、WSL2を使う際にいちいちコマンドプロンプトやPowerShellから起動しなくてはなりません。
+「Windows Terminal」を使うと、WSL2を1つのタブとして切り替えて利用できるようになります。
+
+以下の手順に従い、Windows Terminalをインストールして下さい。
+
+【1】Windowsの「スタートボタン」→「Microsoft Store」と進む
+
+【2】検索欄に「Windows Terminal」と入力して検索を実行する
+
+【3】「Windows Terminal」が見つかったら「入手」をクリックする※インストールが始まります
+
+【4】インストールが完了したら「開く」をクリックする
+
+Windows Terminalでは以下のように下三角ボタンからUbuntu（WSL2）を選択して、1つのタブとして利用が可能です。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-wsl-dl6.webp)
+
+### Windows11でWSL2を使えるようにする手順
+
+Windows11ではコマンドプロンプトにて以下コマンドを実行するだけで、ubuntuがインストールされたWSL2環境が使えるようになります。
+
+```
+wsl --install
+```
+
+このコマンドだけで、以下4つの操作が実行されています。
+
+「Linux用Windowsサブシステム（WSL）」と「仮想マシン プラットフォーム」を有効化する
+WSL2用Linuxカーネルをダウンロード・インストールする
+WSL2を既定のバージョンとする
+Ubuntuディストリビューションをダウンロード・インストールする
+またWindows11は最初からWindows Terminalがインストールされています。Windows10のように、
+改めてインストールする必要もありません。
+
+### VSCのインストール
+
+下記よりまずはダウンロードしましょう。
+https://code.visualstudio.com/download
+
+![Photo by Minh Pham](/images/documents/tutorial/vsc-win.png)
+
+ダウンロードが完了したら右上のダウンロードタブをクリックしてファイルを開くを押しましょう。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-vsc-dl.avif)
+
+### Gitのダウンロードしよう
+
+#### Gitのインストール方法
+
+以下のような画面に遷移すると思います。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl1.avif)
+
+「Download」をクリックしてください。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl2.avif)
+
+Downloadボタンのクリックと同時に「Git-2.37.1-64-bit.exe」がダウンロードされます。
+（※数分かかります）
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl3.avif)
+
+手順2:Gitのインストール
+手順1でダウンロードしたインストーラ(Git-2.37.1-64-bit.exe)を実行してください。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl4.avif)
+
+「Next」をクリックしてください。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl5.avif)
+
+「Next」をクリックしてください。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl6.avif)
+
+「Next」をクリックしてください。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl7.avif)
+
+「Next」をクリックしてください。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl8.avif)
+
+Git関連のファイルを開く際にデフォルトのエディタを設定します。
+任意のエディタを指定してください。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl9.avif)
+
+「Next」をクリックしてください。 (本記事では Use Visual Studio Code as Git's
+default editor を指定しています。)
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl10.avif)
+
+新規リポジトリ作成時のブランチの名前を自動で決める場合は「Let Git
+decide」を選択し、 自分で決める場合は「Override the default branch name for new
+repositories」を選択して、 「Next」をクリックしてください。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl11.avif)
+
+「Git from the command line and also from 3rd-party software」を選択して、
+「Next」をクリックしてください。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl12.avif)
+
+「Use bundled OpenSSL」を選択して、「Next」をクリックしてください。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl13.avif)
+
+「Use the OpenSSL library」を選択して、「Next」をクリックしてください。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl14.avif)
+
+「Checkout Windows-style, commit Unix-style line endings」を選択して、
+「Next」をクリックしてください。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl15.avif)
+
+「Use MinTTY (the default terminal of MSYS2」を選択して、
+「Next」をクリックしてください。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl16.avif)
+
+「Default (fast-forward or merge)」を選択して、 「Next」をクリックしてください。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl17.avif)
+
+「Git Credential Manager」を選択して、 「Next」をクリックしてください。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl18.avif)
+
+両方チェックして、「Next」をクリックしてください。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl19.avif)
+
+何もチェックせず、「Install」をクリックしてください。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl20.avif)
+
+インストールが開始されます。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl21.avif)
+
+以下のように表示されたらインストール完了です。
+
+![Photo by Minh Pham](/images/documents/tutorial/win-git-dl22.avif)
+
+スタートメニューなどで「Git Bash」が表示されていたらインストール成功です。
+
+このように表示されたらgitがインストールされています。
+
+### Gitの設定
+
+ユーザー情報の設定を行う。
+Gitのアカウントを持っていない場合は以下から作成をしてください。
+https://github.com/
+
+ユーザー名とメールアドレスを設定します。
+Git Bashを実行して、以下のコマンドを実行してください。
+
+terminal
+
+```
+$ # ユーザー名の設定
+$ git config --global user.name "foo"
+```
+
+```
+$ # メールアドレスの設定
+$ git config --global user.email foo@example.com
+```
+
+```
+$ # ユーザー情報の確認
+$ git config --global user.name
+$ git config --global user.email
+```
+
+4. GitHub にSSH接続
+SSHで利用する認証用の鍵を生成する。
+
+🖥️ terminal
+
+```
+$ # SSHの公開鍵と秘密鍵を作成
+$ ssh-keygen -t ed25519 -C "foo@example.com"
+
+$ # 生成した公開鍵をクリップボードにコピー
+$ pbcopy < ~/.ssh/id_ed25519.pub
+```
+
+①GitHub のサイトより公開鍵の登録画面を開く。
+下記をクリックしてみましょう
+https://github.com/settings/ssh/new
+
+②クライアントの公開鍵を登録する。
+先ほどの①をクリックすると下記のような画面が表示されると思います。
+
+③SSH接続のオプション等を設定して接続確認を行う。（※詳細は公式ガイドを参照）
+
+🖥️ terminal
+
+```
+$ # SSH設定ファイルの作成（または追記）
+$ cat <<EOF >> ~/.ssh/config
+Host *.github.com
+AddKeysToAgent yes
+UseKeychain yes
+IdentityFile ~/.ssh/id_ed25519
+EOF
+
+$ # パスフレーズをキーチェーンに格納
+$ ssh-add --apple-use-keychain ~/.ssh/id_ed25519
+
+$ # SSH接続確認
+$ ssh -T git@github.com
+```
+
+接続に成功すると以下のように表示される。
+
+```
+Hi foo! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+### Docker DeskTopのインストール
+
+Docker Desktopは、公式サイトから専用インストーラをダウンロードして実行すれば利用が可能です。
+以下、Windows10にDocker Desktopをインストールする手順を紹介します。
+
+Dockerの公式サイトにアクセスし、Dockerのインストーラをダウンロードします。
+
+![Photo by Minh Pham](/images/documents/tutorial/docker-win-dl1.webp)
+
+以下URLにアクセスした上で、「Download Docker Desktop」をクリックしてください。
+
+※Windows以外のOSに関しても、この画面からインストールをダウンロードできます。
+
+https://www.docker.com/products/docker-desktop/
+
+ダウンロードしたインストーラを、ダブルクリックしてください。
+
+![Photo by Minh Pham](/images/documents/tutorial/docker-win-dl2.webp)
+
+インストーラが起動したら、「OK」をクリックして下さい。
+
+※ボックスのチェックは入ったままにします。
+
+インストーラが実行されるので、インストールが完了するまでお待ちください。
+
+![Photo by Minh Pham](/images/documents/tutorial/docker-win-dl3.webp)
+
+インストールが正常に終了すると、「Installation succeeded…」というメッセージが表示されます。
+
+![Photo by Minh Pham](/images/documents/tutorial/docker-win-dl4.webp)
+
+「Close」をクリックして、インストーラを終了して下さい。
+
+インストール終了後、デスクトップに表示される
+「Docker Desktop」のショートカットアイコンをクリックして下さい。
+
+Docker Desktopが起動します。初回の起動時にはライセンスの確認画面が表示されるので、
+「Accept」をクリックして先へ進んでください。
+
+![Photo by Minh Pham](/images/documents/tutorial/docker-win-dl5.webp)
+
+画面が遷移します。次の画面で「Start」をクリックするとチュートリアルが開始されますが、
+「Skip…」をクリックし飛ばしても問題ありません。
+
+![Photo by Minh Pham](/images/documents/tutorial/docker-win-dl6.webp)
+
+チュートリアル完了後（スキップ後）、Docker Desktopの管理画面が表示されます。
+
+</section>

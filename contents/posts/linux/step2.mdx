@@ -1,211 +1,126 @@
 ---
-title: 📝 第2回：Linuxの基礎コマンド
+title: Linuxとは
 category: linux
 ---
 
-{/* http://localhost:3000/documents/phase1/linux/basic-command */}
-
-## Linuxの基本的なコマンド
-
-***
-
-![Photo by Minh Pham](/images/documents/linux/linux_logo.png)
-
-このセクションではLinuxの基本的な操作方法について
-解説していきます。
-
-### 階層とは
-
-例えば下記のような構成のディレクトリがあったとします。
-
-![Photo by Minh Pham](/images/documents/linux/ディレクトリ.png)
-
-**階層**とはディレクトリの保存されている場所の階層のことをいいます。
-ファイルを保存する場所は**ディレクトリ**という単位で分けられています。
+---
+title: 第1回：Linuxとは？
+category: linux
+---
+## Linuxとは
 
 ***
 
-#### 階層の関係
+![Linux Logo](/images/documents/linux/linux_logo.png)
 
-![Photo by Minh Pham](/images/documents/linux/second-explain.png)
+macOSやWindwosと同じOSの1つである。
+Webサーバーを作る際に必須となる。
 
-例えば上記図で言うと
-第2階層の親階層は第1階層になります。
+## OSとは
 
-第2階層を基準として第1階層と第2階層の関係は
-> 親階層→第1階層
-> 子階層→第3階層
+![OS](/images/documents/linux/OS.png)
 
-となります。
+Operating Systemの略称。
+パソコンを動かすためにはこのOSが必ず必要になります。
 
-***
+皆さんが普段使っているPCにも必ずOSが入っています。
+MacBookにはMacOS,WindowsPCにはWindowsといった具合にOSが導入されています。
 
-### 絶対パス/相対パス
+### Linuxの特徴
 
-ファイルの指定の基本相対パスと絶対パスを紹介します
+![Linux Logo](/images/documents/linux/linux_logo.png)
 
-<InfoBox type="info" title="パスとは">
-ファイルを開いたりコマンドを実行したりするためのファイルやコマンドの場所を指定するための指定方法になります。
-コンピュータ上のファイルやディレクトリの「住所」のようなものです。
-</InfoBox>
+・CUI操作を基本としている
+・無料で利用できる
+
+#### CUI操作を基本としている
+
+Linuxは、テキストベースのコマンドラインインターフェース（CUI）を基本として操作されます。
+これは、ユーザーがコマンドを入力してターミナル上で操作を行うことを意味します。
+
+例えばCUIを使ってsampleという名のディレクトリを作成したい時には
+下記のコマンドを入力します。
+
+```bash
+$ mkdir sample
+```
+
+このように入力することでsampleディレクトリが作成されます。
 
 <Note type="tip">
-**日常生活で例えると...**
-パスは住所のようなものです。友達に「家に来て」と伝える時に、
-- 「東京都渋谷区〇〇1-2-3」と伝えるのが**絶対パス**（どこからでも辿り着ける）
-- 「駅から2つ目の角を右」と伝えるのが**相対パス**（今いる場所によって道順が変わる）
-
-このような違いがあります。
+**実際に試してみよう！**
+Linuxのコマンドは実際に操作してみることで理解が深まります。まずは簡単なコマンドから試してみましょう。
 </Note>
 
-![Photo by Minh Pham](/images/documents/linux/絶対パス.png)
+#### 実践：基本コマンドで操作を体験しよう
 
-#### 絶対パスとは
+実際にコマンドを使って、Linuxの操作感覚を掴んでいきましょう。
+以下の手順を順番に実行してみてください。
 
-![Photo by Minh Pham](/images/documents/linux/絶対パス.png)
+**ステップ1：現在の場所を確認する**
 
-ルートディレクトリを基準点として指定する方法です。
-この表示方法は、カレントディレクトリ（現在表示しているディレクトリ）がどこであっても、
-間違いなく目的のファイルを指定できます。
+```bash
+$ pwd
+```
 
-<InfoBox type="info" title="用語解説：ルートディレクトリ">
-**ルートディレクトリ**とは、対象のディレクトリがある最上位のディレクトリのことを指します。
-Linuxでは「/」（スラッシュ）で表され、すべてのディレクトリの起点となる場所です。
-木の根（root）のように、すべての枝（ディレクトリ）が派生する大元と考えるとわかりやすいでしょう。
+<InfoBox type="info" title="pwdコマンドとは">
+**pwd**は「Print Working Directory」の略で、現在いるディレクトリ（フォルダ）の場所を表示してくれます。
+自分が今どこにいるのかを確認するための基本的なコマンドです。
 </InfoBox>
 
-<Note type="info">
-**絶対パスの例：**
+**ステップ2：練習用のディレクトリを作成する**
+
+```bash
+$ mkdir practice
 ```
-/Users/yonekura/Documents/practice/sample.txt
+
+**ステップ3：作成されたか確認する**
+
+```bash
+$ ls
 ```
-このパスは、どのディレクトリにいても必ず同じファイルを指し示します。
-先頭の「/」がルートディレクトリを表しています。
-</Note>
 
-#### 相対パスとは
-
-![Photo by Minh Pham](/images/documents/linux/相対パス.png)
-
-カレントディレクトリを基準点として指定する方法になります。
-つまり、ある対象のディレクトリからどういったパスでファイルを指定すれば
-アクセスしたいファイルやディレクトリにアクセスできるかを示す方法です。
-
-<InfoBox type="info" title="用語解説：カレントディレクトリ">
-**カレントディレクトリ**とは、現在自分がいるディレクトリのことです。
-「current（現在の）」という意味で、作業中のディレクトリを指します。
-pwdコマンドを使うと、カレントディレクトリの場所を確認できます。
+<InfoBox type="info" title="lsコマンドとは">
+**ls**は「list」の略で、現在のディレクトリ内にあるファイルやディレクトリの一覧を表示します。
+作成した「practice」ディレクトリが表示されていれば成功です。
 </InfoBox>
 
-<Note type="info">
-**相対パスの例：**
-もし現在のディレクトリが `/Users/yonekura/Documents` だとすると、
-```
-practice/sample.txt
-```
-と指定すれば、`/Users/yonekura/Documents/practice/sample.txt` にアクセスできます。
+**ステップ4：作成したディレクトリに移動する**
 
-一つ上の階層に戻りたい場合は「..」（ドット2つ）を使います：
+```bash
+$ cd practice
 ```
-../Downloads/file.txt
+
+<InfoBox type="info" title="cdコマンドとは">
+**cd**は「Change Directory」の略で、ディレクトリを移動するためのコマンドです。
+「cd practice」と入力すると、practiceディレクトリの中に移動できます。
+</InfoBox>
+
+**ステップ5：移動できたか確認する**
+
+```bash
+$ pwd
 ```
+
+実行すると、パスの最後に「/practice」が追加されていることが確認できます。
+これで、practiceディレクトリに移動できたことがわかります。
+
+<Note type="tip">
+コマンド操作に慣れてきましたか？最初は戸惑うかもしれませんが、この4つのコマンド（pwd、mkdir、ls、cd）を覚えるだけで、Linuxの基本的な操作ができるようになります。
 </Note>
 
-<Note type="warn">
-**相対パスの注意点**
-相対パスは現在いる場所によって意味が変わります。
-カレントディレクトリが異なると、同じ相対パスでも違うファイルを指してしまうことがあるので注意しましょう。
-</Note>
+### 無料で利用できる
 
-### VSCでの参照の仕方
+Linuxは基本的に無料で利用可能です。
 
-皆さんがお使いのエディターであるVSCでのパスの参照のやり方を紹介します。
+例えば、Windows11のOSを入れているPCでLinuxを使用したいときは
+下記コマンドを入力します。
 
-1,左タブから指定したいファイルまたはディレクトリの上で右クリックをします。
-
-![Photo by Minh Pham](/images/documents/linux/VSCのパスの解説.png)
-
-2,表示されたメニューからパスのコピーまたは相対パスのコピーを選択することで
-パスをコピーすることができます。
-
-![Photo by Minh Pham](/images/documents/linux/VSCのパスの解説 ズーム.png)
-
-※パスのコピーを選択すると絶対パスがコピーされます。
-
-### Linuxの基本的なコマンド
-
-#### pwdコマンド
-
-```
-yonekuradaisuke@yonekuradaisukenoMacBook-Pro-2 ~ % pwd
-/Users/yonekuradaisuke
+```bash
+$ wsl --install
 ```
 
-pwdコマンドはルートディレクトリから今いる階層までを絶対パスで表示してくれます
+このコマンド一つでLinuxの導入が無料でできてしまいます。
 
-#### lsコマンド
-
-```
-yonekuradaisuke@yonekuradaisukenoMacBook-Pro-2 ~ % ls
-Applications		Music			sample.txt
-Creative Cloud Files	Pictures		sample1
-Desktop			Postman			unimatrix
-Documents		Public			www
-Downloads		Sites			zshrc
-Library			go
-Movies			kouda
-```
-
-lsコマンドは今いる階層より一つ下にある階層のファイルや
-ディレクトリを表示してくれるコマンドになります。
-
-#### cdコマンド
-
-```
-$ cd  sample2
-```
-
-cdコマンドは階層を移動したい時に使用することができます。
-
-#### mkdirコマンド
-
-```
-$ mkdir sample4
-```
-
-mkdirコマンドはmake direcrotyの略です。
-mkdir ディレクトリ名
-でディレクトリを作成することのできるコマンドです。
-
-#### rmdirコマンド
-
-```
-$ rmdir sample2
-```
-
-空のディレクトリを削除できるコマンドです。
-
-#### rmコマンド
-
-```
-$ rm sample3
-```
-
-rmコマンド(removefile)コマンドは空のファイルやディレクトリを
-削除できるコマンドになります。
-
-```
-$ rm -r sample3
-```
-
-ちなみに、rmの右隣に半角スペース打って -r と入力することで
-中身のあるディレクトリやファイルも削除することができます。
-この-rをオプションコマンドと呼びます。
-
-#### catコマンド
-
-```
-$ cat sample2.txt
-```
-
-catコマンドはファイルの中身を閲覧できるコマンドになります。
+他にも中古のPCを購入してその中にLinuxを導入してサーバーとして
+利用するなんて方法もできてしまいます。

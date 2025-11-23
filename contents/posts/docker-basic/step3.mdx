@@ -1,0 +1,736 @@
+---
+title: 第3回：Docker Compose
+category: docker
+---
+
+## Docker Composeとは
+
+![Docker Compose](/images/documents/docker-basic/docker-compose.png)
+
+Docker Composeとは、複数のDockerコンテナを一括で管理するためのツールです。
+1つのファイル（`docker-compose.yml`）に設定を書くだけで、複数のコンテナをまとめて起動・停止できます。
+
+**日常生活の例え:オーケストラの指揮者**
+
+オーケストラを想像してください。たくさんの楽器奏者（コンテナ）がいて、それぞれが違う楽器を演奏します。
+
+- 指揮者 = Docker Compose
+- 楽器奏者 = 個々のコンテナ（Webサーバー、データベース、キャッシュなど）
+- 楽譜 = docker-compose.yml
+- 演奏 = アプリケーション全体の動作
+
+指揮者が楽譜を見て全員に指示を出すことで、美しいハーモニーが生まれます。
+Docker Composeも同じように、設定ファイルに基づいて複数のコンテナを協調動作させます。
+
+**Docker Composeが解決する問題：**
+- 複数のコンテナを1つずつ起動するのは面倒
+- コンテナ間の接続設定が複雑
+- チームメンバーと同じ環境を共有したい
+
+## メリット
+
+### Docker Composeを使わない場合
+
+まず、Docker Composeを使わずに、Webアプリとデータベースを起動する例を見てみましょう。
+
+**手順（とても面倒）：**
+
+```bash
+# 1. ネットワークを作成
+docker network create my-network
+
+# 2. データベースコンテナを起動
+docker run -d \
+  --name mysql \
+  --network my-network \
+  -e MYSQL_ROOT_PASSWORD=root \
+  -e MYSQL_DATABASE=mydb \
+  -e MYSQL_USER=user \
+  -e MYSQL_PASSWORD=password \
+  -v db-data:/var/lib/mysql \
+  -p 3306:3306 \
+  mysql:8.0
+
+# 3. Webアプリのイメージをビルド
+docker build -t my-app .
+
+# 4. Webアプリコンテナを起動
+docker run -d \
+  --name web \
+  --network my-network \
+  -e DATABASE_HOST=mysql \
+  -e DATABASE_USER=user \
+  -e DATABASE_PASSWORD=password \
+  -v $(pwd):/app \
+  -p 8080:80 \
+  my-app
+```
+
+**問題点：**
+- コマンドが長くて覚えられない
+- 環境変数やボリュームの設定がバラバラ
+- 新しいメンバーに説明するのが大変
+- コンテナを停止・削除する際も1つずつ実行が必要
+
+### Docker Composeを使う場合
+
+同じことをDocker Composeで実現すると、驚くほどシンプルになります。
+
+**docker-compose.yml:**
+```yaml
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/app
+    environment:
+      DATABASE_HOST: mysql
+      DATABASE_USER: user
+      DATABASE_PASSWORD: password
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+volumes:
+  db-data:
+```
+
+**実行コマンド（たったこれだけ）：**
+```bash
+# すべてのコンテナを起動
+docker-compose up -d
+
+# すべてのコンテナを停止・削除
+docker-compose down
+```
+
+### Docker Composeのメリットまとめ
+
+| 項目 | Docker CLI | Docker Compose |
+|------|-----------|----------------|
+| 起動コマンド | 長い（何行も） | 短い（1行） |
+| 設定の管理 | コマンドに埋め込み | YAMLファイルで一元管理 |
+| 再現性 | コマンドを記録する必要 | ファイルを共有するだけ |
+| ネットワーク設定 | 手動で作成 | 自動で作成 |
+| チーム共有 | 難しい | 簡単（ファイルをGitで共有） |
+
+## docker-compose.ymlファイル
+
+これから、`docker-compose.yml`ファイルの書き方を詳しく解説していきます。
+このファイルに、起動したいコンテナの設定をすべて書いていきます。
+
+**ファイル名の注意点：**
+- ファイル名は `docker-compose.yml` または `docker-compose.yaml` にする
+- プロジェクトのルートディレクトリに配置する
+- YAML形式で記述する（インデントが重要！）
+
+### 書き方
+
+docker-compose.ymlは、YAML形式で記述します。YAMLはインデント（字下げ）で階層を表現する形式です。
+
+**基本構造：**
+```yaml
+version: '3.8'  # Docker Composeのバージョン
+
+services:       # コンテナの定義
+  サービス名1:
+    設定項目...
+  サービス名2:
+    設定項目...
+
+volumes:        # ボリュームの定義（オプション）
+  ボリューム名:
+
+networks:       # ネットワークの定義（オプション）
+  ネットワーク名:
+```
+
+**YAMLの書き方のポイント：**
+
+1. **インデントは半角スペース2つ**（タブは使わない）
+```yaml
+# Good
+services:
+  web:
+    image: nginx
+
+# Bad（タブを使っている）
+services:
+	web:
+		image: nginx
+```
+
+2. **コロン（:）の後にはスペースが必要**
+```yaml
+# Good
+image: nginx
+
+# Bad（スペースがない）
+image:nginx
+```
+
+3. **リスト項目はハイフン（-）で始める**
+```yaml
+ports:
+  - "8080:80"
+  - "443:443"
+```
+
+### 役割
+
+それでは、具体的なdocker-compose.ymlファイルを見ながら、各行の意味を理解していきましょう。
+
+**例：PHPアプリ + MySQL + phpMyAdminの構成**
+
+```yaml
+version: '3.8'
+
+services:
+  # Webアプリケーション
+  app:
+    build: ./php
+    ports:
+      - "8000:80"
+    volumes:
+      - ./php:/var/www/html
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_NAME: todo_db
+      DB_USER: user
+      DB_PASSWORD: password
+
+  # データベース
+  db:
+    image: mysql:8.0
+    platform: linux/amd64
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: todo_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+
+  # データベース管理ツール
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    platform: linux/amd64
+    container_name: phpmyadmin
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: user
+      PMA_PASSWORD: password
+
+volumes:
+  db-data:
+```
+
+#### 各項目の詳細解説
+
+**1. version（バージョン指定）**
+```yaml
+version: '3.8'
+```
+- Docker Composeのファイル形式のバージョンを指定
+- `3.8`は現在広く使われているバージョン
+- 特別な理由がなければ`3.8`を使えばOK
+
+---
+
+**2. services（サービス定義）**
+```yaml
+services:
+  app:
+    # appサービスの設定
+  db:
+    # dbサービスの設定
+```
+- 起動したいコンテナを定義するセクション
+- `app`、`db`、`phpmyadmin`はサービス名（自由に命名可能）
+- サービス名は、コンテナ間の通信で使われる
+
+---
+
+**3. build（イメージのビルド）**
+```yaml
+app:
+  build: ./php
+```
+- Dockerfileからイメージをビルドする
+- `./php`は、Dockerfileがあるディレクトリのパス
+- より詳細な設定も可能：
+```yaml
+build:
+  context: ./php
+  dockerfile: Dockerfile
+  args:
+    - PHP_VERSION=8.1
+```
+
+---
+
+**4. image（イメージの指定）**
+```yaml
+db:
+  image: mysql:8.0
+```
+- Docker Hubから既存のイメージを取得
+- `mysql:8.0`はイメージ名とタグ
+- `build`と`image`は併用しない（どちらか一方を使う）
+
+---
+
+**5. container_name（コンテナ名）**
+```yaml
+db:
+  container_name: mysql
+```
+- コンテナに付ける名前を明示的に指定
+- 省略すると、`プロジェクト名_サービス名_番号`という名前になる
+- 指定すると、`docker ps`で見やすくなる
+
+---
+
+**6. ports（ポートマッピング）**
+```yaml
+app:
+  ports:
+    - "8000:80"
+```
+- ホストのポートとコンテナのポートを紐付ける
+- 書式：`"ホスト側:コンテナ側"`
+- 例：`"8000:80"` = ホストの8000番をコンテナの80番に転送
+
+**複数ポートの場合：**
+```yaml
+ports:
+  - "8000:80"
+  - "8443:443"
+```
+
+**IPアドレスを指定する場合：**
+```yaml
+ports:
+  - "127.0.0.1:8000:80"  # ローカルホストからのみアクセス可能
+```
+
+---
+
+**7. volumes（ボリュームマウント）**
+```yaml
+app:
+  volumes:
+    - ./php:/var/www/html
+db:
+  volumes:
+    - db-data:/var/lib/mysql
+```
+
+**2種類のボリュームマウント：**
+
+**バインドマウント（ホストのディレクトリを共有）：**
+```yaml
+volumes:
+  - ./php:/var/www/html
+```
+- ホストの`./php`とコンテナの`/var/www/html`を同期
+- ファイルを編集すると即座に反映される（開発時に便利）
+
+**名前付きボリューム（Dockerが管理）：**
+```yaml
+volumes:
+  - db-data:/var/lib/mysql
+```
+- Dockerが管理する永続ストレージ
+- コンテナを削除してもデータが残る
+- データベースのデータ保存に最適
+
+---
+
+**8. environment（環境変数）**
+```yaml
+db:
+  environment:
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_DATABASE: todo_db
+    MYSQL_USER: user
+    MYSQL_PASSWORD: password
+```
+
+**環境変数の設定方法：**
+
+**方法1：直接記述**
+```yaml
+environment:
+  NODE_ENV: production
+  PORT: 3000
+```
+
+**方法2：配列形式**
+```yaml
+environment:
+  - NODE_ENV=production
+  - PORT=3000
+```
+
+**方法3：.envファイルを使う（推奨）**
+```yaml
+env_file:
+  - .env
+```
+
+**.envファイル：**
+```
+MYSQL_ROOT_PASSWORD=root
+MYSQL_DATABASE=todo_db
+MYSQL_USER=user
+MYSQL_PASSWORD=password
+```
+
+---
+
+**9. depends_on（起動順序）**
+```yaml
+app:
+  depends_on:
+    - db
+```
+- コンテナの起動順序を制御
+- `app`は`db`の後に起動される
+- **注意：** 起動は待つが、「準備完了」は待たない
+
+**複数の依存関係：**
+```yaml
+app:
+  depends_on:
+    - db
+    - redis
+    - cache
+```
+
+---
+
+**10. platform（プラットフォーム指定）**
+```yaml
+db:
+  platform: linux/amd64
+```
+- 実行プラットフォームを指定
+- Apple Silicon（M1/M2）でIntelイメージを動かす場合に使用
+- `linux/amd64` = Intel/AMD 64bit
+- `linux/arm64` = ARM 64bit
+
+---
+
+**11. restart（再起動ポリシー）**
+```yaml
+db:
+  restart: always
+```
+
+**オプション：**
+- `no` = 再起動しない（デフォルト）
+- `always` = 常に再起動
+- `on-failure` = エラー終了時のみ再起動
+- `unless-stopped` = 手動停止以外は再起動
+
+---
+
+**12. networks（ネットワーク）**
+```yaml
+app:
+  networks:
+    - frontend
+    - backend
+```
+- コンテナが所属するネットワークを指定
+- 同じネットワーク内のコンテナ同士は通信可能
+- 省略すると、自動的にデフォルトネットワークが作成される
+
+### 実際にdocker-compose.ymlファイルを書いてみよう
+
+それでは、実際に動くdocker-compose.ymlファイルを書いてみましょう。
+
+#### 例1：Node.js + MongoDB + Mongo Express
+
+**作りたいもの：**
+- Node.jsのWebアプリケーション
+- MongoDBデータベース
+- Mongo Express（MongoDBの管理画面）
+
+**ディレクトリ構成：**
+```
+my-project/
+├── docker-compose.yml
+├── app/
+│   ├── Dockerfile
+│   ├── package.json
+│   └── server.js
+└── .env
+```
+
+**docker-compose.yml:**
+```yaml
+version: '3.8'
+
+services:
+  # Node.jsアプリケーション
+  app:
+    build: ./app
+    container_name: node-app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app:/usr/src/app
+      - /usr/src/app/node_modules  # node_modulesはコンテナ内のものを使う
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://mongo:27017/mydb
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  # MongoDBデータベース
+  mongo:
+    image: mongo:6.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    restart: unless-stopped
+
+  # Mongo Express（管理画面）
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_MONGODB_URL=mongodb://admin:password@mongo:27017/
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+volumes:
+  mongo-data:
+```
+
+**実行方法：**
+```bash
+# すべてのコンテナを起動
+docker-compose up -d
+
+# ログを確認
+docker-compose logs -f
+
+# 特定のサービスのログを確認
+docker-compose logs -f app
+
+# すべてのコンテナを停止
+docker-compose stop
+
+# すべてのコンテナを停止して削除
+docker-compose down
+
+# ボリュームも含めてすべて削除
+docker-compose down -v
+```
+
+#### 例2：WordPress + MySQL
+
+**作りたいもの：**
+- WordPressサイト
+- MySQLデータベース
+
+**docker-compose.yml:**
+```yaml
+version: '3.8'
+
+services:
+  # WordPress
+  wordpress:
+    image: wordpress:latest
+    container_name: wordpress
+    ports:
+      - "8000:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress_password
+      WORDPRESS_DB_NAME: wordpress_db
+    volumes:
+      - wordpress-data:/var/www/html
+    depends_on:
+      - db
+    restart: always
+
+  # MySQL
+  db:
+    image: mysql:8.0
+    container_name: wordpress-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: wordpress_db
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress_password
+    volumes:
+      - db-data:/var/lib/mysql
+    restart: always
+
+volumes:
+  wordpress-data:
+  db-data:
+```
+
+**実行方法：**
+```bash
+# 起動
+docker-compose up -d
+
+# http://localhost:8000 にアクセスしてWordPressのセットアップ
+
+# 停止
+docker-compose down
+```
+
+#### 例3：フルスタック開発環境（React + Express + PostgreSQL + Redis）
+
+**作りたいもの：**
+- Reactフロントエンド
+- Express APIサーバー
+- PostgreSQLデータベース
+- Redisキャッシュ
+
+**docker-compose.yml:**
+```yaml
+version: '3.8'
+
+services:
+  # Reactフロントエンド
+  frontend:
+    build: ./frontend
+    container_name: react-app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
+    stdin_open: true
+    tty: true
+
+  # Express APIサーバー
+  backend:
+    build: ./backend
+    container_name: express-api
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:password@db:5432/mydb
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+
+  # PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: postgres-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: redis-cache
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+  redis-data:
+```
+
+## 便利なDocker Composeコマンド
+
+```bash
+# バックグラウンドで起動
+docker-compose up -d
+
+# イメージを再ビルドしてから起動
+docker-compose up --build
+
+# 特定のサービスだけ起動
+docker-compose up app
+
+# ログをリアルタイムで表示
+docker-compose logs -f
+
+# 実行中のコンテナ一覧
+docker-compose ps
+
+# コンテナ内でコマンド実行
+docker-compose exec app bash
+
+# コンテナを再起動
+docker-compose restart
+
+# 停止して削除（ボリュームは残る）
+docker-compose down
+
+# 停止して削除（ボリュームも削除）
+docker-compose down -v
+
+# 設定ファイルの検証
+docker-compose config
+```
+
+---
+
+これでDocker Composeの基本は理解できました！次回は、実際にDocker環境を構築してみましょう。

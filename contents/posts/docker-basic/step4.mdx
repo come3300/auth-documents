@@ -1,0 +1,455 @@
+---
+title: 第4回：Dockerを構築してみよう その1（Docker CLIで構築）
+category: docker
+---
+
+## この回で学ぶこと
+
+この回では、Docker Composeを使わずに、Docker CLIコマンドだけで環境を構築する方法を学びます。
+
+**なぜDocker CLIを学ぶの？**
+- Docker Composeの裏側で何が起きているかを理解できる
+- トラブルシューティングに役立つ
+- 単発のコンテナを起動する際に便利
+
+**構築するもの：**
+- PHPアプリケーション（Todoリスト）
+- MySQLデータベース
+- phpMyAdmin（データベース管理ツール）
+
+**日常生活の例え：**
+Docker Composeは「料理キット」、Docker CLIは「材料を1つずつ買って料理する」イメージです。
+手間はかかりますが、何が必要で何をしているのかがよくわかります。
+
+## 準備：全体像を理解しよう
+
+まず、これから作る構成を図で理解しましょう。
+
+```
+┌─────────────────┐
+│  あなたのPC     │
+│  (ホスト)       │
+├─────────────────┤
+│                 │
+│  ┌───────────┐  │
+│  │ todo-app  │  │ ← PHPアプリケーション
+│  │ :8000     │  │    (ポート8000でアクセス)
+│  └─────┬─────┘  │
+│        │        │
+│  ┌─────▼─────┐  │
+│  │   mysql   │  │ ← データベース
+│  │   :3306   │  │    (ポート3306)
+│  └─────┬─────┘  │
+│        │        │
+│  ┌─────▼─────┐  │
+│  │phpmyadmin │  │ ← DB管理ツール
+│  │   :8080   │  │    (ポート8080でアクセス)
+│  └───────────┘  │
+│                 │
+│  todo-net       │ ← コンテナ間通信用ネットワーク
+│  db-data        │ ← データ永続化用ボリューム
+└─────────────────┘
+```
+
+## 手順1：ネットワークとボリュームを作成
+
+まず、コンテナ同士が通信するためのネットワークと、データを保存するボリュームを作ります。
+
+**日常生活の例え：**
+- ネットワーク = 電話回線（コンテナ同士が通話できるようにする）
+- ボリューム = 外付けHDD（データを永続保存する場所）
+
+```bash
+# ネットワークを作成
+docker network create todo-net
+
+# ボリュームを作成
+docker volume create db-data
+```
+
+**確認コマンド：**
+```bash
+# ネットワーク一覧を表示
+docker network ls
+
+# ボリューム一覧を表示
+docker volume ls
+```
+
+**実行結果の例：**
+```
+NETWORK ID     NAME       DRIVER
+abc123def456   todo-net   bridge
+
+VOLUME NAME
+db-data
+```
+
+## 手順2：アプリのDockerfileを準備
+
+PHPアプリケーション用のDockerfileを作成します。
+
+**ディレクトリ構成：**
+```
+my-todo-app/
+├── php/
+│   ├── Dockerfile
+│   ├── index.php
+│   └── db.php
+└── (この記事で実行するコマンド)
+```
+
+**php/Dockerfile:**
+```dockerfile
+# PHPとApacheが入ったイメージを使用
+FROM php:8.1-apache
+
+# MySQLに接続するための拡張機能をインストール
+RUN docker-php-ext-install mysqli pdo pdo_mysql
+
+# ドキュメントルートを設定
+WORKDIR /var/www/html
+
+# PHPファイルをコピー
+COPY . /var/www/html/
+
+# ポート80を公開
+EXPOSE 80
+```
+
+**php/index.php（簡単な例）:**
+```php
+<?php
+$host = 'mysql';  // Dockerネットワーク内のコンテナ名
+$db = 'todo_db';
+$user = 'user';
+$pass = 'password';
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
+    echo "データベース接続成功！";
+} catch (PDOException $e) {
+    echo "接続失敗: " . $e->getMessage();
+}
+?>
+```
+
+## 手順3：アプリのイメージをビルド
+
+Dockerfileからイメージを作成します。
+
+```bash
+# phpディレクトリに移動（Dockerfileがある場所）
+cd my-todo-app
+
+# イメージをビルド（-tでイメージ名を指定）
+docker build -t todo-app ./php
+```
+
+**コマンドの意味：**
+- `docker build` = イメージをビルドするコマンド
+- `-t todo-app` = イメージに「todo-app」という名前を付ける
+- `./php` = Dockerfileがあるディレクトリのパス
+
+**確認：**
+```bash
+# イメージ一覧を表示
+docker images
+```
+
+## 手順4：MySQLコンテナを起動
+
+データベース用のMySQLコンテナを起動します。
+
+```bash
+docker run -d \
+  --name mysql \
+  --network todo-net \
+  --platform linux/amd64 \
+  -e MYSQL_ROOT_PASSWORD=root \
+  -e MYSQL_DATABASE=todo_db \
+  -e MYSQL_USER=user \
+  -e MYSQL_PASSWORD=password \
+  -v db-data:/var/lib/mysql \
+  -p 3306:3306 \
+  mysql:8.0
+```
+
+**各オプションの詳しい説明：**
+
+| オプション | 意味 | 具体例 |
+|----------|-----|-------|
+| `-d` | バックグラウンドで実行 | 端末を閉じても動き続ける |
+| `--name mysql` | コンテナに名前を付ける | 「mysql」という名前で管理 |
+| `--network todo-net` | ネットワークに接続 | 他のコンテナと通信可能に |
+| `--platform linux/amd64` | プラットフォーム指定 | M1/M2 Macでも動作 |
+| `-e MYSQL_ROOT_PASSWORD=root` | rootパスワード設定 | セキュリティ上必須 |
+| `-e MYSQL_DATABASE=todo_db` | DB作成 | 起動時にtodo_dbを作成 |
+| `-e MYSQL_USER=user` | ユーザー作成 | アプリ用のユーザー |
+| `-e MYSQL_PASSWORD=password` | ユーザーのパスワード | アプリからの接続用 |
+| `-v db-data:/var/lib/mysql` | ボリュームマウント | データを永続化 |
+| `-p 3306:3306` | ポート公開 | ホストからもアクセス可能 |
+| `mysql:8.0` | 使用するイメージ | MySQL 8.0の公式イメージ |
+
+**確認：**
+```bash
+# 起動中のコンテナ一覧
+docker ps
+
+# MySQLのログを確認
+docker logs mysql
+```
+
+## 手順5：MySQLの準備完了を待つ
+
+MySQLが完全に起動するまで少し時間がかかります。準備ができたか確認しましょう。
+
+```bash
+# ログをリアルタイムで表示（Ctrl+Cで終了）
+docker logs -f mysql
+
+# 準備完了のメッセージを待つ
+# 「ready for connections」が表示されればOK
+```
+
+**または、接続テストで確認：**
+```bash
+# mysqladminコマンドで接続確認
+docker exec -it mysql mysqladmin -uuser -ppassword ping
+```
+
+**成功時の表示：**
+```
+mysqld is alive
+```
+
+## 手順6：初回テーブル作成
+
+アプリで使うテーブルを作成します。
+
+```bash
+# MySQLコンテナ内でSQLを実行
+docker exec -i mysql mysql -uuser -ppassword todo_db <<'SQL'
+CREATE TABLE IF NOT EXISTS todos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  task TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+SQL
+```
+
+**コマンドの意味：**
+- `docker exec -i mysql` = mysqlコンテナ内でコマンド実行
+- `mysql -uuser -ppassword todo_db` = MySQLクライアントでログイン
+- `<<'SQL' ... SQL` = ここからここまでのSQLを実行（ヒアドキュメント）
+
+**確認：**
+```bash
+# テーブルが作成されたか確認
+docker exec -it mysql mysql -uuser -ppassword todo_db -e "SHOW TABLES;"
+```
+
+**表示例：**
+```
++-------------------+
+| Tables_in_todo_db |
++-------------------+
+| todos             |
++-------------------+
+```
+
+## 手順7：phpMyAdminを起動
+
+データベースを視覚的に管理できるツールを起動します。
+
+```bash
+docker run -d \
+  --name phpmyadmin \
+  --network todo-net \
+  --platform linux/amd64 \
+  -e PMA_HOST=mysql \
+  -e PMA_USER=user \
+  -e PMA_PASSWORD=password \
+  -p 8080:80 \
+  phpmyadmin/phpmyadmin
+```
+
+**各オプションの説明：**
+- `PMA_HOST=mysql` = 接続先のMySQLコンテナ名
+- `PMA_USER=user` = ログイン用ユーザー名
+- `PMA_PASSWORD=password` = ログイン用パスワード
+- `-p 8080:80` = ホストの8080番をコンテナの80番に転送
+
+**確認：**
+ブラウザで http://localhost:8080 にアクセスして、phpMyAdminが表示されればOK
+
+## 手順8：アプリコンテナを起動
+
+最後に、PHPアプリケーションのコンテナを起動します。
+
+```bash
+docker run -d \
+  --name todo-app \
+  --network todo-net \
+  -v $(pwd)/php:/var/www/html:delegated \
+  -p 8000:80 \
+  todo-app
+```
+
+**各オプションの説明：**
+- `--name todo-app` = コンテナ名
+- `--network todo-net` = 他のコンテナと通信できるように
+- `-v $(pwd)/php:/var/www/html:delegated` = ホストのphpディレクトリをマウント
+  - `$(pwd)` = 現在のディレクトリのフルパス
+  - `:delegated` = Mac向けのパフォーマンス最適化オプション
+- `-p 8000:80` = ホストの8000番でアクセス可能に
+- `todo-app` = 先ほどビルドしたイメージ名
+
+**確認：**
+ブラウザで http://localhost:8000 にアクセスして、「データベース接続成功！」が表示されればOK
+
+## 補助コマンド集
+
+日々の作業で使う便利なコマンドをまとめました。
+
+### コンテナの状態確認
+
+```bash
+# 起動中のコンテナ一覧
+docker ps
+
+# すべてのコンテナ一覧（停止中も含む）
+docker ps -a
+```
+
+### ログの確認
+
+```bash
+# ログ表示（すべて）
+docker logs todo-app
+
+# ログをリアルタイムで表示
+docker logs -f todo-app
+
+# 最新の100行だけ表示
+docker logs --tail 100 todo-app
+
+# MySQLのログを確認
+docker logs -f mysql
+```
+
+### コンテナ内でコマンド実行
+
+```bash
+# bashシェルに入る
+docker exec -it todo-app bash
+
+# MySQLに接続
+docker exec -it mysql mysql -uuser -ppassword todo_db
+
+# 1回だけコマンド実行
+docker exec todo-app ls -la /var/www/html
+```
+
+### コンテナの停止と削除
+
+```bash
+# コンテナを停止
+docker stop todo-app phpmyadmin mysql
+
+# コンテナを削除
+docker rm todo-app phpmyadmin mysql
+
+# ネットワークを削除
+docker network rm todo-net
+
+# ボリュームを削除（注意：データも消える）
+docker volume rm db-data
+```
+
+### 一括削除
+
+```bash
+# 停止中のコンテナをすべて削除
+docker container prune
+
+# 使っていないネットワークをすべて削除
+docker network prune
+
+# 使っていないボリュームをすべて削除
+docker volume prune
+
+# すべてをまとめて削除（注意！）
+docker system prune -a --volumes
+```
+
+## トラブルシューティング
+
+### 問題1：ポートがすでに使われている
+
+**エラーメッセージ：**
+```
+Error: Bind for 0.0.0.0:8000 failed: port is already allocated
+```
+
+**解決方法：**
+```bash
+# ポート8000を使っているプロセスを確認
+lsof -i :8000
+
+# または別のポートを使う
+docker run -d -p 8001:80 ...
+```
+
+### 問題2：コンテナ間で通信できない
+
+**確認ポイント：**
+1. 同じネットワークに接続しているか
+```bash
+docker network inspect todo-net
+```
+
+2. コンテナ名が正しいか（PHPコード内のホスト名）
+```php
+$host = 'mysql';  // コンテナ名と一致する必要がある
+```
+
+### 問題3：MySQLに接続できない
+
+**確認手順：**
+```bash
+# 1. MySQLが起動しているか
+docker ps | grep mysql
+
+# 2. MySQLのログを確認
+docker logs mysql
+
+# 3. MySQLに直接接続してテスト
+docker exec -it mysql mysql -uuser -ppassword
+```
+
+## まとめ：Docker CLIとDocker Composeの比較
+
+今回学んだDocker CLIと、次回学ぶDocker Composeを比較してみましょう。
+
+| 項目 | Docker CLI（今回） | Docker Compose（次回） |
+|-----|------------------|---------------------|
+| コマンド数 | 多い（7〜8個） | 少ない（1〜2個） |
+| 設定の管理 | コマンドに記述 | YAMLファイル |
+| 再現性 | 低い（コマンドを覚える必要） | 高い（ファイルを共有） |
+| 学習難易度 | 高い（オプションが多い） | 低い |
+| 使い所 | 理解を深める、単発テスト | 実際の開発 |
+
+**Docker CLIのメリット：**
+- 仕組みが理解できる
+- 細かい制御ができる
+- トラブルシューティングに強くなる
+
+**Docker Composeのメリット：**
+- 簡単で速い
+- チームで共有しやすい
+- 本番環境でも使える
+
+---
+
+次回は、同じ構成をDocker Composeで構築します。驚くほど簡単になるので、楽しみにしていてください！

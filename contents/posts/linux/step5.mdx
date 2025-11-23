@@ -1,0 +1,225 @@
+---
+title: 基礎的なコマンド
+category: linux
+---
+
+# 基礎コマンドの解説
+
+ディレクトリの移動やファイルの表示を行うコマンドを紹介します。CLIでコマンド操作するときに頻繁に使うコマンドですので、しっかりアウトプットして身につけるようにしていきましょう！
+※とても大切です⭐︎
+
+## cdコマンド
+
+Change Directoryの略称です。コマンドはカレントディレクトリを変更するためのコマンドです。移動したいディレクトリ名をコマンドの後ろに指定します。
+
+`cd ディレクトリ名`
+
+// 解説画像
+
+```php
+cd taoru
+```
+
+ディレクトリを指定しないで使うと、どこであろうとホームディレクトリに移動します。
+
+## lsコマンド
+
+List DIrectoryの略称です。カレントディレクトリの直下にあるディレクトリ、ファイルの情報を調べることができるコマンドです。厳密にはディレクトリの情報を調べるコマンドになります。
+
+```php
+cd tarou
+ls
+```
+
+## pwdコマンド
+
+Print Work Directoryの略称です。カレントディレクトリまでの絶対パスを表示できます。
+
+```php
+cd tarou
+pwd
+```
+
+## touchコマンド
+
+ファイルを新規で作成するためのコマンドです。
+
+`touch ファイル名`
+
+```php
+touch jirou
+```
+
+## mkdirコマンド
+
+Make Directoryの略称です。新規でディレクトリを作成するためのコマンドです。
+
+`mkdir ディレクトリ名`
+
+```php
+ls
+// jirouディレクトリは存在しない
+mkdir jirou
+ls
+// jirouディレクトリが作成されています
+```
+
+## rmdirコマンド
+
+Remove DIrectoryの略称です。空のディレクトリを削除することができます。
+
+`rmdir ディレクトリ名`
+
+```php
+mkdir saburo
+ls
+// saburoディレクトリが新規で作成されている
+rmdir saburo
+ls
+// saburoディレクトリは削除されている
+```
+
+<Info type>
+
+rmdirディレクトリは空のディレクトリしか削除することはできません。空ではないディレクトリはこれから紹介する`rm -r`コマンドを使います。
+</Info>
+
+## rmコマンド
+
+Remove Fileの略称です。ファイルやディレクトリを削除するときに使います。ファイルを削除するときは次のように記述します。
+
+`rm ファイルまたはディレクトリ名`
+
+```php
+touch saburo.txt
+ls
+// 新規でsaburo.txtファイルが作成されています
+rm saburo.txt
+ls
+// saburo.txtファイルが削除されています
+```
+
+## echoコマンド
+
+CLI画面に文字を表示することができます。
+
+※略称ではないです
+
+`echo 文字`
+
+```php
+echo `Hello World`
+// Hello Worldと表示されます
+```
+
+### echoコマンドの実践的な使い方
+
+より実践的な使い方だと指定したファイルに文字を書き込むことができます。
+
+リダイレクトという仕組みを使いファイルに文字を書き込んでみます
+
+echo `文字列` > 書き込みたいファイル名
+
+```php
+touch saburo.txt
+ls
+// saburoファイルが新規で作成されています
+echo `Hello World` > saburo.txt
+// GUIでファイル内を確認してみるとHello Worldが表示されます
+```
+
+<Info>
+
+リダイレクトとは？
+</Info>
+
+## catコマンド
+
+**Concatenate（連結する）の略称です。ファイル内容の表示ができます。**
+
+`cat ファイル名`
+
+事前にtest.txtファイルに何か文字を記入しておいてください
+
+```php
+cat test.txt
+// ファイル内容を確認することができます
+```
+
+## mvコマンド
+
+Move Fileの略称です。ファイル名の変更とファイルの移動に使うことができるコマンドです。
+
+ファイル名の変更と移動で書き方が違ってくるので中止してください。
+
+### ファイル名を変更する
+
+`mv 元のファイル名 変更後の名前`
+
+```php
+touch tarou.txt
+ls
+// taoru.txtファイルが確認できる
+mv tarou.txt jirou.txt
+ls
+// taoru.txtファイルがjirou.txtファイルにファイル名が変わっている
+```
+
+### ファイルを移動する
+
+`mv 移動したいファイル名 移動先のディレクトリパス`
+
+```php
+touch tarou.txt
+mkdir sample
+ls
+// taoru.txtファイルとsampleディレクトリが確認できる
+mv tarou.txt sample
+cd sample
+ls
+// taoru.txtファイルがsampleディレクトリ内に移動されている
+```
+
+### mvコマンドの書き方の違い
+
+<Info>
+
+// 解説のための図が必要
+
+右側にファイルかディレクトリを入力することでファイル名の変更か移動かを分けることができます。
+</Info>
+
+## cpコマンド
+
+Copy Fileの略称です。ファイルをコピーするためのコマンドになります。
+
+`cp コピーしたいファイルの名前 コピー先のディレクトリ（パス）`
+
+```php
+touch tarou.txt
+mkdir sample
+ls
+// taoru.txtファイルとsampleディレクトリが確認できる
+cp tarou.txt sample
+cd sample
+ls
+// taoru.txtファイルがsampleディレクトリ内にコピーされている
+```
+
+### cpコマンドはディレクトリにも使えるの？
+
+cpコマンドはオプションをつけることでディレクトリをそピーすることも可能です。
+
+```php
+# projectディレクトリをbackupにコピー
+cp -r project backup
+
+# 権限なども含めて完全にコピー
+cp -a project project_backup
+
+# 別の場所にコピー
+cp -r /home/user/documents /backup/documents_copy
+```
+
+# 実践問題
+{/* AIに書いてもらう */}
