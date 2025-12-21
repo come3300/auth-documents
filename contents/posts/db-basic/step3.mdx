@@ -1,0 +1,196 @@
+---
+title: 第3回 SQLの基礎
+category: db
+---
+# 4大命令を学ぼう
+
+DBとSQLの基礎的な概念が頭に入ったところで、SQLの4大命令を学んでいきましょう。この4つを学ぶことで基礎的なSQLを用いてDB操作をすることができます。
+
+## 基礎的な考え方
+
+SQLというのは複雑に見えてしまうのですが、分解して構成を理解すると簡単に理解することができます。
+
+{/* TODO 画像が必要 */}
+
+SQLは
+
+`シンプルな命令分 + 豊富な修飾語`
+
+で構成されています。この豊富な修飾語がSQLを複雑に感じてしまう原因です。
+
+難しいなと感じたらぜひこの考え方をもとにSQLを読んでみてください。
+
+## SELECT
+
+### SELECTとは
+
+{/* TODO 画像が必要 */}
+
+SELECTを使うことで指定したデータを取得することができます
+
+
+{/* info */}
+SELECTはカラム(列)でデータを取得することができます。
+
+### 書き方
+
+{/* TODO 画像が必要 */}
+
+```
+SELECT 列名
+FROM テーブル名
+WHERE 修飾
+その他修飾
+```
+
+{/* info */}
+
+FROMとは
+
+FROM句を使うことでテーブルを指定することができます。
+
+例えば、
+
+SELECT name, age FROM consumer;
+
+上記のではcustomerテーブルのnameカラムとageカラムを指定しています。
+
+例 employeeテーブルがあったときに
+
+| 従業員ID | 従業員名 | 部署ID | 入社日 | 給与 |
+| --- | --- | --- | --- | --- |
+| 1 | John Doe | 101 | 2022-01-01 | 50000 |
+| 2 | Jane Smith | 102 | 2022-02-15 | 60000 |
+| 3 | Bob Johnson | 101 | 2022-03-20 | 55000 |
+
+```
+-- SELECT基礎 具体例
+SELECT first_name, last_name
+FROM employees
+WHERE department_id = 10;
+```
+
+## UPDATEの基礎構
+
+### UPDATEとは
+
+{/* TODO 画像が必要 */}
+
+UPDATEを使うことで既存のデータを更新することができます
+
+### 書き方
+
+{/* TODO 画像が必要 */}
+
+書き方
+
+```
+UPDATE テーブル名
+SET 列名1 = 値1,列名2 = 値2
+WHERE 修飾
+```
+
+例 employeeテーブル
+
+| 従業員ID | 従業員名 | 部署ID | 入社日 | 給与 |
+| --- | --- | --- | --- | --- |
+| 1 | John Doe | 101 | 2022-01-01 | 50000 |
+| 2 | Jane Smith | 102 | 2022-02-15 | 60000 |
+| 3 | Bob Johnson | 101 | 2022-03-20 | 55000 |
+
+```
+-- UPDATE 基礎 具体例
+UPDATE employees
+SET salary = salary * 1.1
+WHERE department_id = 20;
+```
+
+## DELETEの基礎構
+
+### DELETEとは
+
+{/* TODO 画像が必要 */}
+
+DELETEは既存データの削除をすることができます
+
+### 書き方
+
+{/* TODO 画像が必要 */}
+
+```
+DELETE
+FROM テーブル名
+WHERE 修飾
+```
+
+例 employeeテーブル
+
+| 従業員ID | 従業員名 | 部署ID | 入社日 | 給与 |
+| --- | --- | --- | --- | --- |
+| 1 | John Doe | 101 | 2022-01-01 | 50000 |
+| 2 | Jane Smith | 102 | 2022-02-15 | 60000 |
+| 3 | Bob Johnson | 101 | 2022-03-20 | 55000 |
+
+```
+-- DELETE 基礎 具体例
+DELETE FROM employees
+WHERE department_id = 30;
+```
+
+## INSERTの基礎構
+
+### INSERTとは
+
+{/* TODO 画像が必要 */}
+
+INSERTはデータを挿入することができるSQLです
+
+### 書き方
+
+{/* TODO 画像が必要 */}
+
+書き方
+
+```
+-- INSERTE 基礎 具体例
+INSERT INTO employees (first_name, last_name, department_id)
+VALUES ('John', 'Doe', 20);
+```
+
+例 employeeテーブル
+
+| 従業員ID | 従業員名 | 部署ID | 入社日 | 給与 |
+| --- | --- | --- | --- | --- |
+| 1 | John Doe | 101 | 2022-01-01 | 50000 |
+| 2 | Jane Smith | 102 | 2022-02-15 | 60000 |
+| 3 | Bob Johnson | 101 | 2022-03-20 | 55000 |
+
+```
+-- INSERTE基礎 具体例
+INSERT INTO employees (first_name, last_name, department_id)
+VALUES ('John', 'Doe', 20);
+```
+
+## WHERE/SET/VALUEについて
+
+### WHERE
+### SET
+### VALUE
+
+# 実践問題
+
+## SELECTの実践問題
+
+{/* トグルを使って問題を作る */}
+
+## UPDATEの実践問題
+
+{/* トグルを使って問題を作る */}
+
+## DELETEの実践問題
+
+{/* トグルを使って問題を作る */}
+
+## INSERTの実践問題
+
+{/* トグルを使って問題を作る */}

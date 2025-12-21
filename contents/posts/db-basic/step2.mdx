@@ -1,0 +1,60 @@
+---
+title: 第2回 phpMyadminで環境構築をしよう
+category: db
+---
+# はじめる前に
+
+まだgithub,Dockerの知識がない方はgithub,Dockerの講座を受けてからこちらの講座を受けることをおすすめします。
+
+※github,Dockerの基礎知識があった方がより勉強になるため
+
+## MySQLとは
+
+**Oracleが開発・サポートするオープンソースのリレーショナルデータベース管理システム（RDBMS）**です。行と列で構成されるテーブルにデータを整理・管理し、[SQL](https://www.google.com/search?q=SQL&rlz=1C5CHFA_enJP1059JP1059&oq=mysql%E3%81%A8%E3%81%AF&gs_lcrp=EgZjaHJvbWUyBggAEEUYOdIBCTQwMDlqMGoxNagCCLACAQ&sourceid=chrome&ie=UTF-8&ved=2ahUKEwj8_f-kuYGRAxUvsVYBHdRtAl8QgK4QegYIAQgAEAY)（[Structured Query Language](https://www.google.com/search?q=Structured+Query+Language&rlz=1C5CHFA_enJP1059JP1059&oq=mysql%E3%81%A8%E3%81%AF&gs_lcrp=EgZjaHJvbWUyBggAEEUYOdIBCTQwMDlqMGoxNagCCLACAQ&sourceid=chrome&ie=UTF-8&ved=2ahUKEwj8_f-kuYGRAxUvsVYBHdRtAl8QgK4QegYIAQgAEAc)）という言語を使って
+データの検索、操作、管理を行います。
+WordPressのようなウェブアプリケーションなど、さまざまな場面で広く使われており、高速なパフォーマンス、強力なセキュリティ、高い拡張性が特徴です。
+
+# phpMyadminとは
+
+phpMyAdminとは、MySQLをWebブラウザ上で管理するためのアプリケーションです。phpMyAdminを使えばGUI上で、MySQLを操作することができます。
+
+まずはこのphpMyadminを使ってGUI上でデータベースの操作をおこない、DB,SQL慣れていきましょう！
+
+# 環境構築
+
+今回はphpMyadmin環境をDockerを用いて構築します。
+
+まずは以下のリポジトリをcloneしてみましょう！
+
+https://github.com/come3300/practice-sql
+
+## 環境構築手順
+
+```php
+// cloneしたいディレクトリに移動して
+git clone https://github.com/come3300/practice-sql.git
+cd practice-sql
+docker compose up -d
+```
+
+上記コマンドを1行ずつ順に実行して
+
+`http://localhost:8080`
+
+こちらにアクセスしてみましょう。
+
+以下の画像の画面が表示されれば成功です！
+
+// ブラウザにphpMyadminの画面が表示されている画像を添付
+
+## DBの確認
+
+phpMyadminの画面が確認できたら、DB内に画像のDBが存在しているか確認してみましょう。
+
+{/* TODO 画像が必要 */}
+
+ちゃんと表示されていたら、環境構築は成功です。
+
+# 最後に
+
+これ以降の記事ではこのDB内のデータを用いて実践を行います。DB内のデータを時間があるときに確認してお具ことをおすすめします。
