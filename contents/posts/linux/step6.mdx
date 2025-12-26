@@ -1,0 +1,141 @@
+---
+title: 応用的なコマンド
+category: linux
+---
+
+## 応用的なコマンド
+前回の基礎的なコマンドに続いて、応用的なコマンドを習得していきましょう。
+基礎コマンドほど使用率は高くないですが、使えるようになると便利なコマンドを紹介していきます。
+
+
+## sortコマンド
+
+ファイルの内容を行単位でソート（並び替え）するコマンドです。デフォルトでは昇順（アルファベット順、数字の小さい順）に並び替えます。
+`sort ファイル名`
+
+```php
+touch numbers.txt
+echo "3" > numbers.txt
+echo "1" >> numbers.txt
+echo "2" >> numbers.txt
+cat numbers.txt
+// 3, 1, 2の順で表示されます
+sort numbers.txt
+// 1, 2, 3の順で表示されます
+```
+
+## grepコマンド
+
+Global Regular Expression Printの略称です。ファイル内から指定した文字列を含む行を検索して表示するコマンドです。
+
+`grep 検索文字列 ファイル名`
+
+```php
+touch sample.txt
+echo "Hello World" > sample.txt
+echo "Goodbye World" >> sample.txt
+echo "Hello Japan" >> sample.txt
+cat sample.txt
+// 3行の内容が表示されます
+grep "Hello" sample.txt
+// Helloを含む行だけが表示されます（Hello WorldとHello Japan）
+```
+
+よく使うオプション
+
+```php
+grep -i "hello" sample.txt
+// -iオプションで大文字小文字を区別せずに検索します
+grep -n "Hello" sample.txt
+// -nオプションで行番号も一緒に表示します
+grep -r "Hello" .
+// -rオプションでカレントディレクトリ以下を再帰的に検索します
+```
+
+## findコマンド
+
+指定したディレクトリ以下からファイルやディレクトリを検索するコマンドです。
+
+`find 検索開始ディレクトリ -name ファイル名`
+
+```php
+touch test.txt
+mkdir test_dir
+touch test_dir/sample.txt
+find . -name "test.txt"
+// カレントディレクトリ以下からtest.txtを検索します
+// ./test.txt が表示されます
+find . -name "*.txt"
+// .txtで終わるすべてのファイルを検索します
+```
+
+## whichコマンド
+
+コマンドの実行ファイルがどこに存在するかを表示するコマンドです。環境変数PATHに登録されているディレクトリから検索します。
+
+`which コマンド名`
+
+```php
+which ls
+// /bin/ls などlsコマンドの実体があるパスが表示されます
+which python
+// Pythonの実行ファイルのパスが表示されます
+which cd
+// cdはシェルの組み込みコマンドなので何も表示されないことがあります
+```
+
+## whereisコマンド
+
+コマンドの実行ファイル、ソースファイル、マニュアルページの場所を表示するコマンドです。whichよりも広範囲に検索します。
+`whereis コマンド名`
+
+```php
+whereis ls
+// ls: /bin/ls /usr/share/man/man1/ls.1.gz などが表示されます
+whereis python
+// Pythonの実行ファイルやマニュアルの場所が表示されます
+```
+
+### whichとwhereisの違い
+
+- `which`: 実行ファイルのパスのみを表示（PATHから検索）
+- `whereis`: 実行ファイル、ソースコード、マニュアルの場所を表示（より広範囲）
+
+```php
+which grep
+// /usr/bin/grep
+whereis grep
+// grep: /usr/bin/grep /usr/share/man/man1/grep.1.gz
+```
+
+## パイプ
+
+パイプ`（|）`は、あるコマンドの出力を別のコマンドの入力として渡す機能です。複数のコマンドを組み合わせて使うことができます。
+
+`コマンド1 | コマンド2`
+
+```php
+ls -l | grep "txt"
+// lsの結果からtxtを含む行だけを表示します
+
+cat sample.txt | sort
+// sample.txtの内容をソートして表示します
+
+ls | wc -l
+// カレントディレクトリのファイル数を数えます
+```
+
+実践的な使い方
+```
+cat access.log | grep "ERROR" | wc -l
+// access.logファイルからERRORを含む行の数を数えます
+
+ls -l | grep "^d" | wc -l
+// カレントディレクトリのディレクトリ数を数えます
+
+cat data.txt | sort | uniq
+// data.txtの内容をソートして重複行を削除します
+
+ps aux | grep "python" | grep -v "grep"
+// 実行中のpythonプロセスを表示します（grep自身は除外）
+```

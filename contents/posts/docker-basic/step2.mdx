@@ -1,0 +1,493 @@
+---
+title: 第2回:Dockerファイルとは
+category: docker
+---
+
+## Dockerファイルとは
+
+![Dockerfile](/images/documents/docker-basic/dockerfile.png)
+
+Dockerfileとは、Dockerイメージを作成するための「レシピ」のようなファイルです。
+このファイルに書かれた指示に従って、Dockerが自動的にイメージを作成してくれます。
+
+**日常生活の例え：料理のレシピ**
+
+料理のレシピ本を想像してください。
+
+- レシピ本 = Dockerfile
+- レシピに書かれた材料と手順 = Dockerfileの命令
+- 完成した料理 = Dockerイメージ
+
+レシピがあれば、誰でも同じ料理を再現できますよね。
+Dockerfileも同じで、このファイルがあれば誰でも同じ環境を再現できます。
+
+**Dockerfileの役割：**
+- どのベースイメージを使うか指定
+- 必要なソフトウェアをインストール
+- ファイルをコピー
+- 環境変数を設定
+- 起動時のコマンドを指定
+
+## Dockerファイルの書き方
+
+Dockerfileは、テキストファイルです。ファイル名は必ず「Dockerfile」（拡張子なし）にします。
+
+### 基本的なDockerfileの例
+
+まずは、シンプルなWebサーバーを作るDockerfileを見てみましょう。
+
+```dockerfile
+# ベースイメージを指定
+FROM nginx:latest
+
+# 作業ディレクトリを設定
+WORKDIR /usr/share/nginx/html
+
+# HTMLファイルをコピー
+COPY index.html .
+
+# コンテナが使用するポートを指定
+EXPOSE 80
+
+# コンテナ起動時に実行するコマンド
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+このDockerfileは、Nginxというウェブサーバーを使って、HTMLファイルを表示するイメージを作ります。
+
+### 各行の意味
+
+それでは、Dockerfileの各行を詳しく解説していきます。
+
+#### 1. FROM - ベースイメージの指定
+
+```dockerfile
+FROM nginx:latest
+```
+
+**役割：** どのイメージを土台にするかを指定します。
+
+**日常生活の例え：** お菓子作りで、「既製品のスポンジケーキを使う」か「小麦粉から作る」かを決める感じです。
+
+- `FROM nginx:latest` = Nginxの最新版を土台にする
+- `FROM ubuntu:20.04` = Ubuntu 20.04を土台にする
+- `FROM node:18` = Node.js 18がインストール済みのイメージを土台にする
+
+**ポイント：**
+- 必ずDockerfileの最初に書く
+- `:latest` はバージョンを表すタグ（最新版という意味）
+- 公式イメージはDocker Hubから自動的にダウンロードされる
+
+#### 2. WORKDIR - 作業ディレクトリの設定
+
+```dockerfile
+WORKDIR /usr/share/nginx/html
+```
+
+**役割：** コンテナ内での作業ディレクトリ（カレントディレクトリ）を設定します。
+
+**日常生活の例え：** 「この部屋で作業します」と宣言する感じです。
+
+- この命令以降のコマンドは、このディレクトリで実行される
+- ディレクトリが存在しない場合は自動的に作成される
+
+**Before（WORKDIRなし）：**
+```dockerfile
+RUN cd /usr/share/nginx/html && do-something
+RUN cd /usr/share/nginx/html && do-another-thing
+```
+
+**After（WORKDIRあり）：**
+```dockerfile
+WORKDIR /usr/share/nginx/html
+RUN do-something
+RUN do-another-thing
+```
+
+#### 3. COPY - ファイルのコピー
+
+```dockerfile
+COPY index.html .
+```
+
+**役割：** ホスト（あなたのパソコン）のファイルをコンテナ内にコピーします。
+
+**構文：** `COPY <コピー元> <コピー先>`
+
+- `COPY index.html .` = index.htmlを現在のディレクトリ（.）にコピー
+- `COPY . /app` = カレントディレクトリの全ファイルを/appにコピー
+- `COPY package*.json ./` = package.jsonとpackage-lock.jsonをコピー
+
+**日常生活の例え：** USBメモリからパソコンにファイルをコピーする感じです。
+
+**ADDとの違い：**
+- `COPY` = シンプルにファイルをコピー（推奨）
+- `ADD` = コピー + 追加機能（URL取得、自動解凍など）
+- 基本的にはCOPYを使いましょう
+
+#### 4. RUN - コマンドの実行
+
+```dockerfile
+RUN apt-get update && apt-get install -y curl
+```
+
+**役割：** イメージをビルドする際にコマンドを実行します。
+
+**日常生活の例え：** 料理の「材料を切る」「調味料を混ぜる」などの下準備です。
+
+**よく使う例：**
+
+```dockerfile
+# パッケージのインストール（Ubuntu/Debian）
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    vim
+
+# パッケージのインストール（Node.js）
+RUN npm install
+
+# Pythonパッケージのインストール
+RUN pip install -r requirements.txt
+```
+
+**ポイント：**
+- `&&` で複数のコマンドを繋げると、レイヤーが減って効率的
+- `-y` は「全部YESで進める」という意味（対話を避ける）
+- `\` はコマンドの改行（読みやすくするため）
+
+#### 5. EXPOSE - ポートの公開
+
+```dockerfile
+EXPOSE 80
+```
+
+**役割：** コンテナがどのポートで通信を受け付けるかを宣言します。
+
+**日常生活の例え：** 「うちのお店は正面玄関から入ってください」という案内です。
+
+- `EXPOSE 80` = HTTPの標準ポート
+- `EXPOSE 3000` = Node.jsアプリでよく使うポート
+- `EXPOSE 5432` = PostgreSQLの標準ポート
+
+**注意：**
+- EXPOSEは「ドキュメント」としての意味が強い
+- 実際にポートを公開するには `docker run -p 8080:80` のようにオプションが必要
+
+#### 6. ENV - 環境変数の設定
+
+```dockerfile
+ENV NODE_ENV=production
+ENV PORT=3000
+```
+
+**役割：** コンテナ内で使用する環境変数を設定します。
+
+**構文：** `ENV <変数名>=<値>`
+
+**具体例：**
+```dockerfile
+ENV DATABASE_URL=postgresql://user:pass@db:5432/mydb
+ENV API_KEY=your-api-key-here
+ENV TZ=Asia/Tokyo
+```
+
+**日常生活の例え：** 「この部屋の温度は25度に設定」のような環境設定です。
+
+#### 7. CMD - コンテナ起動時のコマンド
+
+```dockerfile
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+**役割：** コンテナが起動したときに実行するデフォルトのコマンドを指定します。
+
+**書き方が2種類：**
+
+**JSON配列形式（推奨）：**
+```dockerfile
+CMD ["node", "server.js"]
+CMD ["python", "app.py"]
+```
+
+**シェル形式：**
+```dockerfile
+CMD node server.js
+CMD python app.py
+```
+
+**ENTRYPOINTとの違い：**
+- `CMD` = 起動時のデフォルトコマンド（上書き可能）
+- `ENTRYPOINT` = 必ず実行されるコマンド（上書き不可）
+
+```dockerfile
+# CMDの例
+CMD ["node", "server.js"]
+# docker run my-image → node server.jsが実行される
+# docker run my-image npm test → npm testが実行される（上書きされる）
+
+# ENTRYPOINTの例
+ENTRYPOINT ["node"]
+CMD ["server.js"]
+# docker run my-image → node server.jsが実行される
+# docker run my-image app.js → node app.jsが実行される
+```
+
+## 実際にDockerfileを書いてみよう
+
+では、実際に動くDockerfileを書いて、イメージをビルドしてみましょう。
+
+### 例1：シンプルなHTMLサイト
+
+**ディレクトリ構成：**
+```
+my-website/
+├── Dockerfile
+└── index.html
+```
+
+**index.html:**
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My First Docker App</title>
+</head>
+<body>
+    <h1>Hello from Docker!</h1>
+    <p>This is my first Dockerized website.</p>
+</body>
+</html>
+```
+
+**Dockerfile:**
+```dockerfile
+# Nginxの公式イメージを使用
+FROM nginx:alpine
+
+# 作業ディレクトリに移動
+WORKDIR /usr/share/nginx/html
+
+# HTMLファイルをコピー
+COPY index.html .
+
+# ポート80を公開
+EXPOSE 80
+
+# Nginxを起動
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+**ビルドと実行：**
+```bash
+# イメージをビルド
+docker build -t my-website .
+
+# コンテナを起動
+docker run -d -p 8080:80 my-website
+
+# ブラウザでhttp://localhost:8080 にアクセス
+```
+
+### 例2：Node.jsアプリケーション
+
+**ディレクトリ構成：**
+```
+my-node-app/
+├── Dockerfile
+├── package.json
+└── server.js
+```
+
+**server.js:**
+```javascript
+const express = require('express');
+const app = express();
+const PORT = 3000;
+
+app.get('/', (req, res) => {
+    res.send('Hello from Node.js in Docker!');
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+```
+
+**package.json:**
+```json
+{
+  "name": "my-node-app",
+  "version": "1.0.0",
+  "dependencies": {
+    "express": "^4.18.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  }
+}
+```
+
+**Dockerfile:**
+```dockerfile
+# Node.js 18の公式イメージを使用
+FROM node:18-alpine
+
+# 作業ディレクトリを設定
+WORKDIR /app
+
+# package.jsonをコピー
+COPY package*.json ./
+
+# 依存関係をインストール
+RUN npm install
+
+# アプリケーションのソースコードをコピー
+COPY . .
+
+# 環境変数を設定
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# ポートを公開
+EXPOSE 3000
+
+# アプリケーションを起動
+CMD ["npm", "start"]
+```
+
+**ビルドと実行：**
+```bash
+# イメージをビルド
+docker build -t my-node-app .
+
+# コンテナを起動
+docker run -d -p 3000:3000 my-node-app
+
+# ブラウザでhttp://localhost:3000 にアクセス
+```
+
+### 例3：Python Flaskアプリケーション
+
+**ディレクトリ構成：**
+```
+my-flask-app/
+├── Dockerfile
+├── requirements.txt
+└── app.py
+```
+
+**app.py:**
+```python
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello():
+    return 'Hello from Python Flask in Docker!'
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+```
+
+**requirements.txt:**
+```
+Flask==2.3.0
+```
+
+**Dockerfile:**
+```dockerfile
+# Python 3.11の公式イメージを使用
+FROM python:3.11-slim
+
+# 作業ディレクトリを設定
+WORKDIR /app
+
+# requirements.txtをコピー
+COPY requirements.txt .
+
+# Pythonパッケージをインストール
+RUN pip install --no-cache-dir -r requirements.txt
+
+# アプリケーションのソースコードをコピー
+COPY . .
+
+# ポートを公開
+EXPOSE 5000
+
+# アプリケーションを起動
+CMD ["python", "app.py"]
+```
+
+**ビルドと実行：**
+```bash
+# イメージをビルド
+docker build -t my-flask-app .
+
+# コンテナを起動
+docker run -d -p 5000:5000 my-flask-app
+
+# ブラウザでhttp://localhost:5000 にアクセス
+```
+
+## Dockerfileのベストプラクティス
+
+### 1. .dockerignoreファイルを使う
+
+`.gitignore`のように、イメージに含めたくないファイルを指定できます。
+
+**.dockerignore:**
+```
+node_modules
+npm-debug.log
+.git
+.env
+*.md
+```
+
+### 2. レイヤーを最小化する
+
+**Bad（レイヤーが多い）：**
+```dockerfile
+RUN apt-get update
+RUN apt-get install -y curl
+RUN apt-get install -y git
+```
+
+**Good（レイヤーが少ない）：**
+```dockerfile
+RUN apt-get update && apt-get install -y \
+    curl \
+    git
+```
+
+### 3. キャッシュを活用する
+
+変更が少ないものを先に書くことで、ビルドが高速になります。
+
+**Good（キャッシュを活用）：**
+```dockerfile
+# package.jsonを先にコピー（変更頻度が低い）
+COPY package*.json ./
+RUN npm install
+
+# ソースコードは後でコピー（変更頻度が高い）
+COPY . .
+```
+
+### 4. alpineイメージを使う
+
+軽量なイメージを使うことで、サイズを削減できます。
+
+```dockerfile
+# 通常版（約1GB）
+FROM node:18
+
+# Alpine版（約170MB）
+FROM node:18-alpine
+```
+
+---
+
+これでDockerfileの基本は理解できました！次回は、複数のコンテナを組み合わせるDocker Composeについて学びましょう。

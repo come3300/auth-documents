@@ -1,0 +1,754 @@
+---
+title: 第5回：Dockerを構築してみよう その2（Docker Composeで構築）
+category: docker
+---
+
+## この回で学ぶこと
+
+前回はDocker CLIで環境を構築しましたが、今回は**Docker Compose**を使って同じ構成を構築します。
+
+**驚きのポイント：**
+- 前回は7〜8個のコマンドが必要でしたが、今回はたった1つのコマンドで完了します
+- すべての設定をYAMLファイルに記述するので、チーム全員で同じ環境を簡単に共有できます
+
+**構築するもの（前回と同じ）：**
+- PHPアプリケーション（Todoリスト）
+- MySQLデータベース
+- phpMyAdmin（データベース管理ツール）
+
+## 前回との比較
+
+### 前回（Docker CLI）
+```bash
+docker network create todo-net
+docker volume create db-data
+docker build -t todo-app ./php
+docker run -d --name mysql --network todo-net ...
+docker run -d --name phpmyadmin --network todo-net ...
+docker run -d --name todo-app --network todo-net ...
+```
+**コマンド数：6〜8個**
+
+### 今回（Docker Compose）
+```bash
+docker-compose up -d
+```
+**コマンド数：1個**
+
+驚くほどシンプルですね！では、実際に構築していきましょう。
+
+## 全体の流れ
+
+1. プロジェクトディレクトリを作成
+2. `docker-compose.yml`ファイルを作成
+3. 必要なファイル（Dockerfile、PHPファイル）を準備
+4. `docker-compose up`で起動
+5. ブラウザで確認
+
+## 手順1：プロジェクトディレクトリを作成
+
+まず、プロジェクト用のディレクトリを作ります。
+
+```bash
+# プロジェクトディレクトリを作成
+mkdir my-todo-app
+cd my-todo-app
+
+# PHPアプリ用のディレクトリを作成
+mkdir php
+```
+
+**ディレクトリ構成（最終形）：**
+```
+my-todo-app/
+├── docker-compose.yml  ← これから作る
+└── php/
+    ├── Dockerfile
+    ├── index.php
+    └── todo.php
+```
+
+## 手順2：docker-compose.ymlファイルを作成
+
+プロジェクトのルートディレクトリに`docker-compose.yml`を作成します。
+
+**docker-compose.yml:**
+```yaml
+version: '3.8'
+
+services:
+  # PHPアプリケーション
+  app:
+    build: ./php
+    container_name: todo-app
+    ports:
+      - "8000:80"
+    volumes:
+      - ./php:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - todo-net
+
+  # MySQLデータベース
+  db:
+    platform: linux/amd64
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: todo_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - todo-net
+
+  # phpMyAdmin（データベース管理ツール）
+  phpmyadmin:
+    platform: linux/amd64
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: user
+      PMA_PASSWORD: password
+    networks:
+      - todo-net
+
+volumes:
+  db-data:
+
+networks:
+  todo-net:
+```
+
+## YAMLファイルの各項目の詳しい解説
+
+### version（バージョン）
+```yaml
+version: '3.8'
+```
+- Docker Composeのファイル形式のバージョンを指定
+- `3.8`は現在最も広く使われているバージョン
+
+---
+
+### services（サービス定義）
+```yaml
+services:
+  app:
+    # appサービスの設定
+  db:
+    # dbサービスの設定
+  phpmyadmin:
+    # phpmyadminサービスの設定
+```
+- 起動したいコンテナを定義するセクション
+- 今回は3つのサービス（app、db、phpmyadmin）を定義
+
+---
+
+### app（PHPアプリケーション）サービス
+
+**build: ./php**
+- `./php`ディレクトリにあるDockerfileを使ってイメージをビルド
+- 前回の`docker build -t todo-app ./php`と同じ
+
+**container_name: todo-app**
+- コンテナの名前を`todo-app`に設定
+- 省略すると`プロジェクト名_app_1`のような名前になる
+
+**ports: - "8000:80"**
+- ホストの8000番ポートとコンテナの80番ポートを紐付け
+- ブラウザで`http://localhost:8000`にアクセス可能
+
+**volumes: - ./php:/var/www/html**
+- ホストの`./php`ディレクトリをコンテナの`/var/www/html`にマウント
+- PHPファイルを編集すると即座に反映される
+
+**depends_on: - db**
+- `app`は`db`の後に起動される
+- ただし、MySQLの「準備完了」までは待たない点に注意
+
+**networks: - todo-net**
+- `todo-net`ネットワークに接続
+- 同じネットワーク内のコンテナ同士は名前で通信できる
+
+---
+
+### db（MySQL）サービス
+
+**platform: linux/amd64**
+- Apple Silicon（M1/M2 Mac）でIntelイメージを動かすための設定
+- Intelマシンでは不要だが、互換性のために記述
+
+**image: mysql:8.0**
+- Docker HubからMySQL 8.0の公式イメージを取得
+- `build`ではなく`image`を使用（既存イメージを利用）
+
+**environment:**
+```yaml
+MYSQL_ROOT_PASSWORD: root
+MYSQL_DATABASE: todo_db
+MYSQL_USER: user
+MYSQL_PASSWORD: password
+```
+- 環境変数を設定
+- MySQLコンテナは起動時にこれらの値を使ってデータベースとユーザーを作成
+
+**volumes: - db-data:/var/lib/mysql**
+- 名前付きボリューム`db-data`を使ってデータを永続化
+- コンテナを削除してもデータが残る
+
+---
+
+### phpmyadmin（管理ツール）サービス
+
+**image: phpmyadmin/phpmyadmin**
+- phpMyAdminの公式イメージを使用
+
+**depends_on: - db**
+- データベースの起動後に起動
+
+**environment:**
+```yaml
+PMA_HOST: db
+PMA_USER: user
+PMA_PASSWORD: password
+```
+- `PMA_HOST: db` = 接続先のMySQLコンテナ名（サービス名）
+- ログイン用のユーザー名とパスワードを設定
+
+---
+
+### volumes（ボリューム定義）
+```yaml
+volumes:
+  db-data:
+```
+- 名前付きボリューム`db-data`を定義
+- Dockerが自動的に管理する永続ストレージ
+
+---
+
+### networks（ネットワーク定義）
+```yaml
+networks:
+  todo-net:
+```
+- カスタムネットワーク`todo-net`を定義
+- 省略すると、Docker Composeが自動的にデフォルトネットワークを作成
+
+## 手順3：必要なファイルを準備
+
+### php/Dockerfile
+
+PHPアプリケーション用のDockerfileを作成します。
+
+**php/Dockerfile:**
+```dockerfile
+# PHPとApacheが入ったイメージを使用
+FROM php:8.1-apache
+
+# MySQLに接続するための拡張機能をインストール
+RUN docker-php-ext-install mysqli pdo pdo_mysql
+
+# ドキュメントルートを設定
+WORKDIR /var/www/html
+
+# PHPファイルをコピー
+COPY . /var/www/html/
+
+# ポート80を公開
+EXPOSE 80
+```
+
+### php/index.php
+
+データベース接続を確認するシンプルなPHPファイルを作成します。
+
+**php/index.php:**
+```php
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        .info {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Todo App - Docker Compose版</h1>
+
+    <?php
+    // データベース接続設定
+    $host = 'db';  // docker-compose.ymlのサービス名
+    $dbname = 'todo_db';
+    $user = 'user';
+    $pass = 'password';
+
+    try {
+        // PDOでMySQL接続
+        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        echo '<p class="success">✅ データベース接続成功！</p>';
+
+        // テーブルが存在するか確認
+        $stmt = $pdo->query("SHOW TABLES LIKE 'todos'");
+        $tableExists = $stmt->rowCount() > 0;
+
+        if (!$tableExists) {
+            // テーブルを作成
+            $sql = "CREATE TABLE todos (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                task TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )";
+            $pdo->exec($sql);
+            echo '<p class="success">✅ todosテーブルを作成しました</p>';
+        } else {
+            echo '<p class="success">✅ todosテーブルが存在します</p>';
+        }
+
+        // 接続情報を表示
+        echo '<div class="info">';
+        echo '<h3>接続情報</h3>';
+        echo '<p><strong>ホスト:</strong> ' . htmlspecialchars($host) . '</p>';
+        echo '<p><strong>データベース:</strong> ' . htmlspecialchars($dbname) . '</p>';
+        echo '<p><strong>ユーザー:</strong> ' . htmlspecialchars($user) . '</p>';
+        echo '</div>';
+
+    } catch (PDOException $e) {
+        echo '<p class="error">❌ 接続失敗: ' . htmlspecialchars($e->getMessage()) . '</p>';
+    }
+    ?>
+
+    <h2>次のステップ</h2>
+    <ul>
+        <li>phpMyAdmin: <a href="http://localhost:8080" target="_blank">http://localhost:8080</a></li>
+        <li>このアプリ: <a href="http://localhost:8000">http://localhost:8000</a></li>
+    </ul>
+</body>
+</html>
+```
+
+## 手順4：Docker Composeで起動
+
+準備が整ったので、Docker Composeで環境を起動します。
+
+```bash
+# プロジェクトディレクトリに移動（docker-compose.ymlがある場所）
+cd my-todo-app
+
+# すべてのコンテナをバックグラウンドで起動
+docker-compose up -d
+```
+
+**実行時の出力例：**
+```
+Creating network "my-todo-app_todo-net" with the default driver
+Creating volume "my-todo-app_db-data" with default driver
+Building app
+Step 1/5 : FROM php:8.1-apache
+...
+Successfully built abc123def456
+Creating mysql ... done
+Creating phpmyadmin ... done
+Creating todo-app ... done
+```
+
+**各ステップの説明：**
+1. ネットワーク`todo-net`を自動作成
+2. ボリューム`db-data`を自動作成
+3. `app`サービスのイメージをビルド
+4. 3つのコンテナを起動（依存関係の順序を考慮）
+
+## 手順5：起動確認
+
+### コンテナの状態を確認
+
+```bash
+# 起動中のコンテナ一覧を表示
+docker-compose ps
+```
+
+**表示例：**
+```
+   Name                Command              State           Ports
+---------------------------------------------------------------------------
+mysql         docker-entrypoint.sh mysqld   Up      0.0.0.0:3306->3306/tcp
+phpmyadmin    /docker-entrypoint.sh apac... Up      0.0.0.0:8080->80/tcp
+todo-app      docker-php-entrypoint apac... Up      0.0.0.0:8000->80/tcp
+```
+
+### ログを確認
+
+```bash
+# すべてのサービスのログを表示
+docker-compose logs
+
+# 特定のサービスのログのみ表示
+docker-compose logs db
+
+# リアルタイムでログを表示
+docker-compose logs -f app
+```
+
+### ブラウザで確認
+
+以下のURLにアクセスして動作確認します。
+
+**1. PHPアプリケーション**
+- URL: http://localhost:8000
+- 表示内容：「データベース接続成功！」が表示されればOK
+
+**2. phpMyAdmin**
+- URL: http://localhost:8080
+- ログイン情報：
+  - ユーザー名：`user`
+  - パスワード：`password`
+- `todo_db`データベースと`todos`テーブルが表示されればOK
+
+## ポートマッピングの詳細解説
+
+```yaml
+ports:
+  - "8080:80"
+```
+
+**書式：** `"ホスト側:コンテナ側"`
+
+### 左側（ホスト側）：8080
+- あなたのパソコン（Mac）のポート番号
+- ブラウザでアクセスする際に使う
+- 例：`http://localhost:8080`
+
+### 右側（コンテナ側）：80
+- コンテナ内でアプリケーションが待ち受けているポート
+- phpMyAdminはコンテナ内で80番ポートで動作
+- Nginxやapacheは通常80番ポートを使用
+
+### 具体例で理解する
+
+```yaml
+phpmyadmin:
+  ports:
+    - "8080:80"
+```
+
+**流れ：**
+1. ブラウザで`http://localhost:8080`にアクセス
+2. あなたのパソコンの8080番ポートに接続
+3. Dockerがコンテナの80番ポートに転送
+4. phpMyAdminが応答
+
+**図解：**
+```
+ブラウザ
+  ↓
+http://localhost:8080
+  ↓
+ホストの8080番ポート
+  ↓ (Dockerが転送)
+コンテナの80番ポート
+  ↓
+phpMyAdmin
+```
+
+### 他のコンテナからのアクセス
+
+重要なポイント：**同じネットワーク内のコンテナ同士は、ポートマッピングを気にせずに通信できます。**
+
+```php
+// appコンテナからdbコンテナへの接続
+$host = 'db';  // サービス名を使う
+$pdo = new PDO("mysql:host=$host;dbname=todo_db", $user, $pass);
+```
+
+**なぜ3306を指定しないの？**
+- コンテナ間通信では、コンテナ内のポート（3306）が直接使われる
+- ポートマッピング（`3306:3306`）はホストからアクセスする場合のみ必要
+
+**まとめ：**
+- **ホスト→コンテナ：** ポートマッピングが必要（左側のポートを使う）
+- **コンテナ→コンテナ：** サービス名 + コンテナ側ポート（右側）
+
+## 便利なDocker Composeコマンド集
+
+### 起動・停止関連
+
+```bash
+# 起動（フォアグラウンド）
+docker-compose up
+
+# 起動（バックグラウンド）
+docker-compose up -d
+
+# イメージを再ビルドしてから起動
+docker-compose up --build
+
+# 特定のサービスだけ起動
+docker-compose up app db
+
+# すべてのコンテナを停止
+docker-compose stop
+
+# 停止して削除（ボリュームは残る）
+docker-compose down
+
+# 停止して削除（ボリュームも削除）
+docker-compose down -v
+```
+
+### 状態確認
+
+```bash
+# 起動中のコンテナ一覧
+docker-compose ps
+
+# すべてのログを表示
+docker-compose logs
+
+# 特定サービスのログ
+docker-compose logs app
+
+# リアルタイムでログ表示
+docker-compose logs -f
+
+# 最新100行のログ
+docker-compose logs --tail=100
+```
+
+### コンテナ操作
+
+```bash
+# コンテナ内でコマンド実行
+docker-compose exec app bash
+
+# MySQLに接続
+docker-compose exec db mysql -uuser -ppassword todo_db
+
+# 再起動
+docker-compose restart
+
+# 特定サービスを再起動
+docker-compose restart app
+
+# コンテナを再作成（設定変更時）
+docker-compose up -d --force-recreate
+```
+
+### その他
+
+```bash
+# 設定ファイルの検証
+docker-compose config
+
+# 使用するイメージ一覧
+docker-compose images
+
+# リソース使用状況
+docker-compose top
+```
+
+## トラブルシューティング
+
+### 問題1：ポートがすでに使われている
+
+**エラー：**
+```
+Error: Bind for 0.0.0.0:8000 failed: port is already allocated
+```
+
+**解決方法1：ポート番号を変更**
+```yaml
+# docker-compose.ymlを編集
+app:
+  ports:
+    - "8001:80"  # 8000から8001に変更
+```
+
+**解決方法2：使用中のプロセスを停止**
+```bash
+# ポート8000を使っているプロセスを確認
+lsof -i :8000
+
+# プロセスを停止
+kill -9 <PID>
+```
+
+### 問題2：イメージのビルドに失敗
+
+**エラー：**
+```
+ERROR [app 1/5] FROM php:8.1-apache
+```
+
+**解決方法：**
+```bash
+# キャッシュをクリアして再ビルド
+docker-compose build --no-cache
+
+# または、既存イメージを削除してから再ビルド
+docker-compose down --rmi all
+docker-compose up --build
+```
+
+### 問題3：データベースに接続できない
+
+**エラー：**
+```
+Connection refused
+```
+
+**確認手順：**
+
+**1. MySQLが起動しているか確認**
+```bash
+docker-compose ps
+```
+
+**2. MySQLのログを確認**
+```bash
+docker-compose logs db
+# "ready for connections" が表示されるまで待つ
+```
+
+**3. コンテナ名が正しいか確認**
+```php
+// index.phpの接続設定
+$host = 'db';  // docker-compose.ymlのサービス名と一致する必要がある
+```
+
+### 問題4：ファイルの変更が反映されない
+
+**原因：** ボリュームマウントの設定ミス
+
+**確認：**
+```yaml
+volumes:
+  - ./php:/var/www/html  # パスが正しいか確認
+```
+
+**解決方法：**
+```bash
+# コンテナを再起動
+docker-compose restart app
+
+# または、再作成
+docker-compose up -d --force-recreate app
+```
+
+## まとめ：Docker CLIとの比較
+
+### Docker CLI（前回）
+
+**メリット：**
+- 仕組みが詳しく理解できる
+- 細かい制御が可能
+
+**デメリット：**
+- コマンドが長くて複雑
+- チーム共有が難しい
+- 再現性が低い
+
+### Docker Compose（今回）
+
+**メリット：**
+- 簡単で速い（1コマンドで起動）
+- 設定をファイルで管理（Git管理可能）
+- チーム全員で同じ環境を共有できる
+- 再現性が高い
+
+**デメリット：**
+- 裏側の仕組みが見えにくい
+- YAMLの文法を覚える必要がある
+
+## 実務でのベストプラクティス
+
+### 1. .envファイルで環境変数を管理
+
+**docker-compose.yml:**
+```yaml
+db:
+  env_file:
+    - .env
+```
+
+**.env:**
+```
+MYSQL_ROOT_PASSWORD=root
+MYSQL_DATABASE=todo_db
+MYSQL_USER=user
+MYSQL_PASSWORD=password
+```
+
+**メリット：**
+- パスワードなどの機密情報をYAMLファイルに直接書かない
+- `.env`を`.gitignore`に追加してGit管理から除外
+
+### 2. .gitignoreの設定
+
+```
+.env
+vendor/
+node_modules/
+```
+
+### 3. READMEの作成
+
+チームメンバーが簡単に環境構築できるようにREADMEを書きましょう。
+
+**README.md:**
+```markdown
+# Todo App
+
+## セットアップ
+
+1. リポジトリをクローン
+git clone https://github.com/your-repo/todo-app.git
+cd todo-app
+
+2. .envファイルを作成
+cp .env.example .env
+
+3. Docker Composeで起動
+docker-compose up -d
+
+4. ブラウザでアクセス
+- アプリ: http://localhost:8000
+- phpMyAdmin: http://localhost:8080
+```
+
+---
+
+これでDocker Composeを使った環境構築は完璧です！実際の開発では、このDocker Composeを使うことがほとんどです。お疲れ様でした！

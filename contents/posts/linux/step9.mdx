@@ -1,0 +1,558 @@
+---
+title: 応用コマンド 実践問題
+category: linux
+---
+
+# 応用コマンド実践問題
+
+この章では、応用コマンド（sort、grep、find、which、whereis、パイプ）を使った実践問題に取り組みます。
+
+これらのコマンドをマスターすれば、より高度なファイル操作や検索ができるようになります！
+
+---
+
+## 問題1：ファイル内容のソート
+
+**問題：**
+以下の手順を実行してください。
+
+1. 「numbers.txt」というファイルを作成
+2. ファイルに「5」「2」「8」「1」「3」の数字を1行ずつ書き込む
+3. `sort`コマンドでソートして表示
+
+<details>
+<summary>ヒント</summary>
+
+複数の`echo`コマンドと`>>`（追記リダイレクト）を使って書き込みます。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+# 1. ファイル作成と数字の書き込み
+$ echo "5" > numbers.txt
+$ echo "2" >> numbers.txt
+$ echo "8" >> numbers.txt
+$ echo "1" >> numbers.txt
+$ echo "3" >> numbers.txt
+
+# 2. ファイル内容を確認
+$ cat numbers.txt
+5
+2
+8
+1
+3
+
+# 3. ソートして表示
+$ sort numbers.txt
+1
+2
+3
+5
+8
+```
+
+**解説：**
+`sort`コマンドは、ファイルの内容を行単位でソート（並び替え）します。
+デフォルトでは昇順（小さい順）に並び替えられます。
+
+**オプション：**
+```bash
+$ sort -r numbers.txt  # 降順（-r = reverse）
+8
+5
+3
+2
+1
+```
+
+</details>
+
+---
+
+## 問題2：ファイル内の文字列検索
+
+**問題：**
+以下の手順を実行してください。
+
+1. 「fruits.txt」ファイルを作成
+2. 「apple」「banana」「orange」「grape」「pineapple」を1行ずつ書き込む
+3. `grep`コマンドで「apple」を含む行だけを表示
+
+<details>
+<summary>ヒント</summary>
+
+`grep "検索文字列" ファイル名`の形式で使います。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+# 1-2. ファイル作成と書き込み
+$ echo "apple" > fruits.txt
+$ echo "banana" >> fruits.txt
+$ echo "orange" >> fruits.txt
+$ echo "grape" >> fruits.txt
+$ echo "pineapple" >> fruits.txt
+
+# 3. appleを含む行を検索
+$ grep "apple" fruits.txt
+apple
+pineapple
+```
+
+**解説：**
+`grep`は指定した文字列を含む行を検索して表示します。
+「apple」と「pineapple」の両方が表示されました。
+
+**完全一致で検索する場合：**
+```bash
+$ grep -w "apple" fruits.txt  # -w = 単語全体一致
+apple
+```
+
+**大文字小文字を区別しない：**
+```bash
+$ grep -i "APPLE" fruits.txt  # -i = 大文字小文字を区別しない
+apple
+pineapple
+```
+
+</details>
+
+---
+
+## 問題3：ファイル名の検索
+
+**問題：**
+以下の手順を実行してください。
+
+1. 「test1.txt」「test2.txt」「sample.txt」「readme.md」の4つのファイルを作成
+2. `find`コマンドで、拡張子が`.txt`のファイルだけを検索
+
+<details>
+<summary>ヒント</summary>
+
+`find . -name "*.txt"`のようにワイルドカード`*`を使います。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+# 1. ファイル作成
+$ touch test1.txt test2.txt sample.txt readme.md
+
+# 2. .txtファイルを検索
+$ find . -name "*.txt"
+./test1.txt
+./test2.txt
+./sample.txt
+```
+
+**解説：**
+- `find .`：カレントディレクトリ以下を検索
+- `-name "*.txt"`：ファイル名が`.txt`で終わるもの
+- `*`（アスタリスク）：任意の文字列を表すワイルドカード
+
+**test で始まるファイルを検索：**
+```bash
+$ find . -name "test*"
+./test1.txt
+./test2.txt
+```
+
+</details>
+
+---
+
+## 問題4：コマンドの場所を探す
+
+**問題：**
+`ls`コマンドと`grep`コマンドの実行ファイルがどこにあるか、`which`コマンドで調べてください。
+
+<details>
+<summary>ヒント</summary>
+
+`which コマンド名`で実行ファイルのパスを表示できます。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+$ which ls
+/usr/bin/ls
+
+$ which grep
+/usr/bin/grep
+```
+
+**解説：**
+`which`コマンドは、指定したコマンドの実行ファイルがどこにあるかを表示します。
+環境変数`PATH`に登録されているディレクトリから検索します。
+
+**複数のコマンドを一度に調べる：**
+```bash
+$ which ls grep cat
+/usr/bin/ls
+/usr/bin/grep
+/usr/bin/cat
+```
+
+</details>
+
+---
+
+## 問題5：コマンドの詳細情報を表示
+
+**問題：**
+`whereis`コマンドを使って、`python`と`git`の実行ファイル、マニュアルの場所を表示してください。
+
+<details>
+<summary>ヒント</summary>
+
+`whereis コマンド名`で、実行ファイルとマニュアルの場所を表示できます。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+$ whereis python
+python: /usr/bin/python /usr/lib/python3.9 /usr/share/man/man1/python.1.gz
+
+$ whereis git
+git: /usr/bin/git /usr/share/man/man1/git.1.gz
+```
+
+**解説：**
+`whereis`は`which`より広範囲に検索し、以下の情報を表示します：
+- 実行ファイルの場所（`/usr/bin/python`）
+- ライブラリの場所（`/usr/lib/python3.9`）
+- マニュアルの場所（`/usr/share/man/man1/python.1.gz`）
+
+**whichとwhereisの違い：**
+- `which`：実行ファイルのパスのみ
+- `whereis`：実行ファイル + マニュアル + ソースコード
+
+</details>
+
+---
+
+## 問題6：パイプで grep を繋げる
+
+**問題：**
+以下の手順を実行してください。
+
+1. `ls -l`コマンドでファイル一覧を表示
+2. パイプ`|`を使って、その結果から`.txt`を含む行だけを`grep`で抽出
+
+<details>
+<summary>ヒント</summary>
+
+`コマンド1 | コマンド2`の形式で、コマンド1の出力をコマンド2の入力に渡します。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+$ ls -l | grep ".txt"
+-rw-r--r-- 1 user user 15 Jan 1 12:00 test1.txt
+-rw-r--r-- 1 user user 15 Jan 1 12:00 test2.txt
+-rw-r--r-- 1 user user 20 Jan 1 12:00 sample.txt
+```
+
+**解説：**
+パイプ`|`は、左側のコマンドの出力を右側のコマンドの入力として渡します。
+
+**処理の流れ：**
+1. `ls -l`：ファイル一覧を詳細表示
+2. `|`：その結果を次のコマンドに渡す
+3. `grep ".txt"`：`.txt`を含む行だけを抽出
+
+</details>
+
+---
+
+## 問題7：パイプで sort を繋げる
+
+**問題：**
+「names.txt」ファイルに「Bob」「Alice」「Charlie」「David」を1行ずつ書き込み、
+`cat`と`sort`をパイプで繋げてアルファベット順に表示してください。
+
+<details>
+<summary>ヒント</summary>
+
+`cat ファイル名 | sort`の形式で使います。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+# ファイル作成と書き込み
+$ echo "Bob" > names.txt
+$ echo "Alice" >> names.txt
+$ echo "Charlie" >> names.txt
+$ echo "David" >> names.txt
+
+# catとsortをパイプで繋げる
+$ cat names.txt | sort
+Alice
+Bob
+Charlie
+David
+```
+
+**解説：**
+`cat`でファイル内容を表示し、それを`sort`でソートしています。
+
+**逆順（降順）で表示：**
+```bash
+$ cat names.txt | sort -r
+David
+Charlie
+Bob
+Alice
+```
+
+</details>
+
+---
+
+## 問題8：複数のパイプを繋げる
+
+**問題：**
+以下の手順を実行してください。
+
+1. `ls -l`でファイル一覧を表示
+2. パイプで`grep "txt"`に繋げて.txtファイルのみに絞る
+3. さらにパイプで`wc -l`に繋げて行数（ファイル数）を数える
+
+<details>
+<summary>ヒント</summary>
+
+`コマンド1 | コマンド2 | コマンド3`のように、複数のパイプを繋げられます。
+`wc -l`は行数を数えるコマンドです。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+$ ls -l | grep "txt" | wc -l
+3
+```
+
+**解説：**
+3つのコマンドをパイプで繋げています：
+
+1. `ls -l`：ファイル一覧を詳細表示
+2. `grep "txt"`：txtを含む行だけに絞る
+3. `wc -l`：行数を数える（= .txtファイルの数）
+
+**処理の流れ：**
+```
+ls -l の出力
+    ↓
+grep で絞り込み
+    ↓
+wc -l で行数カウント
+    ↓
+3（3つのtxtファイル）
+```
+
+</details>
+
+---
+
+## 問題9：grep で行番号を表示
+
+**問題：**
+「log.txt」ファイルに以下の内容を書き込み、
+`grep -n`で「ERROR」を含む行を行番号付きで表示してください。
+
+```
+INFO: Application started
+ERROR: File not found
+INFO: Processing data
+ERROR: Connection timeout
+INFO: Process completed
+```
+
+<details>
+<summary>ヒント</summary>
+
+`-n`オプションで行番号を表示できます。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+# ファイル作成と書き込み
+$ echo "INFO: Application started" > log.txt
+$ echo "ERROR: File not found" >> log.txt
+$ echo "INFO: Processing data" >> log.txt
+$ echo "ERROR: Connection timeout" >> log.txt
+$ echo "INFO: Process completed" >> log.txt
+
+# ERRORを含む行を行番号付きで表示
+$ grep -n "ERROR" log.txt
+2:ERROR: File not found
+4:ERROR: Connection timeout
+```
+
+**解説：**
+`-n`オプションを付けると、行番号が表示されます。
+これは、ログファイルのエラー箇所を特定する際に便利です。
+
+**複数のオプションを組み合わせ：**
+```bash
+$ grep -in "error" log.txt  # -i（大文字小文字を区別しない）と併用
+2:ERROR: File not found
+4:ERROR: Connection timeout
+```
+
+</details>
+
+---
+
+## 問題10：総合問題 - ログ分析
+
+**問題：**
+以下の手順を実行してください。
+
+1. 「access.log」ファイルに以下の内容を書き込む
+   ```
+   200 GET /index.html
+   404 GET /missing.html
+   200 POST /api/data
+   500 GET /error.php
+   200 GET /about.html
+   404 GET /notfound.html
+   200 POST /api/submit
+   ```
+
+2. 「200」（成功）を含む行だけを抽出
+3. その結果の行数を数えて表示
+
+<details>
+<summary>ヒント</summary>
+
+`grep`と`wc -l`をパイプで繋げます。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+# 1. ファイル作成と書き込み
+$ cat > access.log << EOF
+200 GET /index.html
+404 GET /missing.html
+200 POST /api/data
+500 GET /error.php
+200 GET /about.html
+404 GET /notfound.html
+200 POST /api/submit
+EOF
+
+# 2-3. 200を含む行を抽出し、行数を数える
+$ grep "200" access.log | wc -l
+4
+
+# 確認：200を含む行を表示
+$ grep "200" access.log
+200 GET /index.html
+200 POST /api/data
+200 GET /about.html
+200 POST /api/submit
+```
+
+**解説：**
+この問題では、実際のログ分析の基本的な流れを体験しました。
+
+**処理の流れ：**
+1. `grep "200" access.log`：成功（200）のログだけを抽出
+2. `|`：その結果を次のコマンドに渡す
+3. `wc -l`：行数を数える = 成功した件数
+
+**応用：エラーログの抽出**
+```bash
+# 404エラーの件数を数える
+$ grep "404" access.log | wc -l
+2
+
+# 404エラーの詳細を確認
+$ grep "404" access.log
+404 GET /missing.html
+404 GET /notfound.html
+
+# POSTリクエストのみ抽出
+$ grep "POST" access.log
+200 POST /api/data
+200 POST /api/submit
+```
+
+</details>
+
+---
+
+## まとめ
+
+お疲れ様でした！応用コマンドの実践問題をクリアできましたか？
+
+**この章で習得したコマンド：**
+
+| コマンド | 用途 | 例 |
+|---------|------|---|
+| `sort` | ファイル内容をソート | `sort file.txt` |
+| `grep` | 文字列検索 | `grep "word" file.txt` |
+| `find` | ファイル検索 | `find . -name "*.txt"` |
+| `which` | コマンドのパス検索 | `which ls` |
+| `whereis` | コマンドの詳細検索 | `whereis python` |
+| `\|`（パイプ） | コマンドを繋げる | `cat file \| sort` |
+| `wc -l` | 行数カウント | `wc -l file.txt` |
+
+**よく使うパイプの組み合わせ：**
+
+```bash
+# ファイル数を数える
+$ ls | wc -l
+
+# エラーログを検索して数える
+$ cat error.log | grep "ERROR" | wc -l
+
+# ファイルをソートして重複を削除
+$ cat file.txt | sort | uniq
+
+# プロセスを検索
+$ ps aux | grep "python"
+```
+
+**次のステップ：**
+これらの応用コマンドをマスターしたら、次はVimエディタの使い方を学びましょう！
+
+**練習のコツ：**
+1. パイプを使った組み合わせを試してみる
+2. 実際のログファイルで検索練習をする
+3. オプション（`-i`、`-n`、`-r`など）を試す
+4. `man コマンド名`でマニュアルを読んでみる
+
+頑張ってください！

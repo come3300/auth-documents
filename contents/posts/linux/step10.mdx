@@ -1,0 +1,867 @@
+---
+title: Vim 実践問題
+category: linux
+---
+
+# Vim実践問題
+
+この章では、Vimエディタの基本操作を実践的に学びます。
+
+Vimは最初は難しく感じるかもしれませんが、練習を重ねることで効率的な編集作業ができるようになります！
+
+---
+
+## 問題1：Vimの起動と終了
+
+**問題：**
+以下の手順を実行してください。
+
+1. Vimで「practice.txt」というファイルを新規作成して開く
+2. 何も編集せずにVimを終了する
+
+<details>
+<summary>ヒント</summary>
+
+`vim ファイル名`で開き、`:q`で終了できます。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+# 1. Vimでファイルを開く
+$ vim practice.txt
+
+# 2. Vimを終了（ノーマルモードで）
+:q
+```
+
+**解説：**
+- `vim ファイル名`：Vimでファイルを開きます（存在しない場合は新規作成）
+- Vimは起動時に「ノーマルモード」で開始されます
+- `:q`：終了コマンド（変更がない場合のみ終了可能）
+
+**Vimを終了できない時は：**
+- `Esc`キーを押してノーマルモードに戻る
+- `:q!`で保存せずに強制終了できます
+
+</details>
+
+---
+
+## 問題2：文字の入力と保存
+
+**問題：**
+以下の手順を実行してください。
+
+1. Vimで「message.txt」を開く
+2. インサートモードに入る
+3. 「Hello Vim!」と入力する
+4. ノーマルモードに戻る
+5. ファイルを保存して終了する
+
+<details>
+<summary>ヒント</summary>
+
+- `i`でインサートモードに入ります
+- `Esc`でノーマルモードに戻ります
+- `:wq`で保存して終了できます
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+# 1. Vimでファイルを開く
+$ vim message.txt
+
+# 2. インサートモードに入る（Vimの中で）
+i
+
+# 3. 文字を入力
+Hello Vim!
+
+# 4. ノーマルモードに戻る
+Esc
+
+# 5. 保存して終了
+:wq
+```
+
+**解説：**
+インサートモードへの入り方はいくつかあります：
+
+| コマンド | 動作 |
+|---------|------|
+| `i` | カーソルの位置から入力開始 |
+| `I` | 行の先頭から入力開始 |
+| `a` | カーソルの次の位置から入力開始 |
+| `A` | 行の末尾から入力開始 |
+| `o` | カーソルの下に新しい行を作成 |
+| `O` | カーソルの上に新しい行を作成 |
+
+**確認：**
+```bash
+$ cat message.txt
+Hello Vim!
+```
+
+</details>
+
+---
+
+## 問題3：カーソル移動の練習
+
+**問題：**
+以下の手順を実行してください。
+
+1. 「navigation.txt」ファイルに以下の内容を書き込む（Vimを使わなくてOK）
+   ```
+   Line 1: First line
+   Line 2: Second line
+   Line 3: Third line
+   Line 4: Fourth line
+   Line 5: Fifth line
+   ```
+2. Vimでファイルを開く
+3. ノーマルモードで、hjklキーを使ってカーソルを移動する
+4. `gg`でファイルの先頭に移動
+5. `G`でファイルの末尾に移動
+6. `3G`で3行目に移動
+7. 保存せずに終了
+
+<details>
+<summary>ヒント</summary>
+
+- `h`：左、`j`：下、`k`：上、`l`：右
+- 行番号を指定して移動するには、数字の後に`G`を入力します
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+# 1. ファイル作成（echoを使って作成）
+$ echo "Line 1: First line" > navigation.txt
+$ echo "Line 2: Second line" >> navigation.txt
+$ echo "Line 3: Third line" >> navigation.txt
+$ echo "Line 4: Fourth line" >> navigation.txt
+$ echo "Line 5: Fifth line" >> navigation.txt
+
+# 2. Vimでファイルを開く
+$ vim navigation.txt
+
+# 3-7. Vimの中で以下のキーを押す
+h  # 左へ移動
+j  # 下へ移動
+k  # 上へ移動
+l  # 右へ移動
+
+gg # ファイルの先頭へ移動
+G  # ファイルの末尾へ移動
+3G # 3行目へ移動
+
+:q # 保存せずに終了
+```
+
+**解説：**
+Vimのカーソル移動（ノーマルモード）：
+
+| コマンド | 動作 |
+|---------|------|
+| `h` | 左へ移動 |
+| `j` | 下へ移動 |
+| `k` | 上へ移動 |
+| `l` | 右へ移動 |
+| `gg` | ファイルの先頭へ |
+| `G` | ファイルの末尾へ |
+| `10G` | 10行目へ移動 |
+| `0` | 行の先頭へ |
+| `$` | 行の末尾へ |
+
+**なぜhjklなの？**
+矢印キーから手を離さずに操作できるため、慣れると非常に効率的です。
+
+</details>
+
+---
+
+## 問題4：行の削除
+
+**問題：**
+以下の手順を実行してください。
+
+1. 「delete.txt」に5行のテキストを書き込む
+2. Vimで開く
+3. 2行目にカーソルを移動
+4. その行を削除（`dd`コマンド）
+5. 保存して終了
+
+<details>
+<summary>ヒント</summary>
+
+`dd`コマンドで1行削除できます。数字をつけると複数行削除できます。
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+# 1. ファイル作成
+$ cat > delete.txt << EOF
+This is line 1
+This is line 2
+This is line 3
+This is line 4
+This is line 5
+EOF
+
+# 2. Vimで開く
+$ vim delete.txt
+
+# 3. 2行目に移動（Vimの中で）
+2G
+
+# 4. 行を削除
+dd
+
+# 5. 保存して終了
+:wq
+
+# 確認
+$ cat delete.txt
+This is line 1
+This is line 3
+This is line 4
+This is line 5
+```
+
+**解説：**
+削除コマンド（ノーマルモード）：
+
+| コマンド | 動作 |
+|---------|------|
+| `x` | カーソル位置の1文字を削除 |
+| `dd` | 1行削除 |
+| `dw` | 1単語削除 |
+| `D` | カーソル位置から行末まで削除 |
+| `3dd` | 3行削除 |
+
+**注意：**
+削除した内容は「ヤンクバッファ」に保存されるので、`p`でペーストできます。
+
+</details>
+
+---
+
+## 問題5：コピーとペースト
+
+**問題：**
+以下の手順を実行してください。
+
+1. 「copy.txt」に以下の内容を書き込む
+   ```
+   Apple
+   Banana
+   Cherry
+   ```
+2. Vimで開く
+3. 2行目（Banana）をコピー（`yy`コマンド）
+4. 3行目（Cherry）の下にペースト（`p`コマンド）
+5. 保存して終了
+
+<details>
+<summary>ヒント</summary>
+
+- `yy`：1行コピー（ヤンク）
+- `p`：カーソルの後にペースト
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+# 1. ファイル作成
+$ echo "Apple" > copy.txt
+$ echo "Banana" >> copy.txt
+$ echo "Cherry" >> copy.txt
+
+# 2. Vimで開く
+$ vim copy.txt
+
+# 3. 2行目に移動してコピー（Vimの中で）
+2G
+yy
+
+# 4. 3行目に移動してペースト
+3G
+p
+
+# 5. 保存して終了
+:wq
+
+# 確認
+$ cat copy.txt
+Apple
+Banana
+Cherry
+Banana
+```
+
+**解説：**
+コピー&ペーストコマンド（ノーマルモード）：
+
+| コマンド | 動作 |
+|---------|------|
+| `yy` | 1行コピー（ヤンク） |
+| `yw` | 1単語コピー |
+| `p` | カーソルの後にペースト |
+| `P` | カーソルの前にペースト |
+| `3yy` | 3行コピー |
+
+**ポイント：**
+Vimでは「コピー」のことを「ヤンク（yank）」と呼びます。
+
+</details>
+
+---
+
+## 問題6：元に戻す・やり直し
+
+**問題：**
+以下の手順を実行してください。
+
+1. 「undo.txt」に「Original Text」と書き込む
+2. Vimで開く
+3. インサートモードで行末に「 - Modified」を追加
+4. ノーマルモードに戻る
+5. `u`コマンドで変更を元に戻す
+6. `Ctrl+r`でやり直す
+7. 保存して終了
+
+<details>
+<summary>ヒント</summary>
+
+- `u`：元に戻す（Undo）
+- `Ctrl+r`：やり直し（Redo）
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+# 1. ファイル作成
+$ echo "Original Text" > undo.txt
+
+# 2. Vimで開く
+$ vim undo.txt
+
+# 3. 行末に移動してインサートモード（Vimの中で）
+A
+ - Modified
+
+# 4. ノーマルモードに戻る
+Esc
+
+# 5. 元に戻す
+u
+# → "Original Text"に戻る
+
+# 6. やり直し
+Ctrl + r
+# → "Original Text - Modified"に戻る
+
+# 7. 保存して終了
+:wq
+```
+
+**解説：**
+アンドゥ・リドゥは編集ミスを修正するのに非常に便利です。
+
+| コマンド | 動作 |
+|---------|------|
+| `u` | 元に戻す（Undo） |
+| `Ctrl+r` | やり直し（Redo） |
+| `U` | 1行全体の変更を元に戻す |
+
+**ポイント：**
+`u`は何度も押すことで、さらに前の状態に戻れます。
+
+</details>
+
+---
+
+## 問題7：文字列の検索
+
+**問題：**
+以下の手順を実行してください。
+
+1. 「search.txt」に以下の内容を書き込む
+   ```
+   apple pie
+   banana bread
+   apple juice
+   orange juice
+   apple tart
+   ```
+2. Vimで開く
+3. `/apple`で「apple」を検索
+4. `n`キーで次の検索結果に移動
+5. `N`キーで前の検索結果に戻る
+6. 保存せずに終了
+
+<details>
+<summary>ヒント</summary>
+
+- `/検索文字列`：前方検索
+- `n`：次の検索結果へ
+- `N`：前の検索結果へ
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+# 1. ファイル作成
+$ cat > search.txt << EOF
+apple pie
+banana bread
+apple juice
+orange juice
+apple tart
+EOF
+
+# 2. Vimで開く
+$ vim search.txt
+
+# 3. 検索（Vimの中で）
+/apple
+Enter
+
+# 4. 次の検索結果へ移動
+n
+# → "apple juice"の"apple"に移動
+
+# 5. 前の検索結果へ戻る
+N
+# → "apple pie"の"apple"に戻る
+
+# 6. 保存せずに終了
+:q
+```
+
+**解説：**
+検索コマンド：
+
+| コマンド | 動作 |
+|---------|------|
+| `/文字列` | 前方検索（下に向かって検索） |
+| `?文字列` | 後方検索（上に向かって検索） |
+| `n` | 次の検索結果へ移動 |
+| `N` | 前の検索結果へ移動 |
+| `:noh` | 検索ハイライトを消す |
+
+**便利な機能：**
+検索した文字列はハイライト表示されるので、見つけやすいです。
+
+</details>
+
+---
+
+## 問題8：文字列の置換
+
+**問題：**
+以下の手順を実行してください。
+
+1. 「replace.txt」に以下の内容を書き込む
+   ```
+   I like cats.
+   Cats are cute.
+   My cat is black.
+   ```
+2. Vimで開く
+3. ファイル全体の「cat」を「dog」に置換（`:%s/cat/dog/g`）
+4. 保存して終了
+
+<details>
+<summary>ヒント</summary>
+
+- `:%s/置換前/置換後/g`：ファイル全体を置換
+- `g`オプションで1行内のすべてを置換できます
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+# 1. ファイル作成
+$ cat > replace.txt << EOF
+I like cats.
+Cats are cute.
+My cat is black.
+EOF
+
+# 2. Vimで開く
+$ vim replace.txt
+
+# 3. 置換（Vimの中で）
+:%s/cat/dog/g
+Enter
+
+# 4. 保存して終了
+:wq
+
+# 確認
+$ cat replace.txt
+I like dogs.
+Cats are cute.
+My dog is black.
+```
+
+**解説：**
+置換コマンドの形式：
+
+| コマンド | 動作 |
+|---------|------|
+| `:s/old/new/` | カーソル行の最初の一致を置換 |
+| `:s/old/new/g` | カーソル行のすべてを置換 |
+| `:%s/old/new/g` | ファイル全体を置換 |
+| `:%s/old/new/gc` | 確認しながら置換 |
+| `:10,20s/old/new/g` | 10〜20行目を置換 |
+
+**注意：**
+この例では「Cats」（大文字C）は置換されていません。
+大文字小文字を区別せずに置換したい場合は、`:%s/cat/dog/gi`のように`i`オプションを追加します。
+
+**確認付き置換：**
+```
+:%s/cat/dog/gc
+```
+各置換ごとに確認メッセージが表示されます。
+- `y`：置換する
+- `n`：スキップ
+- `a`：以降すべて置換
+- `q`：終了
+
+</details>
+
+---
+
+## 問題9：ビジュアルモードでの選択
+
+**問題：**
+以下の手順を実行してください。
+
+1. 「visual.txt」に以下の内容を書き込む
+   ```
+   Line 1
+   Line 2
+   Line 3
+   Line 4
+   Line 5
+   ```
+2. Vimで開く
+3. 2行目にカーソルを移動
+4. `V`キーでビジュアルラインモードに入る
+5. `j`キーで3行目まで選択範囲を広げる
+6. `d`キーで選択範囲を削除
+7. 保存して終了
+
+<details>
+<summary>ヒント</summary>
+
+- `v`：文字単位のビジュアルモード
+- `V`：行単位のビジュアルモード
+- 選択後に`d`で削除、`y`でコピーできます
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+# 1. ファイル作成
+$ cat > visual.txt << EOF
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+EOF
+
+# 2. Vimで開く
+$ vim visual.txt
+
+# 3. 2行目に移動（Vimの中で）
+2G
+
+# 4. ビジュアルラインモード開始
+V
+# → 2行目全体がハイライト表示される
+
+# 5. 選択範囲を広げる
+j
+# → 2行目と3行目がハイライト表示される
+
+# 6. 選択範囲を削除
+d
+
+# 7. 保存して終了
+:wq
+
+# 確認
+$ cat visual.txt
+Line 1
+Line 4
+Line 5
+```
+
+**解説：**
+ビジュアルモードの種類：
+
+| コマンド | 動作 |
+|---------|------|
+| `v` | 文字単位で選択（Visual） |
+| `V` | 行単位で選択（Visual Line） |
+| `Ctrl+v` | 矩形選択（Visual Block） |
+
+**ビジュアルモードでできる操作：**
+- `d`：削除
+- `y`：コピー（ヤンク）
+- `>`：インデント追加
+- `<`：インデント削除
+
+**応用例：**
+```
+# 文字単位で選択してコピー
+v
+→ 移動キーで選択範囲を調整
+y
+→ 選択範囲をコピー
+```
+
+</details>
+
+---
+
+## 問題10：総合問題 - テキスト編集
+
+**問題：**
+以下の手順を実行してください。
+
+1. 「final.txt」に以下の内容を書き込む
+   ```
+   TODO: Buy milk
+   TODO: Call John
+   DONE: Finish report
+   TODO: Review code
+   DONE: Send email
+   ```
+
+2. Vimで開く
+3. 「TODO」を含む行をすべて検索
+4. 1つ目の「TODO」を「IN PROGRESS」に置換（確認しながら）
+5. 「DONE」で始まる行（3行目と5行目）を削除
+6. ファイルの末尾に新しい行「TODO: Update documentation」を追加
+7. 保存して終了
+
+<details>
+<summary>ヒント</summary>
+
+- `/TODO`で検索できます
+- `:%s/TODO/IN PROGRESS/gc`で確認しながら置換
+- `dd`で行削除
+- `G`で末尾に移動、`o`で新しい行を追加
+
+</details>
+
+<details>
+<summary>答え</summary>
+
+```bash
+# 1. ファイル作成
+$ cat > final.txt << EOF
+TODO: Buy milk
+TODO: Call John
+DONE: Finish report
+TODO: Review code
+DONE: Send email
+EOF
+
+# 2. Vimで開く
+$ vim final.txt
+
+# 3. TODOを検索（Vimの中で）
+/TODO
+Enter
+# → 1つ目の"TODO"にジャンプ
+
+# 4. 確認しながら置換
+:%s/TODO/IN PROGRESS/gc
+Enter
+# → 各TODOごとに確認メッセージが表示される
+# 1つ目だけ"y"を押し、残りは"n"を押す
+# または"q"で置換を終了
+
+# 5. 3行目（DONE: Finish report）を削除
+3G
+dd
+
+# 5行目（DONE: Send email）を削除
+# ※3行目を削除したので、元の5行目は今4行目になっている
+4G
+dd
+
+# 6. ファイル末尾に移動して新しい行を追加
+G
+o
+TODO: Update documentation
+Esc
+
+# 7. 保存して終了
+:wq
+
+# 確認
+$ cat final.txt
+IN PROGRESS: Buy milk
+TODO: Call John
+TODO: Review code
+TODO: Update documentation
+```
+
+**解説：**
+この問題では、実際のタスク管理ファイルの編集を体験しました。
+
+**処理の流れ：**
+1. `/TODO`：検索機能でTODOの位置を確認
+2. `:%s/TODO/IN PROGRESS/gc`：確認しながら1つだけ置換
+3. `3G`と`dd`：特定の行を削除
+4. `G`と`o`：ファイル末尾に新しい行を追加
+
+**よく使うVim操作の組み合わせ：**
+```bash
+# 検索して削除
+/検索文字列
+Enter
+dd
+
+# 行番号指定でジャンプして編集
+10G
+i
+編集内容
+Esc
+
+# コピーして複数箇所にペースト
+yy
+p
+p
+p
+
+# 選択して一括インデント
+V
+jj
+>
+```
+
+**実践的なVimの使い方：**
+- ログファイルの特定エラー行を検索・削除
+- 設定ファイルの値を一括置換
+- コードのコメントアウト（ビジュアルブロックモードで）
+- 複数行の一括編集
+
+</details>
+
+---
+
+## まとめ
+
+お疲れ様でした！Vimの実践問題をクリアできましたか？
+
+**この章で習得したVim操作：**
+
+| カテゴリ | コマンド | 用途 |
+|---------|---------|------|
+| **起動・終了** | `vim file.txt` | ファイルを開く |
+| | `:q` | 終了 |
+| | `:wq` | 保存して終了 |
+| | `:q!` | 保存せずに終了 |
+| **モード切替** | `i` | インサートモード |
+| | `Esc` | ノーマルモード |
+| | `v` | ビジュアルモード |
+| | `V` | ビジュアルラインモード |
+| **カーソル移動** | `h j k l` | 左下上右 |
+| | `gg` | ファイル先頭 |
+| | `G` | ファイル末尾 |
+| | `10G` | 10行目へ |
+| **編集** | `dd` | 1行削除 |
+| | `yy` | 1行コピー |
+| | `p` | ペースト |
+| | `u` | 元に戻す |
+| | `Ctrl+r` | やり直し |
+| **検索・置換** | `/文字列` | 検索 |
+| | `n` | 次の検索結果 |
+| | `:%s/old/new/g` | 全体置換 |
+
+**Vimをマスターするコツ：**
+
+1. **毎日少しずつ使う**
+   - 最初は簡単なファイル編集から始める
+   - 徐々に複雑な操作を覚えていく
+
+2. **基本操作を体で覚える**
+   - hjklでのカーソル移動
+   - i（インサート）→ Esc（ノーマル）の往復
+   - :wqで保存終了
+
+3. **困ったらEsc**
+   - わからなくなったらEscを押してノーマルモードに戻る
+   - `:q!`で保存せずに終了できる
+
+4. **よく使うコマンドから覚える**
+   - すべてのコマンドを覚える必要はありません
+   - 自分がよく使う操作から習得しましょう
+
+**実践で役立つVimの使い方：**
+
+```bash
+# サーバー上の設定ファイルを編集
+$ vim /etc/nginx/nginx.conf
+
+# ログファイルからエラーを検索
+$ vim /var/log/application.log
+/ERROR
+
+# Gitのコミットメッセージを編集
+$ git commit
+# → Vimが起動する
+
+# 複数ファイルを開く
+$ vim file1.txt file2.txt
+:n  # 次のファイル
+:N  # 前のファイル
+```
+
+**次のステップ：**
+Vimのさらに高度な機能を学びたい場合：
+- `.vimrc`ファイルでカスタマイズ
+- プラグインの導入（NERDTree、fzfなど）
+- マクロ機能（繰り返し操作の自動化）
+- 分割ウィンドウ（`:split`、`:vsplit`）
+
+**おすすめの練習方法：**
+1. `vimtutor`コマンドで対話的チュートリアル
+   ```bash
+   $ vimtutor
+   ```
+2. 日常的なテキスト編集をVimで行う
+3. オンラインのVim練習サイトを活用
+
+頑張ってください！Vimは最初は難しいですが、使いこなせると非常に強力なツールです！
